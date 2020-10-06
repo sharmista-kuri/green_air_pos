@@ -115,7 +115,7 @@ class TransactionsController extends Controller
     }
     public function account_info_select_box(Request $request){
         if($request['account_type']==1){
-            $accounts = Customer::with('sale')->sum('sale.due')->find($request->account_id);
+            $accounts = Customer::with('sale')->sum('sale.due')->find($request->account_id); 
         }
         else if($request['account_type']==2){
             $accounts = Supplier::find($request->account_id);
