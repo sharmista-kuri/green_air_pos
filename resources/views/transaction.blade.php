@@ -156,10 +156,10 @@
         datatype: "json",
         success: function(datas){
           data = JSON.parse(datas);
-          //alert(data.name);
-          jQuery("#account_name").text(data.name);
+          //alert(data[0].name);
+          jQuery("#account_name").text(data[0].name);
           $("#due_label").show();
-          $("#due_amount").text(data.id);
+          $("#due_amount").text(data[0].due);
         }
     });
   }

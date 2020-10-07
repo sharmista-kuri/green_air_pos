@@ -9,6 +9,7 @@ use App\AccountType;
 use App\Transaction;
 use App\TransactionType;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 
 class TransactionsController extends Controller
@@ -115,10 +116,21 @@ class TransactionsController extends Controller
     }
     public function account_info_select_box(Request $request){
         if($request['account_type']==1){
-            $accounts = Customer::with('sale')->sum('sale.due')->find($request->account_id); 
+            //$accounts = Customer::with('sale')->sum('sale.due')->find($request->account_id); 
+            $accounts = DB::select( DB::raw("SELECT c.name, ROUND(( SUM(s.`total`)- SUM(t.`amount`)),2) due FROM `sales` s
+            JOIN `transactions` t ON (t.`account_id`=s.`customer_id` AND t.`transaction_type_id`=1)
+            JOIN `customers` c ON (c.id=s.`customer_id`)
+            WHERE s.`customer_id`=$request->account_id
+            GROUP BY s.`customer_id`
+            ")); 
         }
         else if($request['account_type']==2){
-            $accounts = Supplier::find($request->account_id);
+            $accounts = DB::select( DB::raw("SELECT s.name, ROUND(( SUM(p.`total`)- SUM(t.`amount`) ) ,2) due due FROM `purchases` p
+            JOIN `transactions` t ON (t.`account_id`=p.`supplier_id` AND t.`transaction_type_id`=2)
+            JOIN `suppliers` s ON (s.id=p.`supplier_id`)
+            WHERE p.`supplier_id`=$request->account_id
+            GROUP BY p.`supplier_id`
+            ")); 
         }
         else{
             $accounts = Official::find($request->account_id);
