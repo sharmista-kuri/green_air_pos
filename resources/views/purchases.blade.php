@@ -1,6 +1,6 @@
 @extends('layouts.master')
 @section('content')
-<form id="purchase_form"  method="post" action="{{ route('purchase.store') }}" enctype="multipart/form-data">
+<form id="purchase_form"  method="post" action="{{ route('purchases.store') }}" enctype="multipart/form-data">
 @csrf
 <div class="content-wrapper">
   <div class="row">
@@ -649,7 +649,7 @@
     jQuery.ajax({
         type: "POST",
         cache: false,
-        url: "supplier_info",
+        url: "{{route('supplier_info')}}",
         data : { "_token": "{{ csrf_token() }}","supplier_id":supplier_id},
         datatype: "json",
         success: function(datas){
@@ -668,7 +668,7 @@
     jQuery.ajax({
         type: "POST",
         cache: false,
-        url: "product_info",
+        url: "{{route('product_info')}}",
         data : { "_token": "{{ csrf_token() }}","product_id":product_id},
         datatype: "json",
         success: function(datas){
@@ -760,7 +760,7 @@
     jQuery.ajax({
         type: "POST",
         cache: false,
-        url: "supplier_id",
+        url: "{{route('supplier_id')}}",
         data : { "_token": "{{ csrf_token() }}"},
         datatype: "json",
         success: function(datas){
@@ -814,7 +814,7 @@
    			
    			    //processData: false,
    			    enctype: 'multipart/form-data',
-            url: "{{ route('supplier.store') }}",
+            url: "{{ route('suppliers.store') }}",
             //data : { "_token": "{{ csrf_token() }}","postdata":data},
             data: data,
             datatype: "json",
@@ -849,7 +849,7 @@
     jQuery.ajax({
         type: "POST",
         cache: false,
-        url: "product_id",
+        url: "{{route('product_id')}}",
         data : { "_token": "{{ csrf_token() }}"},
         datatype: "json",
         success: function(datas){
@@ -899,7 +899,7 @@
         contentType: false,
         processData: false,
         enctype: 'multipart/form-data',
-        url: "{{ route('product.store') }}",
+        url: "{{ route('products.store') }}",
         data: data,
         datatype: "json",
         success: function(data){
@@ -961,7 +961,7 @@
         contentType: false,
         processData: false,
         enctype: 'multipart/form-data',
-        url: "{{ route('category.store') }}",
+        url: "{{ route('categories.store') }}",
         data: data,
         datatype: "json",
         success: function(data){
@@ -1021,7 +1021,7 @@
         contentType: false,
         processData: false,
         enctype: 'multipart/form-data',
-        url: "{{ route('brand.store') }}",
+        url: "{{ route('brands.store') }}",
         data: data,
         datatype: "json",
         success: function(data){

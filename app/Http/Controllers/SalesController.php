@@ -11,6 +11,7 @@ use App\Employee;
 use App\Transaction;
 use App\SalesCartDetail;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class SalesController extends Controller
 {
@@ -26,7 +27,7 @@ class SalesController extends Controller
         $products = Product::get();
         $categories = Category::get();
         $brands = Brand::get();
-        return view('sales',compact('employees','customers','products','categories','brands'));
+        return view('sales_report',compact('employees','customers','products','categories','brands'));
     }
 
     /**
@@ -37,6 +38,12 @@ class SalesController extends Controller
     public function create()
     {
         //
+        $employees = Employee::get();
+        $customers = Customer::get();
+        $products = Product::get();
+        $categories = Category::get();
+        $brands = Brand::get();
+        return view('sales',compact('employees','customers','products','categories','brands'));
     }
 
     /**
@@ -136,4 +143,73 @@ class SalesController extends Controller
         //echo'<pre>';print_r($product);exit;
         echo json_encode($product);
     }
+
+
+    public function grid(Request $request){
+
+        
+		$pagenum = $request->pagenum;
+		$pagesize = $request->per_pagess;
+        $start = $pagenum * $pagesize;
+
+
+        $filterscount = $request->filterscount;
+        $sortdatafield = $request->sortdatafield;
+        $sortorder = $request->sortorder;
+
+        
+		$where="sales.id<>0";  
+		$where1="sales_cart_details.id<>0";  
+
+        
+        if($request->invoice_no != '') 
+        {$where.=" AND invoice_no = '".trim($request->invoice_no)."' ";}
+        
+        if($request->employee_id != '') 
+		{$where.=" AND employee_id = ".$request->employee_id;}
+        
+        if($request->sale_date_from != '') 
+        {$where.=" AND sale_date >= '".trim($request->sale_date_from)."' ";}
+
+        if($request->sale_date_to != '') 
+        {$where.=" AND sale_date <= '".trim($request->sale_date_to)."' ";}
+        
+        if($request->sale_type != '') 
+        {$where.=" AND sale_type = ".$request->sale_type;}
+
+        if($request->customer_id != '') 
+        {$where.=" AND customer_id = ".$request->customer_id;}
+        
+        if($request->product_id != '') 
+        {$where1.=" AND product_id = ".$request->product_id;}
+        
+        $products = SalesCartDetail::whereRaw($where1);
+		
+        $q = Sale::with(['employees'])->with(['customers'])->whereRaw($where)
+        ->joinSub($products, 'sales_cart_details', function ($join) {
+            $join->on('sales.id', '=', 'sales_cart_details.sales_id');
+        })
+        ->join('products','products.id','=','sales_cart_details.product_id')
+        ->get();
+	
+        
+		
+		$result["total"] = $q->count();
+		
+		if ($q->count() > 0){        
+			$result["Rows"] = $q;
+		} else {
+			$result["Rows"] = array();
+		}  		
+		
+	
+		
+		
+		echo "{\"total\":".json_encode($result['total']).",\"data\":".json_encode($result['Rows'])."}";
+
+    }
+
+    
+
+    
 }

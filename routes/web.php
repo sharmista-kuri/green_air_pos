@@ -20,10 +20,10 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
-Route::get('/sales', 'SalesController@index')->name('sales');
-Route::get('/purchases', 'PurchasesController@index')->name('purchases');
-Route::get('/transactions', 'TransactionsController@index')->name('transactions');
-Route::resource('sale','SalesController');
+Route::get('/sales', 'SalesController@index')->name('sales.create');
+Route::get('/purchases', 'PurchasesController@index')->name('purchases.create');
+Route::get('/transactions', 'TransactionsController@index')->name('transactions.create');
+
 
 Route::post('customer_info', 'CustomersController@customer_info')->name('customer_info');
 Route::post('supplier_info', 'SuppliersController@supplier_info')->name('supplier_info');
@@ -35,13 +35,14 @@ Route::post('product_select_box', 'ProductsController@product_select_box')->name
 Route::post('category_select_box', 'CategoriesController@category_select_box')->name('category_select_box');
 Route::post('brand_select_box', 'BrandsController@brand_select_box')->name('brand_select_box');
 
-Route::resource('customer','CustomersController');
-Route::resource('supplier','SuppliersController');
-Route::resource('purchase','PurchasesController');
-Route::resource('transaction','TransactionsController');
-Route::resource('product','ProductsController');
-Route::resource('category','CategoriesController');
-Route::resource('brand','BrandsController');
+Route::resource('sales','SalesController');
+Route::resource('customers','CustomersController');
+Route::resource('suppliers','SuppliersController');
+Route::resource('purchases','PurchasesController');
+Route::resource('transactions','TransactionsController');
+Route::resource('products','ProductsController');
+Route::resource('categories','CategoriesController');
+Route::resource('brands','BrandsController');
 
 Route::post('product_id', 'ProductsController@product_id')->name('product_id');
 Route::post('supplier_id', 'SuppliersController@supplier_id')->name('supplier_id');
@@ -49,3 +50,4 @@ Route::post('transaction_id', 'TransactionsController@transaction_id')->name('tr
 Route::post('account_select_box', 'TransactionsController@account_select_box')->name('account_select_box');
 Route::post('account_info_select_box', 'TransactionsController@account_info_select_box')->name('account_info_select_box');
 
+Route::post('sales_grid', 'SalesController@grid')->name('sales.grid');

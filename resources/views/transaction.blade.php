@@ -1,6 +1,6 @@
 @extends('layouts.master')
 @section('content')
-<form id="transaction_form"  method="post" action="{{ route('transaction.store') }}" enctype="multipart/form-data">
+<form id="transaction_form"  method="post" action="{{ route('transactions.store') }}" enctype="multipart/form-data">
 @csrf
 <div class="content-wrapper">
   <div class="row">
@@ -132,7 +132,7 @@
     jQuery.ajax({
         type: "POST",
         cache: false,
-        url: "account_select_box",
+        url: "{{route('account_select_box')}}",
         data : { "_token": "{{ csrf_token() }}","account_type":account_type},
         datatype: "json",
         success: function(data){
@@ -151,7 +151,7 @@
     jQuery.ajax({
         type: "POST",
         cache: false,
-        url: "account_info_select_box",
+        url: "{{route('account_info_select_box')}}",
         data : { "_token": "{{ csrf_token() }}","account_id":account_id,"account_type":account_type},
         datatype: "json",
         success: function(datas){
@@ -168,7 +168,7 @@
     jQuery.ajax({
         type: "POST",
         cache: false,
-        url: "transaction_id",
+        url: "{{route('transaction_id')}}",
         data : { "_token": "{{ csrf_token() }}"},
         datatype: "json",
         success: function(datas){

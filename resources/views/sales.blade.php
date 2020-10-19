@@ -1,6 +1,6 @@
 @extends('layouts.master')
 @section('content')
-<form id="sales_form"  method="post" action="{{ route('sale.store') }}" enctype="multipart/form-data">
+<form id="sales_form"  method="post" action="{{ route('sales.store') }}" enctype="multipart/form-data">
 @csrf
 <div class="content-wrapper">
   <div class="row">
@@ -427,16 +427,16 @@
 
 
 <script>
-jQuery(document).ready(function (){
-  cust_info();
-  product_info();
-});
+  jQuery(document).ready(function (){
+    cust_info();
+    product_info();
+  });
   function cust_info(){
     var customer_id = jQuery("#customer_id").val();
     jQuery.ajax({
         type: "POST",
         cache: false,
-        url: "customer_info",
+        url: "{{route('customer_info')}}",
         data : { "_token": "{{ csrf_token() }}","customer_id":customer_id},
         datatype: "json",
         success: function(datas){
@@ -455,7 +455,7 @@ jQuery(document).ready(function (){
     jQuery.ajax({
         type: "POST",
         cache: false,
-        url: "product_info",
+        url: "{{route('product_info')}}",
         data : { "_token": "{{ csrf_token() }}","product_id":product_id},
         datatype: "json",
         success: function(datas){
@@ -547,7 +547,7 @@ jQuery(document).ready(function (){
     jQuery.ajax({
         type: "POST",
         cache: false,
-        url: "customer_id",
+        url: "{{route('customer_id')}}",
         data : { "_token": "{{ csrf_token() }}"},
         datatype: "json",
         success: function(datas){
@@ -602,7 +602,7 @@ jQuery(document).ready(function (){
    			
    			    //processData: false,
    			    enctype: 'multipart/form-data',
-            url: "{{ route('customer.store') }}",
+            url: "{{ route('customers.store') }}",
             //data : { "_token": "{{ csrf_token() }}","postdata":data},
             data: data,
             datatype: "json",

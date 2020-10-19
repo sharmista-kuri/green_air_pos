@@ -52,3 +52,4 @@
   <script type="text/javascript" src="<?php echo config('app.url'); ?>/resources/master/jqwidgets/jqxtooltip.js"></script>
   <script type="text/javascript" src="<?php echo config('app.url'); ?>/resources/master/jqwidgets/jqxtabs.js"></script>
   <script type="text/javascript" src="<?php echo config('app.url'); ?>/resources/master/jqwidgets/jqxmaskedinput.js"></script>
+  <script type="text/javascript" src="<?php echo config('app.url'); ?>/resources/master/jqwidgets/jqxgrid.aggregates.js"></script>

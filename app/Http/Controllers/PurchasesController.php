@@ -39,6 +39,12 @@ class PurchasesController extends Controller
     public function create()
     {
         //
+        $employees = Employee::get();
+        $suppliers = Supplier::get();
+        $products = Product::get();
+        $categories = Category::get();
+        $brands = Brand::get();
+        return view('purchases',compact('employees','suppliers','products','categories','brands'));
     }
 
     /**

@@ -7,22 +7,35 @@
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{{route('sales')}}">
+            <a class="nav-link" href="{{route('sales.create')}}">
               <i class="mdi mdi-sale menu-icon"></i>
               <span class="menu-title">Sales</span>
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{{route('purchases')}}">
+            <a class="nav-link" href="{{route('purchases.create')}}">
               <i class="mdi mdi-cart menu-icon"></i>
               <span class="menu-title">Purchase</span>
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{{route('transactions')}}">
+            <a class="nav-link" href="{{route('transactions.create')}}">
               <i class="mdi mdi-cash menu-icon"></i>
               <span class="menu-title">Transaction</span>
             </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" data-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">
+              <i class="mdi mdi-circle-outline menu-icon"></i>
+              <span class="menu-title">Reports</span>
+              <i class="menu-arrow"></i>
+            </a>
+            <div class="collapse" id="ui-basic">
+              <ul class="nav flex-column sub-menu">
+                <li class="nav-item"> <a class="nav-link" href="{{route('sales.index')}}">All Sales Report</a></li>
+                <li class="nav-item"> <a class="nav-link" href="{{route('purchases.index')}}">All Purchase Report</a></li>
+              </ul>
+            </div>
           </li>
           <!-- <li class="nav-item">
             <a class="nav-link" data-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">

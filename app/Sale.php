@@ -21,11 +21,11 @@ class Sale extends Model
 
     public function customers()
     {
-        return $this->belongsTo('Customer');
+        return $this->belongsTo(Customer::class,'customer_id');
     }
 
     public function employees()
     {
-        return $this->belongsTo('Employee');
+        return $this->belongsTo(Employee::class,'employee_id');
     }
 }
