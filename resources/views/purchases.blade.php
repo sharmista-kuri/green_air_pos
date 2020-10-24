@@ -827,7 +827,7 @@
               jQuery.ajax({
                 type: "POST",
                 cache: false,
-                url: "supplier_select_box",
+                url: "{{ route('supplier_select_box')}}",
                 data : { "_token": "{{ csrf_token() }}"},
                 datatype: "json",
                 success: function(datas){
@@ -910,7 +910,7 @@
           jQuery.ajax({
             type: "POST",
             cache: false,
-            url: "product_select_box",
+            url: "{{ route('product_select_box')}}",
             data : { "_token": "{{ csrf_token() }}"},
             datatype: "json",
             success: function(datas){
@@ -972,7 +972,7 @@
           jQuery.ajax({
             type: "POST",
             cache: false,
-            url: "category_select_box",
+            url: "{{ route('category_select_box') }}",
             data : { "_token": "{{ csrf_token() }}"},
             datatype: "json",
             success: function(datas){
@@ -1032,7 +1032,7 @@
           jQuery.ajax({
             type: "POST",
             cache: false,
-            url: "brand_select_box",
+            url: "{{ route('brand_select_box') }}",
             data : { "_token": "{{ csrf_token() }}"},
             datatype: "json",
             success: function(datas){

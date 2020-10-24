@@ -1,6 +1,6 @@
 @extends('layouts.master')
 @section('content')
-<form id="sales_form"  method="post" action="{{ route('sales.store') }}" enctype="multipart/form-data">
+<form id="sales_form"  method="post" action="{{ route('sales_print') }}" enctype="multipart/form-data">
 @csrf
 <div class="content-wrapper">
   <div class="row">
@@ -38,7 +38,8 @@
                     <div class="form-group row">
                         <label class="col-sm-4 col-form-label">Sale Date</label>
                         <div class="col-sm-8">
-                            <input required id="sale_date" name="sale_date" type="date" class="form-control" placeholder="dd/mm/yyyy"/>
+                            <input value="<?php echo date('Y-m-d')?>" required id="sale_date" name="sale_date" type="date" class="form-control" placeholder="dd/mm/yyyy"/>
+                            
                         </div>
                     </div>
                 </div>
@@ -48,7 +49,7 @@
                   <div class="col-sm-4">
                     <div class="form-check">
                       <label class="form-check-label">
-                        <input required type="radio" class="form-check-input" name="sale_type" id="sale_type1" value="1">
+                        <input checked required type="radio" class="form-check-input" name="sale_type" id="sale_type1" value="1">
                             Retial
                       </label>
                     </div>
@@ -102,7 +103,8 @@
                 <div class="form-group row">
                   <label class="col-sm-3 col-form-label">Name</label>
                   <div class="col-sm-9">
-                    <input disabled id="customer_name" name="customer_name" type="text"class="form-control" >
+                    <input disabled id="customer_name" type="text" class="form-control" >
+                    <input id="customer_name_hidden" name="customer_name"  type="hidden" class="form-control" >
                   </div>
                 </div>
               </div>
@@ -120,7 +122,8 @@
                 <div class="form-group row">
                   <label class="col-sm-3 col-form-label">Address</label>
                   <div class="col-sm-9">
-                    <textarea  disabled id="customer_address" name="customer_address" class="form-control" rows="4"></textarea>
+                    <textarea  disabled id="customer_address" class="form-control" rows="4"></textarea>
+                    <input id="customer_address_hidden" name="customer_address"  type="hidden" class="form-control" >
                   </div>
                 </div>
               </div>
@@ -139,7 +142,8 @@
                 <div class="form-group row">
                   <label class="col-sm-3 col-form-label">Contact No</label>
                   <div class="col-sm-9">
-                    <input disabled id="contact_no" name="contact_no" type="text"class="form-control" />
+                    <input disabled id="contact_no" type="text"class="form-control" />
+                    <input id="contact_no_hidden" name="contact_no" type="text"class="form-control" />
                   </div>
                 </div>
               </div>
@@ -281,8 +285,8 @@
                 </div>
               </div>
               <div class="forms-sample">
-                    <button type="submit" class="btn btn-primary mr-2">Sell</button>
-                    <button type="button" class="btn btn-primary mr-2">Print</button>
+                    <button type="button" id="sell_save_button" class="btn btn-primary mr-2">Sell</button>
+                    <button type="submit" class="btn btn-primary mr-2">Print</button>
               </div>
             </div>
         </div>
@@ -291,6 +295,8 @@
   </div>
 </div>
 </form>
+
+
 
 <form id="customer_form">
 @csrf
@@ -423,13 +429,14 @@
 </div>
 </form>
 
-
+     
 
 
 <script>
   jQuery(document).ready(function (){
     cust_info();
     product_info();
+
   });
   function cust_info(){
     var customer_id = jQuery("#customer_id").val();
@@ -442,8 +449,11 @@
         success: function(datas){
           data = JSON.parse(datas);
           jQuery("#customer_name").val(data.name);
+          jQuery("#customer_name_hidden").val(data.name);
           jQuery("#customer_address").text(data.address);
+          jQuery("#customer_address_hidden").val(data.address);
           jQuery("#contact_no").val(data.primary_contact);
+          jQuery("#contact_no_hidden").val(data.primary_contact);
           jQuery("#customer_email").val(data.email);
               
         }
@@ -612,16 +622,117 @@
               
               $('#customer_add_modal').modal('toggle');
 
-              jQuery.ajax({
-                type: "POST",
-                cache: false,
-                url: "customer_select_box",
-                data : { "_token": "{{ csrf_token() }}"},
-                datatype: "json",
-                success: function(datas){
-                  $("#cust_div").html(datas);
-                }
-            }); 
+              
+              customer_select_box();
+
+
+              
+                  
+          }
+        });	
+  }
+  
+  function customer_select_box(){
+    jQuery.ajax({
+        type: "POST",
+        cache: false,
+        url: "{{route('customer_select_box')}}",
+        data : { "_token": "{{ csrf_token() }}"},
+        datatype: "json",
+        success: function(datas){
+          $("#cust_div").html(datas);
+        }
+    }); 
+  }
+
+  function print()
+  {
+		//jQuery("#CustomerSaveButton").hide();
+		//jQuery("#loading").show();
+		
+    //location.href = "{{ route('sales_print') }}";
+    
+		var form = $('#sales_form')[0];
+		var data = new FormData(form);
+		//alert(data); 
+		jQuery.ajax({
+			headers: {
+		        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+		    },
+            type: "POST",
+            cache: false,
+            contentType: false,
+   			    processData: false,
+   			
+   			    //processData: false,
+   			    enctype: 'multipart/form-data',
+            url: "{{ route('sales_print') }}",
+            //data : { "_token": "{{ csrf_token() }}","postdata":data},
+            data: data,
+            datatype: "json",
+            success: function(data){
+            	
+
+              
+
+
+
+              
+                  
+          }
+        });	
+	}
+
+  jQuery('#sales_form').jqxValidator({
+      hintType: "label",
+			theme:"light",
+      rules: [
+          { input: '#invoice_no', message: 'Required!', action: 'keyup,blur', rule:'required' },
+          { input: '#sale_date', message: 'Required!', action: 'keyup,blur', rule:'required' },
+          
+          
+      ]
+  });
+
+  jQuery("#sell_save_button").click(function () {			
+		var validationResult = function (isValid) {
+			if (isValid) {
+				sell();
+			}
+		}
+		jQuery('#sales_form').jqxValidator('validate', validationResult);
+		//call_ajax_submit();
+	});
+
+  function sell()
+  {
+		jQuery("#sell_save_button").hide();
+		//jQuery("#loading").show();
+		
+    //location.href = "{{ route('sales_print') }}";
+    
+		var form = $('#sales_form')[0];
+		var data = new FormData(form);
+		//alert(data); 
+		jQuery.ajax({
+			headers: {
+		        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+		    },
+            type: "POST",
+            cache: false,
+            contentType: false,
+   			    processData: false,
+   			
+   			    //processData: false,
+   			    enctype: 'multipart/form-data',
+            url: "{{ route('sales.store') }}",
+            //data : { "_token": "{{ csrf_token() }}","postdata":data},
+            data: data,
+            datatype: "json",
+            success: function(data){
+            	jQuery("#sell_save_button").show();
+              alert("Successfully Saved");
+              
 
 
 

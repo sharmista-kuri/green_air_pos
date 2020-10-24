@@ -10,15 +10,7 @@
   
   <script src="<?php echo config('app.url'); ?>/resources/master/js/file-upload.js"></script>
 
-  <script src="<?php echo config('app.url'); ?>/resources/master/js/select2.min.js"></script>
-
-  <script>
-                          
-  $(document).ready(function() {
-      $('.js-example-basic-multiple').select2();
-  });
-
-  </script>
+ 
 
 
 
@@ -47,9 +39,9 @@
   <script type="text/javascript" src="<?php echo config('app.url'); ?>/resources/master/jqwidgets/jqxgrid.filter.js"></script> 
   <script type="text/javascript" src="<?php echo config('app.url'); ?>/resources/master/jqwidgets/jqxgrid.sort.js"></script>	   
   <script type="text/javascript" src="<?php echo config('app.url'); ?>/resources/master/jqwidgets/jqxdata.js"></script>	
-  <script type="text/javascript" src=""></script>
   <script type="text/javascript" src="<?php echo config('app.url'); ?>/resources/master/jqwidgets/jqxpanel.js"></script>
   <script type="text/javascript" src="<?php echo config('app.url'); ?>/resources/master/jqwidgets/jqxtooltip.js"></script>
   <script type="text/javascript" src="<?php echo config('app.url'); ?>/resources/master/jqwidgets/jqxtabs.js"></script>
   <script type="text/javascript" src="<?php echo config('app.url'); ?>/resources/master/jqwidgets/jqxmaskedinput.js"></script>
   <script type="text/javascript" src="<?php echo config('app.url'); ?>/resources/master/jqwidgets/jqxgrid.aggregates.js"></script>
+

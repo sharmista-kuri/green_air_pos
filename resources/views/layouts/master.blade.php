@@ -4,13 +4,11 @@
 <head>
     @include('includes.head')
     @include('includes.script')
-    <!-- @include('includes.select') -->     
 </head>
 
 <body>
   <div class="container-scroller">
-    <!-- partial:../../partials/_navbar.html -->
-    
+    <!-- partial:../../partials/_navbar.html --> 
         @include('includes.header')
     
     <!-- partial -->
