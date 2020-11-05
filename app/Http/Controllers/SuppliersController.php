@@ -91,14 +91,17 @@ class SuppliersController extends Controller
 
     public function supplier_select_box(){
         $suppliers = Supplier::orderBy('id','desc')->get();
-        $str = "";
-        $str.='<select onchange="supplier_info()" id="supplier_id" name="supplier_id" class="form-control">';
         foreach ($suppliers as $supplier){
-            $str.= '<option value="'.$supplier->id.'">'.$supplier->name.' ( '.$supplier->id.' )</option>';           
+            $sup[]=array(
+				'value'=>$supplier->id,
+				'label'=>$supplier->name
+				);          
         }
-        $str.= '  </select>';
-        
-        return $str;
+
+        $data = array(
+            'sup' => $sup,
+        );
+        echo json_encode($data);
     }
 
     public function supplier_info(Request $request){

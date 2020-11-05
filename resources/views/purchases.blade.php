@@ -14,7 +14,7 @@
             <div class="row">
               <div class="col-md-6">
                 <div class="form-group row">
-                  <label class="col-sm-4 col-form-label">Invoice No</label>
+                  <label class="col-sm-4 col-form-label">Invoice No <span style="color:red">*</span></label>
                   <div class="col-sm-8">
                     <input required id="invoice_no" name="invoice_no" type="text" class="form-control" />
                   </div>
@@ -22,13 +22,8 @@
               </div>
               <div class="col-md-6">
                 <div class="form-group row">
-                  <label class="col-sm-3 col-form-label">User</label>
-                  <div class="col-sm-9">
-                    <select id="employee_id" name="employee_id" class="form-control">
-                      @foreach($employees as $employee)
-                      <option value="{{$employee->id}}">{{$employee->name}}</option>
-                      @endforeach
-                    </select>
+                  <label class="col-sm-3 col-form-label">User <span style="color:red">*</span></label>
+                  <div id="employee_id" name="employee_id">
                   </div>
                 </div>
               </div>
@@ -36,20 +31,20 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group row">
-                        <label class="col-sm-4 col-form-label">Purchase Date</label>
+                        <label class="col-sm-4 col-form-label">Purchase Date <span style="color:red">*</span></label>
                         <div class="col-sm-8">
-                            <input required id="purchase_date" name="purchase_date" type="date" class="form-control" placeholder="dd/mm/yyyy"/>
+                            <input value="<?php echo date('Y-m-d')?>" required id="purchase_date" name="purchase_date" type="date" class="form-control" placeholder="dd/mm/yyyy"/>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-6">
                 <div class="form-group row">
-                  <label class="col-sm-3 col-form-label">Purchase Type</label>
+                  <label class="col-sm-3 col-form-label">Purchase Type <span style="color:red">*</span></label>
                   <div class="col-sm-4">
                     <div class="form-check">
                       <label class="form-check-label">
                         <input required type="radio" class="form-check-input" name="purchase_type" id="purchase_type1" value="1">
-                            Retial
+                            Retail
                       </label>
                     </div>
                   </div>
@@ -67,14 +62,8 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group row">
-                    <label class="col-sm-3 col-form-label">Supplier ID</label>
-                    <div class="col-sm-6" id="supplier_div">
-                        <select onchange="supplier_info()" id="supplier_id" name="supplier_id" class="form-control">
-                        @foreach($suppliers as $supplier)
-                          <option value="{{$supplier->id}}">{{$supplier->name}}</option>
-                        @endforeach
-                        </select>
-                    </div>
+                    <label class="col-sm-3 col-form-label">Supplier ID <span style="color:red">*</span></label>
+                    <div onchange="supplier_info()" id="supplier_id" name="supplier_id"></div>
                     <div class="forms-sample">
                       <i onclick="add_supplier()" class="mdi mdi-plus-circle icon-lg mr-3 text-primary"></i>
                     </div>
@@ -83,13 +72,8 @@
                 
                 <div class="col-md-6">
                     <div class="form-group row">
-                    <label class="col-sm-3 col-form-label">Product ID</label>
-                    <div id="product_div" class="col-sm-6">
-                        <select onchange="product_info()" id="product_id" name="product_id" class="form-control">
-                        @foreach($products as $product)
-                          <option value="{{$product->id}}">{{$product->name}}({{$product->id}})</option>
-                        @endforeach
-                        </select>
+                    <label class="col-sm-3 col-form-label">Product ID <span style="color:red">*</span></label>
+                    <div onchange="product_info()" id="product_id" name="product_id">
                     </div>
                     <div class="forms-sample">
                       <i onclick="add_product()" class="mdi mdi-plus-circle icon-lg mr-3 text-primary"></i>
@@ -126,7 +110,7 @@
               </div>
               <div class="col-md-6">
                 <div class="form-group row">
-                  <label class="col-sm-3 col-form-label">Quantity</label>
+                  <label class="col-sm-3 col-form-label">Quantity <span style="color:red">*</span></label>
                   <div class="col-sm-4">
                     <input onblur="quantity_cal()" id="quantity" name="quantity" type="text" class="form-control" />
                   </div>
@@ -147,7 +131,7 @@
                 <div class="form-group row">
                   <label class="col-sm-3 col-form-label">Rate</label>
                   <div class="col-sm-4">
-                    <input disabled id="rate" name="rate" type="text" class="form-control" />
+                    <input id="rate" name="rate" type="text" class="form-control" />
                   </div>
                   
                 </div>
@@ -319,7 +303,7 @@
                   <div class="row">
                     <div class="col-md-6">
                       <div class="form-group row">
-                        <label class="col-sm-3 col-form-label">Name</label>
+                        <label class="col-sm-3 col-form-label">Name <span style="color:red">*</span></label>
                         <div class="col-sm-9">
                           <input required id="supplier_name_form" name="name" type="text" class="form-control" />
                         </div>
@@ -338,7 +322,7 @@
                   <div class="row">
                     <div class="col-md-6">
                       <div class="form-group row">
-                        <label class="col-sm-3 col-form-label">Supplier Type</label>
+                        <label class="col-sm-3 col-form-label">Supplier Type <span style="color:red">*</span></label>
                         <div class="col-sm-9">
                             <select id="supplier_type_array" style="width: 100%;" class="form-control1" multiple data-live-search="true">
                               <option value="1">Retail</option>
@@ -427,7 +411,7 @@
 <form id="product_form">
   @csrf
   <div id="product_add_modal" class="modal fade bd-example-modal-xl" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl modal-dialog-scrollable">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
       <div class="modal-content">
       <div class="modal-header">
           <h5 class="modal-title">Product Add</h5>
@@ -442,34 +426,41 @@
                   <div class="row">
                     <div class="col-md-12">
                       <div class="form-group row">
-                        <label class="col-sm-2 col-form-label">Product ID</label>
-                        <div class="col-sm-9">
-                        <label class="col-sm-6 col-form-label" id="product_id_label"></label>
+                        <label class="col-sm-3 col-form-label">Category <span style="color:red">*</span></label>
+                        <div id="category_id" name="category_id">
+                        </div>
+                        <div class="col-sm-1 forms-sample">
+                          <i onclick="add_category()" class="mdi mdi-plus-circle icon-lg mr-3 text-primary"></i>
                         </div>
                       </div>
                     </div>
                   </div>
                   <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-12">
                       <div class="form-group row">
-                        <label class="col-sm-3 col-form-label">Name</label>
+                        <label class="col-sm-3 col-form-label">Brand <span style="color:red">*</span></label>
+                        <div id="brand_id" name="brand_id">
+                        </div>
+                        <div class="col-sm-1 forms-sample">
+                          <i onclick="add_brand()" class="mdi mdi-plus-circle icon-lg mr-3 text-primary"></i>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-12">
+                      <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Name <span style="color:red">*</span></label>
                         <div class="col-sm-9">
                           <input required id="products_name" name="name" type="text" class="form-control" />
                         </div>
                       </div>
                     </div>
-                    <div class="col-md-6">
-                      <div class="form-group row">
-                        <label class="col-sm-3 col-form-label">Purchase Price</label>
-                        <div class="col-sm-9">
-                          <input required id="purchase_price" name="purchase_price" type="text" class="form-control" />
-                        </div>
-                      </div>
-                    </div>
+
                   </div>
                 
                   <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-12">
                       <div class="form-group row">
                         <label class="col-sm-3 col-form-label">Description</label>
                         <div class="col-sm-9">
@@ -477,31 +468,7 @@
                         </div>
                       </div>
                     </div>
-                    <div class="col-md-6">
-                      <div class="form-group row">
-                        <label class="col-sm-3 col-form-label">Sale Price</label>
-                        <div class="col-sm-9">
-                          <input id="sale_price" name="sale_price" type="text" class="form-control" value=""/>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-md-6">
-                      <div class="form-group row">
-                        <label class="col-sm-3 col-form-label">Category</label>
-                        <div id="category_div" class="col-sm-8">
-                          <select id="category_id" name="category_id" class="form-control">
-                          @foreach($categories as $category)
-                            <option value="{{$category->id}}">{{$category->name}}</option>
-                          @endforeach
-                          </select>
-                        </div>
-                        <div class="col-sm-1 forms-sample">
-                          <i onclick="add_category()" class="mdi mdi-plus-circle icon-lg mr-3 text-primary"></i>
-                        </div>
-                      </div>
-                    </div>
+
                   </div>
               </div>
             </div>
@@ -534,28 +501,12 @@
           <div class="col-12 grid-margin">
             <div class="card">
               <div class="card-body">
-                <div class="row">
-                  <div class="col-md-12">
-                    <div class="form-group row">
-                      <label class="col-sm-3 col-form-label">Brand</label>
-                      <div id="brand_div" class="col-sm-8">
-                        <select id="brand_id" name="brand_id" class="form-control">
-                        @foreach($brands as $brand)
-                          <option value="{{$brand->id}}">{{$brand->name}}</option>
-                        @endforeach
-                        </select>
-                      </div>
-                      <div class="col-sm-1 forms-sample">
-                        <i onclick="add_brand()" class="mdi mdi-plus-circle icon-lg mr-3 text-primary"></i>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                
                       
                 <div class="row">
                   <div class="col-md-12">
                     <div class="form-group row">
-                      <label class="col-sm-3 col-form-label">Name</label>
+                      <label class="col-sm-3 col-form-label">Name <span style="color:red">*</span></label>
                       <div class="col-sm-9">
                         <input required id="category_name" name="name" type="text" class="form-control" />
                       </div>
@@ -607,7 +558,7 @@
                 <div class="row">
                   <div class="col-md-12">
                     <div class="form-group row">
-                      <label class="col-sm-3 col-form-label">Name</label>
+                      <label class="col-sm-3 col-form-label">Name <span style="color:red">*</span></label>
                       <div class="col-sm-9">
                         <input required id="brand_name" name="name" type="text" class="form-control" />
                       </div>
@@ -639,13 +590,29 @@
 </form>
 
 <script>
-  jQuery(document).ready(function (){
-    supplier_info();
-    product_info();
+  jQuery(document).ready(function($) {
+    var theme = 'classic';
+    var employee_id = [<? $i=1; foreach($employees as $value){ if($i!=1){echo ',';} echo '{value:"'.$value->id.'", label:"'.$value->name.'"}'; $i++;}?>];
+	  jQuery("#employee_id").jqxComboBox({theme: theme, promptText: "Select Employee", source: employee_id});
+  
+    var supplier_id = [<? $i=1; foreach($suppliers as $value){ if($i!=1){echo ',';} echo '{value:"'.$value->id.'", label:"'.$value->name.'"}'; $i++;}?>];
+	  jQuery("#supplier_id").jqxComboBox({theme: theme, promptText: "Select Supplier", source: supplier_id, width: '170'});
+  
+    var product_id = [<? $i=1; foreach($products as $value){ if($i!=1){echo ',';} echo '{value:"'.$value->id.'", label:"'.$value->name.'"}'; $i++;}?>];
+	  jQuery("#product_id").jqxComboBox({theme: theme, promptText: "Select Product", source: product_id, width: '170'});
+  
+    var category_id = [<? $i=1; foreach($categories as $value){ if($i!=1){echo ',';} echo '{value:"'.$value->id.'", label:"'.$value->name.'"}'; $i++;}?>];
+	  jQuery("#category_id").jqxComboBox({theme: theme, promptText: "Select Category", source: category_id});
+
+    var brand_id = [<? $i=1; foreach($brands as $value){ if($i!=1){echo ',';} echo '{value:"'.$value->id.'", label:"'.$value->name.'"}'; $i++;}?>];
+	  jQuery("#brand_id").jqxComboBox({theme: theme, promptText: "Select Brand", source: brand_id});
+  
+  
+  
   });
 
   function supplier_info(){
-    var supplier_id = jQuery("#supplier_id").val();
+    var supplier_id = jQuery("#supplier_id").jqxComboBox('getSelectedItem').value;
     jQuery.ajax({
         type: "POST",
         cache: false,
@@ -664,7 +631,7 @@
 	}
 
   function product_info(){
-    var product_id = jQuery("#product_id").val();
+    var product_id = jQuery("#product_id").jqxComboBox('getSelectedItem').value;
     jQuery.ajax({
         type: "POST",
         cache: false,
@@ -682,7 +649,7 @@
 
   function add_to_cart(){
     var tr_counter = jQuery("#tr_counter").val();
-    var product_id = jQuery("#product_id").val();
+    var product_id = jQuery("#product_id").jqxComboBox('getSelectedItem').value;
     var product_name = jQuery("#product_name").val();
     var quantity = jQuery("#quantity").val();
     var rate = jQuery("#rate").val();
@@ -830,9 +797,10 @@
                 url: "{{ route('supplier_select_box')}}",
                 data : { "_token": "{{ csrf_token() }}"},
                 datatype: "json",
-                success: function(datas){
-                  $("#supplier_div").html(datas);
-                  supplier_info();
+                success: function(data){
+                  var json = jQuery.parseJSON(data);
+                  var sup = json.sup;
+                  jQuery("#supplier_id").jqxComboBox({source: sup});
                 }
             }); 
 
@@ -913,9 +881,10 @@
             url: "{{ route('product_select_box')}}",
             data : { "_token": "{{ csrf_token() }}"},
             datatype: "json",
-            success: function(datas){
-              $("#product_div").html(datas);
-              product_info();
+            success: function(data){
+              var json = jQuery.parseJSON(data);
+              var pro = json.pro;
+              jQuery("#product_id").jqxComboBox({source: pro});
             }
         });                
       }
@@ -975,8 +944,10 @@
             url: "{{ route('category_select_box') }}",
             data : { "_token": "{{ csrf_token() }}"},
             datatype: "json",
-            success: function(datas){
-              $("#category_div").html(datas);
+            success: function(data){
+              var json = jQuery.parseJSON(data);
+              var cat = json.cat;
+              jQuery("#category_id").jqxComboBox({source: cat});
             }
         });                
       }
@@ -1035,8 +1006,10 @@
             url: "{{ route('brand_select_box') }}",
             data : { "_token": "{{ csrf_token() }}"},
             datatype: "json",
-            success: function(datas){
-              $("#brand_div").html(datas);
+            success: function(data){
+              var json = jQuery.parseJSON(data);
+              var brand = json.b;
+              jQuery("#brand_id").jqxComboBox({source: brand});
             }
         });                
       }

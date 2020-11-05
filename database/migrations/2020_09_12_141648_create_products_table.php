@@ -17,6 +17,7 @@ class CreateProductsTable extends Migration
             $table->id()->autoIncrement();
             $table->string('name');
             $table->integer('category_id');
+            $table->integer('brand_id');
             $table->longText('description')->nullable();
             $table->double('purchase_price', 16, 2);
             $table->double('sale_price', 16, 2);

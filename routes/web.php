@@ -33,6 +33,8 @@ Route::post('customer_select_box', 'CustomersController@customer_select_box')->n
 Route::post('supplier_select_box', 'SuppliersController@supplier_select_box')->name('supplier_select_box');
 Route::post('product_select_box', 'ProductsController@product_select_box')->name('product_select_box');
 Route::post('category_select_box', 'CategoriesController@category_select_box')->name('category_select_box');
+Route::post('category_product', 'CategoriesController@category_product')->name('category_product');
+Route::post('brand_product', 'BrandsController@brand_product')->name('brand_product');
 Route::post('brand_select_box', 'BrandsController@brand_select_box')->name('brand_select_box');
 
 Route::resource('sales','SalesController');

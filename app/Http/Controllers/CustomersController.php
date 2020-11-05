@@ -93,14 +93,17 @@ class CustomersController extends Controller
 
     public function customer_select_box(){
         $customers = Customer::orderBy('id','desc')->get();
-        $str = "";
-        $str.='<select onchange="cust_info()" id="customer_id" name="customer_id" class="form-control">';
         foreach ($customers as $customer){
-            $str.= '<option value="'.$customer->id.'">'.$customer->name.' ( '.$customer->id.' )</option>';           
+            $cus[]=array(
+				'value'=>$customer->id,
+				'label'=>$customer->name
+				);          
         }
-        $str.= '  </select>';
-        
-        return $str;
+
+        $data = array(
+            'cus' => $cus,
+        );
+        echo json_encode($data);
     }
 
     public function customer_info(Request $request){

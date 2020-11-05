@@ -67,13 +67,28 @@ class PurchasesController extends Controller
                 $data['rate']=$request['rate_'.$i];
                 $data['amount']=$request['amount_'.$i];
                 $salesCart = PurchaseCartDetail::create($data);
-                
-                $id = $request['product_'.$i];
+                //echo'<pre>';print_r($request->all());exit;
+                $product_id = $request['product_'.$i];
                 $quantity = $request['quantity_'.$i];
-                $products = Product::select('current_stock')->whereId($id)->first();
-                $current_stock = $products->current_stock + $quantity;
+                $exists = Product::whereId($product_id)->exists();
+                
+                if($exists){
+                    $products = Product::select('current_stock')->whereId($product_id)->first();
+                    if($products->current_stock==null){
+                        $current_stocks = 0;
+                    }
+                    else{
+                        $current_stocks = $products->current_stock;
+                    }
+                    
+                }
+                else{
+                    $current_stocks = 0;
+                }
+
+                $current_stock = $current_stocks + $quantity;
                 $data_product['current_stock'] = $current_stock;
-                Product::whereId($id)->update($data_product);
+                Product::whereId($product_id)->update($data_product);
             }
             
         }
@@ -86,6 +101,8 @@ class PurchasesController extends Controller
         $data_transaction['amount']=$request['paid'];
 
         $transaction = Transaction::create($data_transaction);
+
+        return redirect()->action('PurchasesController@create');
     }
 
     /**

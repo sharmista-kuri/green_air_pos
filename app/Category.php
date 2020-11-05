@@ -9,7 +9,7 @@ class Category extends Model
 {
     //
     protected $fillable = [
-        'name','brand_id','description'
+        'name','description'
     ];
 
     public function products()
@@ -17,8 +17,4 @@ class Category extends Model
         return $this->hasMany('Product');
     }
 
-    public function brands()
-    {
-        return $this->belongsTo('Brand');
-    }
 }

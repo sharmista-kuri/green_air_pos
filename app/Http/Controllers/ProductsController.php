@@ -91,13 +91,16 @@ class ProductsController extends Controller
 
     public function product_select_box(){
         $products = Product::orderBy('id','desc')->get();
-        $str = "";
-        $str.='<select onchange="product_info()" id="product_id" name="product_id" class="form-control">';
         foreach ($products as $product){
-            $str.= '<option value="'.$product->id.'">'.$product->name.' ( '.$product->id.' )</option>';           
+            $pro[]=array(
+				'value'=>$product->id,
+				'label'=>$product->name
+				);          
         }
-        $str.= '  </select>';
-        
-        return $str;
+
+        $data = array(
+            'pro' => $pro,
+        );
+        echo json_encode($data);
     }
 }

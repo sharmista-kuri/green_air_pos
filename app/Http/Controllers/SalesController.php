@@ -219,12 +219,14 @@ class SalesController extends Controller
         $mpdf = new Mpdf();
 
         
-
+        $img = config('app.url')."/resources/master/images/ga.png";
         $str="";
         $str.="<html>";
         $str.="<body>";
+        //$str.='<img src='.$img.' alt="Green Air" width="50" height="60">';
+        
         $str.='<div align="center" color="green" style="font-size:30px">
-                   Green Air
+                <img src='.$img.' alt="Green Air" width="110" height="110">
                 </div>';
         
         $str.='<table>';
@@ -256,6 +258,25 @@ class SalesController extends Controller
         $str.='</tr>';
 
         $str.='</table>';
+
+        $str.='<br>';
+        
+        $str.='<div style="">';
+
+        $str.='<div align="center" color="green" style="font-size:30px;border:1px solid green;border-radius: 25px;">
+                INVOICE
+                </div>';
+        $str.='</div>';
+
+        /* $str.='<table>';
+        $str.='<tr>';
+        $str.='<td>';
+        $str.='<div align="center" color="green" style="font-size:30px;border:1px solid green;border-radius: 25px;">
+                INVOICE
+                </div>';
+        $str.='</td>';
+        $str.='</tr>';
+        $str.='</table>'; */
 
         $str.='<br>';
         $str.='<br>';

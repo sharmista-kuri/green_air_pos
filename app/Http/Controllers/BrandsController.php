@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Brand;
+use App\Product;
 use Illuminate\Http\Request;
 
 class BrandsController extends Controller
@@ -86,13 +87,36 @@ class BrandsController extends Controller
 
     public function brand_select_box(){
         $brands = Brand::orderBy('id','desc')->get();
-        $str = "";
-        $str.='<select id="brand_id" name="brand_id" class="form-control">';
         foreach ($brands as $brand){
-            $str.= '<option value="'.$brand->id.'">'.$brand->name.'</option>';           
+            $b[]=array(
+				'value'=>$brand->id,
+				'label'=>$brand->name
+				);          
         }
-        $str.= '  </select>';
-        
-        return $str;
+
+        $data = array(
+            'b' => $b,
+        );
+        echo json_encode($data);
+
+    }
+
+    public function brand_product(Request $request){
+        $brand_id = $request->brand_id;
+        $products = Product::where('brand_id',$brand_id)->get();
+        $pro=array();
+
+        foreach ($products as $product){
+            $pro[]=array(
+				'value'=>$product->id,
+				'label'=>$product->name
+				);          
+        }
+
+        $data = array(
+            'pro' => $pro,
+          
+        );
+        echo json_encode($data);
     }
 }

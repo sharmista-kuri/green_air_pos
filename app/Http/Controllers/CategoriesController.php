@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Product;
 use App\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class CategoriesController extends Controller
 {
@@ -87,13 +89,46 @@ class CategoriesController extends Controller
 
     public function category_select_box(){
         $categories = Category::orderBy('id','desc')->get();
-        $str = "";
-        $str.='<select onchange="cust_info()" id="category_id" name="category_id" class="form-control">';
         foreach ($categories as $category){
-            $str.= '<option value="'.$category->id.'">'.$category->name.'</option>';           
+            $cat[]=array(
+				'value'=>$category->id,
+				'label'=>$category->name
+				);          
         }
-        $str.= '  </select>';
-        
-        return $str;
+
+        $data = array(
+            'cat' => $cat,
+        );
+        echo json_encode($data);
     }
+
+    public function category_product(Request $request){
+        $category_id = $request->category_id;
+        $products = Product::where('category_id',$category_id)->get();
+        $brands = Product::select(DB::raw('brands.id as id, brands.name as name'))
+        ->where('category_id',$category_id)
+        ->join('brands','brands.id','=','products.brand_id')
+        ->get();
+        $pro=array();
+        $brnd=array();
+        foreach ($products as $product){
+            $pro[]=array(
+				'value'=>$product->id,
+				'label'=>$product->name
+				);          
+        }
+        foreach ($brands as $brand){
+            $brnd[]=array(
+				'value'=>$brand->id,
+				'label'=>$brand->name
+				);          
+        }
+
+        $data = array(
+            'pro' => $pro,
+            'brnd' => $brnd,
+        );
+        echo json_encode($data);
+    }
+
 }

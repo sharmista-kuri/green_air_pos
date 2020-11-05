@@ -1,6 +1,6 @@
 @extends('layouts.master')
 @section('content')
-<form id="sales_form"  method="post" action="{{ route('sales_print') }}" enctype="multipart/form-data">
+<form target="_blank" id="sales_form"  method="post" action="{{ route('sales_print') }}" enctype="multipart/form-data">
 @csrf
 <div class="content-wrapper">
   <div class="row">
@@ -14,7 +14,7 @@
             <div class="row">
               <div class="col-md-6">
                 <div class="form-group row">
-                  <label class="col-sm-4 col-form-label">Invoice No</label>
+                  <label class="col-sm-4 col-form-label">Invoice No <span style="color:red">*</span></label>
                   <div class="col-sm-8">
                     <input required id="invoice_no" name="invoice_no" type="text" class="form-control" />
                   </div>
@@ -22,35 +22,30 @@
               </div>
               <div class="col-md-6">
                 <div class="form-group row">
-                  <label class="col-sm-3 col-form-label">User</label>
-                  <div class="col-sm-9">
-                    <select id="employee_id" name="employee_id" class="form-control">
-                      @foreach($employees as $employee)
-                      <option value="{{$employee->id}}">{{$employee->name}}</option>
-                      @endforeach
-                    </select>
+                  <label class="col-sm-3 col-form-label">User <span style="color:red">*</span></label>
+                  <div id="employee_id" name="employee_id">
                   </div>
                 </div>
               </div>
             </div>
             <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group row">
-                        <label class="col-sm-4 col-form-label">Sale Date</label>
-                        <div class="col-sm-8">
-                            <input value="<?php echo date('Y-m-d')?>" required id="sale_date" name="sale_date" type="date" class="form-control" placeholder="dd/mm/yyyy"/>
-                            
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
+              <div class="col-md-6">
+                  <div class="form-group row">
+                      <label class="col-sm-4 col-form-label">Sale Date <span style="color:red">*</span></label>
+                      <div class="col-sm-8">
+                          <input value="<?php echo date('Y-m-d')?>" required id="sale_date" name="sale_date" type="date" class="form-control" placeholder="dd/mm/yyyy"/>
+                          
+                      </div>
+                  </div>
+              </div>
+              <div class="col-md-6">
                 <div class="form-group row">
-                  <label class="col-sm-3 col-form-label">Sale Type</label>
+                  <label class="col-sm-3 col-form-label">Sale Type <span style="color:red">*</span></label>
                   <div class="col-sm-4">
                     <div class="form-check">
                       <label class="form-check-label">
                         <input checked required type="radio" class="form-check-input" name="sale_type" id="sale_type1" value="1">
-                            Retial
+                            Retail
                       </label>
                     </div>
                   </div>
@@ -66,37 +61,22 @@
               </div>
             </div>
             <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group row">
-                    <label class="col-sm-3 col-form-label">Customer ID</label>
-                    <div class="col-sm-6" id="cust_div">
-                        <select onchange="cust_info()" id="customer_id" name="customer_id" class="form-control">
-                        @foreach($customers as $customer)
-                          <option value="{{$customer->id}}">{{$customer->name}}</option>
-                        @endforeach
-                        </select>
-                    </div>
-                    <div class="forms-sample">
-                      <i onclick="add_customer()" class="mdi mdi-plus-circle icon-lg mr-3 text-primary"></i>
-                    </div>
-                    </div>
+              <div class="col-md-6">
+                  <div class="form-group row">
+                  <label class="col-sm-3 col-form-label">Customer ID <span style="color:red">*</span></label>
+                  <div onchange="customer_info()" id="customer_id" name="customer_id"></div>
+                  <div class="forms-sample">
+                    <i onclick="add_customer()" class="mdi mdi-plus-circle icon-lg mr-3 text-primary"></i>
+                  </div>
+                  </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group row">
+                  <label class="col-sm-4 col-form-label">Category <span style="color:red">*</span></label>
+                  <div onchange="category_product()" id="category_id" name="category_id">
+                  </div>
                 </div>
-                
-                <div class="col-md-6">
-                    <div class="form-group row">
-                    <label class="col-sm-4 col-form-label">Product ID</label>
-                    <div class="col-sm-8">
-                        <select id="product_id" name="product_id" class="form-control">
-                        @foreach($products as $product)
-                          <option value="{{$product->id}}">{{$product->name}}({{$product->id}})</option>
-                        @endforeach
-                        </select>
-                    </div>
-                    <!-- <div class="forms-sample">
-                      <i class="mdi mdi-plus-circle icon-lg mr-3 text-primary"></i>
-                    </div> -->
-                    </div>
-                </div>
+              </div>
             </div>
             <div class="row">
               <div class="col-md-6">
@@ -110,9 +90,8 @@
               </div>
               <div class="col-md-6">
                 <div class="form-group row">
-                  <label class="col-sm-3 col-form-label">Name</label>
-                  <div class="col-sm-9">
-                    <input disabled id="product_name" name="product_name" type="text" class="form-control" />
+                  <label class="col-sm-4 col-form-label">Brand <span style="color:red">*</span></label>
+                  <div onchange="brand_product()" id="brand_id" name="brand_id">
                   </div>
                 </div>
               </div>
@@ -129,11 +108,9 @@
               </div>
               <div class="col-md-6">
                 <div class="form-group row">
-                  <label class="col-sm-3 col-form-label">Quantity</label>
-                  <div class="col-sm-4">
-                    <input onblur="quantity_cal()" id="quantity" name="quantity" type="text" class="form-control" />
+                  <label class="col-sm-4 col-form-label">Product ID <span style="color:red">*</span></label>
+                  <div onchange="product_info()" id="product_id" name="product_id">
                   </div>
-                  <label class="col-sm-2 col-form-label">Pcs</label>
                 </div>
               </div>
             </div>
@@ -143,19 +120,15 @@
                   <label class="col-sm-3 col-form-label">Contact No</label>
                   <div class="col-sm-9">
                     <input disabled id="contact_no" type="text"class="form-control" />
-                    <input id="contact_no_hidden" name="contact_no" type="text"class="form-control" />
+                    <input id="contact_no_hidden" name="contact_no" type="hidden" class="form-control" />
                   </div>
                 </div>
               </div>
               <div class="col-md-6">
                 <div class="form-group row">
-                  <label class="col-sm-3 col-form-label">Rate</label>
-                  <div class="col-sm-4">
-                    <input disabled id="rate" name="rate" type="text" class="form-control" />
-                  </div>
-                  <div class="">
-                  <label class="col-form-label container-fluid table-success py-2" style="color:red">STOCK</label>
-                  <label class="col-form-label container-fluid table-success py-2" style="color:blue"><span id="stock" name="stock"></label>
+                  <label class="col-sm-3 col-form-label">Name</label>
+                  <div class="col-sm-9">
+                    <input disabled id="product_name" name="product_name" type="text" class="form-control" />
                   </div>
                 </div>
               </div>
@@ -168,6 +141,35 @@
                     <input disabled id="customer_email" name="customer_email" type="text"class="form-control" >
                   </div>
                 </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group row">
+                  <label class="col-sm-3 col-form-label">Quantity <span style="color:red">*</span></label>
+                  <div class="col-sm-4">
+                    <input onblur="quantity_cal()" id="quantity" name="quantity" type="text" class="form-control" />
+                  </div>
+                  <label class="col-sm-2 col-form-label">Pcs</label>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+              </div>
+              <div class="col-md-6">
+                <div class="form-group row">
+                  <label class="col-sm-3 col-form-label">Rate</label>
+                  <div class="col-sm-4">
+                    <input id="rate" name="rate" type="text" class="form-control" />
+                  </div>
+                  <div class="">
+                  <label class="col-form-label container-fluid table-success py-2" style="color:red">STOCK</label>
+                  <label class="col-form-label container-fluid table-success py-2" style="color:blue"><span id="stock" name="stock"></label>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
               </div>
               <div class="col-md-6">
                 <div class="form-group row">
@@ -326,7 +328,7 @@
                 <div class="row">
                   <div class="col-md-6">
                     <div class="form-group row">
-                      <label class="col-sm-3 col-form-label">Name</label>
+                      <label class="col-sm-3 col-form-label">Name <span style="color:red">*</span></label>
                       <div class="col-sm-9">
                         <input required id="name" name="name" type="text" class="form-control" />
                       </div>
@@ -433,13 +435,34 @@
 
 
 <script>
+
+  jQuery(document).ready(function($) {
+    var theme = 'classic';
+    var employee_id = [<? $i=1; foreach($employees as $value){ if($i!=1){echo ',';} echo '{value:"'.$value->id.'", label:"'.$value->name.'"}'; $i++;}?>];
+	  jQuery("#employee_id").jqxComboBox({theme: theme, promptText: "Select Employee", source: employee_id});
+  
+    var customer_id = [<? $i=1; foreach($customers as $value){ if($i!=1){echo ',';} echo '{value:"'.$value->id.'", label:"'.$value->name.'"}'; $i++;}?>];
+	  jQuery("#customer_id").jqxComboBox({theme: theme, promptText: "Select Customer", source: customer_id, width: '170'});
+  
+    var product_id = [<? $i=1; foreach($products as $value){ if($i!=1){echo ',';} echo '{value:"'.$value->id.'", label:"'.$value->name.'"}'; $i++;}?>];
+	  jQuery("#product_id").jqxComboBox({theme: theme, promptText: "Select Product", source: product_id});
+  
+    var category_id = [<? $i=1; foreach($categories as $value){ if($i!=1){echo ',';} echo '{value:"'.$value->id.'", label:"'.$value->name.'"}'; $i++;}?>];
+	  jQuery("#category_id").jqxComboBox({theme: theme, promptText: "Select Category", source: category_id});
+
+    var brand_id = [<? $i=1; foreach($brands as $value){ if($i!=1){echo ',';} echo '{value:"'.$value->id.'", label:"'.$value->name.'"}'; $i++;}?>];
+	  jQuery("#brand_id").jqxComboBox({theme: theme, promptText: "Select Brand", source: brand_id});
+  
+  
+  
+  });
   jQuery(document).ready(function (){
-    cust_info();
-    product_info();
+    //customer_info();
+    //product_info();
 
   });
-  function cust_info(){
-    var customer_id = jQuery("#customer_id").val();
+  function customer_info(){
+    var customer_id = jQuery("#customer_id").jqxComboBox('getSelectedItem').value;
     jQuery.ajax({
         type: "POST",
         cache: false,
@@ -461,7 +484,7 @@
 	}
 
   function product_info(){
-    var product_id = jQuery("#product_id").val();
+    var product_id = jQuery("#product_id").jqxComboBox('getSelectedItem').value;
     jQuery.ajax({
         type: "POST",
         cache: false,
@@ -471,7 +494,7 @@
         success: function(datas){
           data = JSON.parse(datas);
           jQuery("#product_name").val(data.name);
-          jQuery("#rate").val(data.purchase_price);
+          //jQuery("#rate").val(data.purchase_price);
           jQuery("#stock").text(data.current_stock);
         }
     }); 
@@ -623,7 +646,20 @@
               $('#customer_add_modal').modal('toggle');
 
               
-              customer_select_box();
+              //customer_select_box();
+
+              jQuery.ajax({
+                type: "POST",
+                cache: false,
+                url: "{{ route('customer_select_box')}}",
+                data : { "_token": "{{ csrf_token() }}"},
+                datatype: "json",
+                success: function(data){
+                  var json = jQuery.parseJSON(data);
+                  var cus = json.cus;
+                  jQuery("#customer_id").jqxComboBox({source: cus});
+                }
+            }); 
 
 
               
@@ -671,14 +707,7 @@
             data: data,
             datatype: "json",
             success: function(data){
-            	
-
-              
-
-
-
-              
-                  
+                   
           }
         });	
 	}
@@ -731,16 +760,47 @@
             datatype: "json",
             success: function(data){
             	jQuery("#sell_save_button").show();
-              alert("Successfully Saved");
-              
-
-
-
-              
+              alert("Successfully Saved"); 
                   
           }
         });	
 	}
+
+  function category_product(){
+    var category_id = jQuery("#category_id").jqxComboBox('getSelectedItem').value;
+    jQuery.ajax({
+        type: "POST",
+        cache: false,
+        url: "{{route('category_product')}}",
+        data : { "_token": "{{ csrf_token() }}","category_id":category_id},
+        datatype: "json",
+        success: function(data){
+          var json = jQuery.parseJSON(data);
+          var pro = json.pro;
+          var brnd = json.brnd;
+          jQuery("#brand_id").jqxComboBox({source: brnd});
+          jQuery("#product_id").jqxComboBox({source: pro});
+
+        }
+    }); 
+  }
+
+  function brand_product(){
+    var brand_id = jQuery("#brand_id").jqxComboBox('getSelectedItem').value;
+    jQuery.ajax({
+        type: "POST",
+        cache: false,
+        url: "{{route('brand_product')}}",
+        data : { "_token": "{{ csrf_token() }}","brand_id":brand_id},
+        datatype: "json",
+        success: function(data){
+          var json = jQuery.parseJSON(data);
+          var pro = json.pro;
+          jQuery("#product_id").jqxComboBox({source: pro});
+
+        }
+    }); 
+  }
 
 
 </script>

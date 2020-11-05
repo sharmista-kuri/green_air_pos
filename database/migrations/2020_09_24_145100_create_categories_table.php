@@ -17,7 +17,6 @@ class CreateCategoriesTable extends Migration
             $table->id()->autoIncrement();
             $table->string('name');
             $table->longText('description')->nullable();
-            $table->integer('brand_id');
             $table->timestamps();
         });
 
