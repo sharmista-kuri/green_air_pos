@@ -60,26 +60,22 @@
               </div>
             </div>
             <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group row">
-                    <label class="col-sm-3 col-form-label">Supplier ID <span style="color:red">*</span></label>
-                    <div onchange="supplier_info()" id="supplier_id" name="supplier_id"></div>
-                    <div class="forms-sample">
-                      <i onclick="add_supplier()" class="mdi mdi-plus-circle icon-lg mr-3 text-primary"></i>
-                    </div>
-                    </div>
+              <div class="col-md-6">
+                  <div class="form-group row">
+                  <label class="col-sm-3 col-form-label">Supplier ID <span style="color:red">*</span></label>
+                  <div onchange="supplier_info()" id="supplier_id" name="supplier_id"></div>
+                  <div class="forms-sample">
+                    <i onclick="add_supplier()" class="mdi mdi-plus-circle icon-lg mr-3 text-primary"></i>
+                  </div>
+                  </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group row">
+                  <label class="col-sm-4 col-form-label">Category <span style="color:red">*</span></label>
+                  <div onchange="category_product()" id="category_ids" name="category_id">
+                  </div>
                 </div>
-                
-                <div class="col-md-6">
-                    <div class="form-group row">
-                    <label class="col-sm-3 col-form-label">Product ID <span style="color:red">*</span></label>
-                    <div onchange="product_info()" id="product_id" name="product_id">
-                    </div>
-                    <div class="forms-sample">
-                      <i onclick="add_product()" class="mdi mdi-plus-circle icon-lg mr-3 text-primary"></i>
-                    </div>
-                    </div>
-                </div>
+              </div>
             </div>
             <div class="row">
               <div class="col-md-6">
@@ -92,9 +88,8 @@
               </div>
               <div class="col-md-6">
                 <div class="form-group row">
-                  <label class="col-sm-3 col-form-label">Name</label>
-                  <div class="col-sm-9">
-                    <input disabled id="product_name" name="product_name" type="text" class="form-control" />
+                  <label class="col-sm-4 col-form-label">Brand <span style="color:red">*</span></label>
+                  <div onchange="brand_product()" id="brand_ids" name="brand_id">
                   </div>
                 </div>
               </div>
@@ -110,11 +105,12 @@
               </div>
               <div class="col-md-6">
                 <div class="form-group row">
-                  <label class="col-sm-3 col-form-label">Quantity <span style="color:red">*</span></label>
-                  <div class="col-sm-4">
-                    <input onblur="quantity_cal()" id="quantity" name="quantity" type="text" class="form-control" />
+                  <label class="col-sm-3 col-form-label">Product ID <span style="color:red">*</span></label>
+                  <div onchange="product_info()" id="product_id" name="product_id">
                   </div>
-                  <label class="col-sm-2 col-form-label">Pcs</label>
+                  <div class="forms-sample">
+                    <i onclick="add_product()" class="mdi mdi-plus-circle icon-lg mr-3 text-primary"></i>
+                  </div>
                 </div>
               </div>
             </div>
@@ -129,11 +125,10 @@
               </div>
               <div class="col-md-6">
                 <div class="form-group row">
-                  <label class="col-sm-3 col-form-label">Rate</label>
-                  <div class="col-sm-4">
-                    <input id="rate" name="rate" type="text" class="form-control" />
+                  <label class="col-sm-3 col-form-label">Name</label>
+                  <div class="col-sm-9">
+                    <input disabled id="product_name" name="product_name" type="text" class="form-control" />
                   </div>
-                  
                 </div>
               </div>
             </div>
@@ -148,6 +143,31 @@
               </div>
               <div class="col-md-6">
                 <div class="form-group row">
+                  <label class="col-sm-3 col-form-label">Quantity <span style="color:red">*</span></label>
+                  <div class="col-sm-4">
+                    <input onblur="quantity_cal()" id="quantity" name="quantity" type="text" class="form-control" />
+                  </div>
+                  <label class="col-sm-2 col-form-label">Pcs</label>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+              </div>
+              <div class="col-md-6">
+                <div class="form-group row">
+                  <label class="col-sm-3 col-form-label">Rate</label>
+                  <div class="col-sm-4">
+                    <input onblur="quantity_cal()" id="rate" name="rate" type="text" class="form-control" />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+              </div>
+              <div class="col-md-6">
+                <div class="form-group row">
                   <label class="col-sm-3 col-form-label">Amount</label>
                   <div class="col-sm-4">
                     <input disabled id="amount" name="amount" type="text" class="form-control" />
@@ -158,7 +178,6 @@
                 </div>
               </div>
             </div>
-
             <div class="col-lg-12 stretch-card">
                 <div class="table-responsive pt-3">
                     <table class="table table-bordered">
@@ -179,7 +198,6 @@
                     </table>
                 </div>
             </div>
-          
         </div>
       </div>
     </div>
@@ -290,108 +308,108 @@
           <div class="col-12 grid-margin">
             <div class="card">
               <div class="card-body">
-                  <div class="row">
-                    <div class="col-md-12">
-                      <div class="form-group row">
-                        <label class="col-sm-2 col-form-label">Supplier ID</label>
-                        <div class="col-sm-9">
-                        <label class="col-sm-6 col-form-label" id="supplier_id_label"></label>
-                        </div>
+                <div class="row">
+                  <div class="col-md-12">
+                    <div class="form-group row">
+                      <label class="col-sm-2 col-form-label">Supplier ID</label>
+                      <div class="col-sm-9">
+                      <label class="col-sm-6 col-form-label" id="supplier_id_label"></label>
                       </div>
                     </div>
                   </div>
-                  <div class="row">
-                    <div class="col-md-6">
-                      <div class="form-group row">
-                        <label class="col-sm-3 col-form-label">Name <span style="color:red">*</span></label>
-                        <div class="col-sm-9">
-                          <input required id="supplier_name_form" name="name" type="text" class="form-control" />
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-md-6">
-                      <div class="form-group row">
-                        <label class="col-sm-3 col-form-label">Phone</label>
-                        <div class="col-sm-9">
-                          <input required id="primary_contact" name="primary_contact" type="text" class="form-control" />
-                        </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group row">
+                      <label class="col-sm-3 col-form-label">Name <span style="color:red">*</span></label>
+                      <div class="col-sm-9">
+                        <input required id="supplier_name_form" name="name" type="text" class="form-control" />
                       </div>
                     </div>
                   </div>
-                
-                  <div class="row">
-                    <div class="col-md-6">
-                      <div class="form-group row">
-                        <label class="col-sm-3 col-form-label">Supplier Type <span style="color:red">*</span></label>
-                        <div class="col-sm-9">
-                            <select id="supplier_type_array" style="width: 100%;" class="form-control1" multiple data-live-search="true">
-                              <option value="1">Retail</option>
-                              <option value="2">Wholesale</option>
-                            </select>
-                            <script>
-                              jQuery('#supplier_type_array').multipleSelect({ 
-                                placeholder: "Select Supplier Type", 
-                                selectAll: true, 
-                                multiple: false, 
-                                multipleWidth: 120
-                              });
-                            </script>
-                            <input type="hidden" id="supplier_type" name="supplier_type" value="0">
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-md-6">
-                      <div class="form-group row">
-                        <label class="col-sm-3 col-form-label">Phone 2</label>
-                        <div class="col-sm-9">
-                          <input id="secondary_contact" name="secondary_contact" type="text" class="form-control" value=" "/>
-                        </div>
+                  <div class="col-md-6">
+                    <div class="form-group row">
+                      <label class="col-sm-3 col-form-label">Phone</label>
+                      <div class="col-sm-9">
+                        <input required id="primary_contact" name="primary_contact" type="text" class="form-control" />
                       </div>
                     </div>
                   </div>
-                  
-                  <div class="row">
-                    <div class="col-md-6">
-                      <div class="form-group row">
-                        <label class="col-sm-3 col-form-label">Address</label>
-                        <div class="col-sm-9">
-                        <textarea required id="address" name="address" class="form-control" rows="4"></textarea>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-md-6">
-                      <div class="form-group row">
-                        <label class="col-sm-3 col-form-label">Email</label>
-                        <div class="col-sm-9">
-                          <input id="email" name="email" type="text" class="form-control" />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-md-6">
-                      <div class="form-group row">
-                        <label class="col-sm-3 col-form-label">Area</label>
-                        <div class="col-sm-9">
-                          <input id="area" name="area" type="text" class="form-control" />
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-md-6">
-                      <div class="form-group row">
-                        <label class="col-sm-3 col-form-label">Country</label>
-                        <div class="col-sm-9">
-                          <select required id="counntry" name="country" class="form-control">
-                            <option>Bangladesh</option>
-                            <option>America</option>
-                            <option>China</option>
-                            <option>Russia</option>
-                            <option>Britain</option>
+                </div>
+              
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group row">
+                      <label class="col-sm-3 col-form-label">Supplier Type <span style="color:red">*</span></label>
+                      <div class="col-sm-9">
+                          <select id="supplier_type_array" style="width: 100%;" class="form-control1" multiple data-live-search="true">
+                            <option value="1">Retail</option>
+                            <option value="2">Wholesale</option>
                           </select>
-                        </div>
+                          <script>
+                            jQuery('#supplier_type_array').multipleSelect({ 
+                              placeholder: "Select Supplier Type", 
+                              selectAll: true, 
+                              multiple: false, 
+                              multipleWidth: 120
+                            });
+                          </script>
+                          <input type="hidden" id="supplier_type" name="supplier_type" value="0">
                       </div>
                     </div>
                   </div>
+                  <div class="col-md-6">
+                    <div class="form-group row">
+                      <label class="col-sm-3 col-form-label">Phone 2</label>
+                      <div class="col-sm-9">
+                        <input id="secondary_contact" name="secondary_contact" type="text" class="form-control" value=" "/>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group row">
+                      <label class="col-sm-3 col-form-label">Address</label>
+                      <div class="col-sm-9">
+                      <textarea required id="address" name="address" class="form-control" rows="4"></textarea>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group row">
+                      <label class="col-sm-3 col-form-label">Email</label>
+                      <div class="col-sm-9">
+                        <input id="email" name="email" type="text" class="form-control" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group row">
+                      <label class="col-sm-3 col-form-label">Area</label>
+                      <div class="col-sm-9">
+                        <input id="area" name="area" type="text" class="form-control" />
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group row">
+                      <label class="col-sm-3 col-form-label">Country</label>
+                      <div class="col-sm-9">
+                        <select required id="counntry" name="country" class="form-control">
+                          <option>Bangladesh</option>
+                          <option>America</option>
+                          <option>China</option>
+                          <option>Russia</option>
+                          <option>Britain</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
         </div>
@@ -606,8 +624,12 @@
 
     var brand_id = [<? $i=1; foreach($brands as $value){ if($i!=1){echo ',';} echo '{value:"'.$value->id.'", label:"'.$value->name.'"}'; $i++;}?>];
 	  jQuery("#brand_id").jqxComboBox({theme: theme, promptText: "Select Brand", source: brand_id});
-  
-  
+
+    var category_id = [<? $i=1; foreach($categories as $value){ if($i!=1){echo ',';} echo '{value:"'.$value->id.'", label:"'.$value->name.'"}'; $i++;}?>];
+	  jQuery("#category_ids").jqxComboBox({theme: theme, promptText: "Select Category", source: category_id});
+
+    var brand_id = [<? $i=1; foreach($brands as $value){ if($i!=1){echo ',';} echo '{value:"'.$value->id.'", label:"'.$value->name.'"}'; $i++;}?>];
+	  jQuery("#brand_ids").jqxComboBox({theme: theme, promptText: "Select Brand", source: brand_id});
   
   });
 
@@ -852,7 +874,7 @@
 
   function product_call_ajax_submit()
 	{
-		jQuery("ProductSaveButton").hide();
+		jQuery("#ProductSaveButton").hide();
 		jQuery("#productloading").show();
     
 		var form = $('#product_form')[0];
@@ -915,7 +937,7 @@
 
   function category_call_ajax_submit()
 	{
-		jQuery("CategorySaveButton").hide();
+		jQuery("#CategorySaveButton").hide();
 		jQuery("#categoryloading").show();
     
 		var form = $('#category_form')[0];
@@ -977,7 +999,7 @@
 
   function brand_call_ajax_submit()
 	{
-		jQuery("BrandSaveButton").hide();
+		jQuery("#BrandSaveButton").hide();
 		jQuery("#brandloading").show();
     
 		var form = $('#brand_form')[0];
@@ -1014,6 +1036,43 @@
         });                
       }
     });	
+  }
+
+  function category_product(){
+    var category_id = jQuery("#category_ids").jqxComboBox('getSelectedItem').value;
+    jQuery.ajax({
+        type: "POST",
+        cache: false,
+        url: "{{route('category_product')}}",
+        data : { "_token": "{{ csrf_token() }}","category_id":category_id},
+        datatype: "json",
+        success: function(data){
+          var json = jQuery.parseJSON(data);
+          var pro = json.pro;
+          var brnd = json.brnd;
+          jQuery("#brand_ids").jqxComboBox({source: brnd});
+          jQuery("#product_id").jqxComboBox({source: pro});
+
+        }
+    }); 
+  }
+
+  function brand_product(){
+    var category_id = jQuery("#category_ids").jqxComboBox('getSelectedItem').value;
+    var brand_id = jQuery("#brand_ids").jqxComboBox('getSelectedItem').value;
+    jQuery.ajax({
+        type: "POST",
+        cache: false,
+        url: "{{route('brand_product')}}",
+        data : { "_token": "{{ csrf_token() }}","category_id":category_id,"brand_id":brand_id},
+        datatype: "json",
+        success: function(data){
+          var json = jQuery.parseJSON(data);
+          var pro = json.pro;
+          jQuery("#product_id").jqxComboBox({source: pro});
+
+        }
+    }); 
   }
 
 

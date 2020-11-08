@@ -73,7 +73,7 @@
               <div class="col-md-6">
                 <div class="form-group row">
                   <label class="col-sm-4 col-form-label">Category <span style="color:red">*</span></label>
-                  <div onchange="category_product()" id="category_id" name="category_id">
+                  <div onchange="category_product()" id="category_ids" name="category_id">
                   </div>
                 </div>
               </div>
@@ -91,7 +91,7 @@
               <div class="col-md-6">
                 <div class="form-group row">
                   <label class="col-sm-4 col-form-label">Brand <span style="color:red">*</span></label>
-                  <div onchange="brand_product()" id="brand_id" name="brand_id">
+                  <div onchange="brand_product()" id="brand_ids" name="brand_id">
                   </div>
                 </div>
               </div>
@@ -159,7 +159,7 @@
                 <div class="form-group row">
                   <label class="col-sm-3 col-form-label">Rate</label>
                   <div class="col-sm-4">
-                    <input id="rate" name="rate" type="text" class="form-control" />
+                    <input onblur="quantity_cal()" id="rate" name="rate" type="text" class="form-control" />
                   </div>
                   <div class="">
                   <label class="col-form-label container-fluid table-success py-2" style="color:red">STOCK</label>
@@ -452,6 +452,12 @@
 
     var brand_id = [<? $i=1; foreach($brands as $value){ if($i!=1){echo ',';} echo '{value:"'.$value->id.'", label:"'.$value->name.'"}'; $i++;}?>];
 	  jQuery("#brand_id").jqxComboBox({theme: theme, promptText: "Select Brand", source: brand_id});
+
+    var category_id = [<? $i=1; foreach($categories as $value){ if($i!=1){echo ',';} echo '{value:"'.$value->id.'", label:"'.$value->name.'"}'; $i++;}?>];
+	  jQuery("#category_ids").jqxComboBox({theme: theme, promptText: "Select Category", source: category_id});
+
+    var brand_id = [<? $i=1; foreach($brands as $value){ if($i!=1){echo ',';} echo '{value:"'.$value->id.'", label:"'.$value->name.'"}'; $i++;}?>];
+	  jQuery("#brand_ids").jqxComboBox({theme: theme, promptText: "Select Brand", source: brand_id});
   
   
   
@@ -767,7 +773,7 @@
 	}
 
   function category_product(){
-    var category_id = jQuery("#category_id").jqxComboBox('getSelectedItem').value;
+    var category_id = jQuery("#category_ids").jqxComboBox('getSelectedItem').value;
     jQuery.ajax({
         type: "POST",
         cache: false,
@@ -778,7 +784,7 @@
           var json = jQuery.parseJSON(data);
           var pro = json.pro;
           var brnd = json.brnd;
-          jQuery("#brand_id").jqxComboBox({source: brnd});
+          jQuery("#brand_ids").jqxComboBox({source: brnd});
           jQuery("#product_id").jqxComboBox({source: pro});
 
         }
@@ -786,12 +792,13 @@
   }
 
   function brand_product(){
-    var brand_id = jQuery("#brand_id").jqxComboBox('getSelectedItem').value;
+    var category_id = jQuery("#category_ids").jqxComboBox('getSelectedItem').value;
+    var brand_id = jQuery("#brand_ids").jqxComboBox('getSelectedItem').value;
     jQuery.ajax({
         type: "POST",
         cache: false,
         url: "{{route('brand_product')}}",
-        data : { "_token": "{{ csrf_token() }}","brand_id":brand_id},
+        data : { "_token": "{{ csrf_token() }}","category_id":category_id,"brand_id":brand_id},
         datatype: "json",
         success: function(data){
           var json = jQuery.parseJSON(data);

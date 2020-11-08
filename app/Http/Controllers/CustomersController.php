@@ -26,6 +26,7 @@ class CustomersController extends Controller
     public function create()
     {
         //
+        return view('customer');
     }
 
     /**

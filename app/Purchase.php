@@ -22,11 +22,11 @@ class Purchase extends Model
 
     public function suppliers()
     {
-        return $this->belongsTo('Supplier');
+        return $this->belongsTo(Supplier::class,'supplier_id');
     }
 
     public function employees()
     {
-        return $this->belongsTo('Employee');
+        return $this->belongsTo(Employee::class,'employee_id');
     }
 }

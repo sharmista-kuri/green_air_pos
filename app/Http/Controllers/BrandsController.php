@@ -26,6 +26,7 @@ class BrandsController extends Controller
     public function create()
     {
         //
+        return view('brand');
     }
 
     /**
@@ -103,7 +104,8 @@ class BrandsController extends Controller
 
     public function brand_product(Request $request){
         $brand_id = $request->brand_id;
-        $products = Product::where('brand_id',$brand_id)->get();
+        $category_id = $request->category_id;
+        $products = Product::where('brand_id',$brand_id)->where('category_id',$category_id)->get();
         $pro=array();
 
         foreach ($products as $product){

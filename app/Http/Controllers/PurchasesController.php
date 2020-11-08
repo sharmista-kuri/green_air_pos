@@ -28,7 +28,7 @@ class PurchasesController extends Controller
         $products = Product::get();
         $categories = Category::get();
         $brands = Brand::get();
-        return view('purchases',compact('employees','suppliers','products','categories','brands'));
+        return view('purchases_report',compact('employees','suppliers','products','categories','brands'));
     }
 
     /**
@@ -148,5 +148,69 @@ class PurchasesController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function grid(Request $request){
+
+        
+		$pagenum = $request->pagenum;
+		$pagesize = $request->per_pagess;
+        $start = $pagenum * $pagesize;
+
+
+        $filterscount = $request->filterscount;
+        $sortdatafield = $request->sortdatafield;
+        $sortorder = $request->sortorder;
+
+        
+		$where="purchases.id<>0";  
+		$where1="purchase_cart_details.id<>0";  
+
+        
+        if($request->invoice_no != '') 
+        {$where.=" AND invoice_no = '".trim($request->invoice_no)."' ";}
+        
+        if($request->employee_id != '') 
+		{$where.=" AND employee_id = ".$request->employee_id;}
+        
+        if($request->purchase_date_from != '') 
+        {$where.=" AND purchase_date >= '".trim($request->purchase_date_from)."' ";}
+
+        if($request->purchase_date_to != '') 
+        {$where.=" AND purchase_date <= '".trim($request->purchase_date_to)."' ";}
+        
+        if($request->purchase_type != '') 
+        {$where.=" AND purchase_type = ".$request->purchase_type;}
+
+        if($request->supplier_id != '') 
+        {$where.=" AND supplier_id = ".$request->supplier_id;}
+        
+        if($request->product_id != '') 
+        {$where1.=" AND product_id = ".$request->product_id;}
+        
+        $products = PurchaseCartDetail::whereRaw($where1);
+		
+        $q = Purchase::with(['employees'])->with(['suppliers'])->whereRaw($where)
+        ->joinSub($products, 'purchase_cart_details', function ($join) {
+            $join->on('purchases.id', '=', 'purchase_cart_details.purchase_id');
+        })
+        ->join('products','products.id','=','purchase_cart_details.product_id')
+        ->get();
+	
+        
+		
+		$result["total"] = $q->count();
+		
+		if ($q->count() > 0){        
+			$result["Rows"] = $q;
+		} else {
+			$result["Rows"] = array();
+		}  		
+		
+	
+		
+		
+		echo "{\"total\":".json_encode($result['total']).",\"data\":".json_encode($result['Rows'])."}";
+
     }
 }

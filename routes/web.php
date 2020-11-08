@@ -53,4 +53,5 @@ Route::post('account_select_box', 'TransactionsController@account_select_box')->
 Route::post('account_info_select_box', 'TransactionsController@account_info_select_box')->name('account_info_select_box');
 
 Route::post('sales_grid', 'SalesController@grid')->name('sales.grid');
+Route::post('purchases_grid', 'PurchasesController@grid')->name('purchases.grid');
 Route::any('sales_print', 'SalesController@sales_print')->name('sales_print');
