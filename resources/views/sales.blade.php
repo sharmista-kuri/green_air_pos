@@ -16,7 +16,8 @@
                 <div class="form-group row">
                   <label class="col-sm-4 col-form-label">Invoice No <span style="color:red">*</span></label>
                   <div class="col-sm-8">
-                    <input required id="invoice_no" name="invoice_no" type="text" class="form-control" />
+                    <label class="col-form-label" id="invoice_no_show"></label>
+                    <input id="invoice_no" name="invoice_no" type="hidden" class="form-control"/>
                   </div>
                 </div>
               </div>
@@ -138,7 +139,7 @@
                 <div class="form-group row">
                   <label class="col-sm-3 col-form-label">Email</label>
                   <div class="col-sm-9">
-                    <input disabled id="customer_email" name="customer_email" type="text"class="form-control" >
+                    <input id="customer_email" name="customer_email" type="text"class="form-control" >
                   </div>
                 </div>
               </div>
@@ -289,6 +290,8 @@
               <div class="forms-sample">
                     <button type="button" id="sell_save_button" class="btn btn-primary mr-2">Sell</button>
                     <button type="submit" class="btn btn-primary mr-2">Print</button>
+                    <button id="EmailButton" type="button" class="btn btn-primary">Email</button>
+                    <span id="salesloading" style="display:none">Please wait... <img src="<?=config('app.url')?>/resources/master/images/loader.gif" align="bottom"></span>
               </div>
             </div>
         </div>
@@ -459,14 +462,30 @@
     var brand_id = [<? $i=1; foreach($brands as $value){ if($i!=1){echo ',';} echo '{value:"'.$value->id.'", label:"'.$value->name.'"}'; $i++;}?>];
 	  jQuery("#brand_ids").jqxComboBox({theme: theme, promptText: "Select Brand", source: brand_id});
   
-  
+    invoice_create();
   
   });
-  jQuery(document).ready(function (){
-    //customer_info();
-    //product_info();
+  function invoice_create(){
+    jQuery.ajax({
+        type: "POST",
+        cache: false,
+        url: "{{route('sales_invoice_create')}}",
+        data : { "_token": "{{ csrf_token() }}"},
+        datatype: "json",
+        success: function(datas){
+          id = 1;
+          if(datas!="null"){
+            data = JSON.parse(datas);
+            id = parseInt(data.id)+1;
+          }
+          date = $("#sale_date").val();
+          id = "SI-"+date+"-"+id;
 
-  });
+          jQuery("#invoice_no_show").text(id);
+          jQuery("#invoice_no").val(id);
+        }
+    }); 
+  }
   function customer_info(){
     var customer_id = jQuery("#customer_id").jqxComboBox('getSelectedItem').value;
     jQuery.ajax({
@@ -508,7 +527,8 @@
 
   function add_to_cart(){
     var tr_counter = jQuery("#tr_counter").val();
-    var product_id = jQuery("#product_id").val();
+    var product_id = jQuery("#product_id").jqxComboBox('getSelectedItem').value;
+    //alert(product_id);
     var product_name = jQuery("#product_name").val();
     var quantity = jQuery("#quantity").val();
     var rate = jQuery("#rate").val();
@@ -718,31 +738,22 @@
         });	
 	}
 
-  jQuery('#sales_form').jqxValidator({
-      hintType: "label",
-			theme:"light",
-      rules: [
-          { input: '#invoice_no', message: 'Required!', action: 'keyup,blur', rule:'required' },
-          { input: '#sale_date', message: 'Required!', action: 'keyup,blur', rule:'required' },
-          
-          
-      ]
-  });
 
   jQuery("#sell_save_button").click(function () {			
-		var validationResult = function (isValid) {
+		/* var validationResult = function (isValid) {
 			if (isValid) {
 				sell();
 			}
 		}
-		jQuery('#sales_form').jqxValidator('validate', validationResult);
+		jQuery('#sales_form').jqxValidator('validate', validationResult); */
+    sell();
 		//call_ajax_submit();
 	});
 
   function sell()
   {
 		jQuery("#sell_save_button").hide();
-		//jQuery("#loading").show();
+		jQuery("#salesloading").show();
 		
     //location.href = "{{ route('sales_print') }}";
     
@@ -766,11 +777,65 @@
             datatype: "json",
             success: function(data){
             	jQuery("#sell_save_button").show();
+              jQuery("#salesloading").hide();
               alert("Successfully Saved"); 
                   
           }
         });	
 	}
+
+
+
+  jQuery('#sales_form').jqxValidator({
+      hintType: "label",
+			theme:"light",
+      rules: [
+          { input: '#customer_email', message: 'Required!', action: 'keyup,blur', rule:'required' },
+          /* { input: '#sale_date', message: 'Required!', action: 'keyup,blur', rule:'required' }, */
+          
+          
+      ]
+  });
+
+  jQuery("#EmailButton").click(function () {			
+		var validationResult = function (isValid) {
+			if (isValid) {
+				email();
+			}
+		}
+		jQuery('#sales_form').jqxValidator('validate', validationResult);
+    //sell();
+		//call_ajax_submit();
+	});
+
+  function email()
+  {
+		jQuery("#EmailButton").hide();
+		jQuery("#salesloading").show();
+    
+		var form = $('#sales_form')[0];
+		var data = new FormData(form);
+		jQuery.ajax({
+			headers: {
+		        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+		    },
+            type: "POST",
+            cache: false,
+            contentType: false,
+   			    processData: false,
+   			    enctype: 'multipart/form-data',
+            url: "{{ route('sales.email') }}",
+            data: data,
+            datatype: "json",
+            success: function(data){
+            	jQuery("#sell_save_button").show();
+              jQuery("#salesloading").hide();
+              alert("Successfully Email Send"); 
+                  
+          }
+        });	
+	}
+
 
   function category_product(){
     var category_id = jQuery("#category_ids").jqxComboBox('getSelectedItem').value;

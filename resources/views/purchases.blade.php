@@ -16,7 +16,8 @@
                 <div class="form-group row">
                   <label class="col-sm-4 col-form-label">Invoice No <span style="color:red">*</span></label>
                   <div class="col-sm-8">
-                    <input required id="invoice_no" name="invoice_no" type="text" class="form-control" />
+                    <label class="col-form-label" id="invoice_no_show"></label>
+                    <input id="invoice_no" name="invoice_no" type="hidden" class="form-control"/>
                   </div>
                 </div>
               </div>
@@ -280,8 +281,8 @@
                 </div>
               </div>
               <div class="forms-sample">
-                    <button type="submit" class="btn btn-primary mr-2">Purchase</button>
-                    <button type="button" class="btn btn-primary mr-2">Print</button>
+                    <button type="button" id="purchase_save_button" class="btn btn-primary mr-2">Purchase</button>
+                    <button type="submit" class="btn btn-primary mr-2">Print</button>
               </div>
             </div>
         </div>
@@ -631,7 +632,78 @@
     var brand_id = [<? $i=1; foreach($brands as $value){ if($i!=1){echo ',';} echo '{value:"'.$value->id.'", label:"'.$value->name.'"}'; $i++;}?>];
 	  jQuery("#brand_ids").jqxComboBox({theme: theme, promptText: "Select Brand", source: brand_id});
   
+    invoice_create();
+  
   });
+
+  function invoice_create(){
+    jQuery.ajax({
+        type: "POST",
+        cache: false,
+        url: "{{route('purchase_invoice_create')}}",
+        data : { "_token": "{{ csrf_token() }}"},
+        datatype: "json",
+        success: function(datas){
+          id = 1;
+          if(datas!="null"){
+            data = JSON.parse(datas);
+            id = parseInt(data.id)+1;
+          }
+          date = $("#purchase_date").val();
+          id = "SI-"+date+"-"+id;
+
+          jQuery("#invoice_no_show").text(id);
+          jQuery("#invoice_no").val(id);
+        }
+    }); 
+  }
+
+  jQuery('#purchase_form').jqxValidator({
+      hintType: "label",
+			theme:"light",
+      rules: [
+         // { input: '#invoice_no', message: 'Required!', action: 'keyup,blur', rule:'required' },
+         
+          
+          
+      ]
+  });
+
+  jQuery("#purchase_save_button").click(function () {			
+		/* var validationResult = function (isValid) {
+			if (isValid) {
+				purchase();
+			}
+		}
+    jQuery('#purchase_form').jqxValidator('validate', validationResult); */
+    purchase();
+	});
+
+  function purchase()
+  {
+		jQuery("#purchase_save_button").hide();    
+		var form = $('#purchase_form')[0];
+		var data = new FormData(form);
+
+		jQuery.ajax({
+			headers: {
+		        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+		    },
+        type: "POST",
+        cache: false,
+        contentType: false,
+        processData: false,
+        enctype: 'multipart/form-data',
+        url: "{{ route('purchases.store') }}",
+        data: data,
+        datatype: "json",
+        success: function(data){
+          jQuery("#purchase_save_button").show();
+          alert("Successfully Saved"); 
+              
+      }
+    });	
+	}
 
   function supplier_info(){
     var supplier_id = jQuery("#supplier_id").jqxComboBox('getSelectedItem').value;

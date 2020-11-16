@@ -213,4 +213,11 @@ class PurchasesController extends Controller
 		echo "{\"total\":".json_encode($result['total']).",\"data\":".json_encode($result['Rows'])."}";
 
     }
+
+    function purchase_invoice_create(){
+        $purchase_id = Purchase::select('id')->orderBy('id','desc')->first();
+        echo json_encode($purchase_id);
+    }
+
+    
 }

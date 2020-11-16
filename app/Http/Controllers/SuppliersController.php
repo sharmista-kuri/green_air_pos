@@ -109,4 +109,6 @@ class SuppliersController extends Controller
         $supplier = Supplier::find($request->supplier_id);
         echo json_encode($supplier);
     }
+
+    
 }

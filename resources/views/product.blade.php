@@ -223,20 +223,7 @@
         success: function(data){
           $("#productloading").hide();
           $("#ProductSaveButton").show();
-          $('#product_add_modal').modal('toggle');
-
-          jQuery.ajax({
-            type: "POST",
-            cache: false,
-            url: "{{ route('product_select_box')}}",
-            data : { "_token": "{{ csrf_token() }}"},
-            datatype: "json",
-            success: function(data){
-              var json = jQuery.parseJSON(data);
-              var pro = json.pro;
-              jQuery("#product_id").jqxComboBox({source: pro});
-            }
-        });                
+          alert("Successfully saved");               
       }
     });	
   }
