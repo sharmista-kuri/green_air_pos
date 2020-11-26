@@ -5,6 +5,8 @@
   <script src="<?php echo config('app.url'); ?>/resources/master/js/off-canvas.js"></script>
   <script src="<?php echo config('app.url'); ?>/resources/master/js/hoverable-collapse.js"></script>
   <script src="<?php echo config('app.url'); ?>/resources/master/js/template.js"></script>
+
+
   <!-- endinject -->
   <!-- Custom js for this page-->
   
@@ -45,3 +47,8 @@
   <script type="text/javascript" src="<?php echo config('app.url'); ?>/resources/master/jqwidgets/jqxmaskedinput.js"></script>
   <script type="text/javascript" src="<?php echo config('app.url'); ?>/resources/master/jqwidgets/jqxgrid.aggregates.js"></script>
 
+  <script type="text/javascript" src="<?php echo config('app.url'); ?>/resources/master/js/gettheme.js"></script>
+  <script src="<?php echo config('app.url'); ?>/resources/master/js/custom.js"></script>
+  <!-- <script src="<?php echo config('app.url'); ?>/resources/master/js/Util-jar.js"></script> -->
+
+  jQuery.noConflict();
