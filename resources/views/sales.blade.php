@@ -583,10 +583,12 @@
   }
 
   function quantity_cal(){
-    var rate = parseFloat(jQuery("#rate").val());
-    var quantity = parseFloat(jQuery("#quantity").val());
-    var amount = rate * quantity;
-    jQuery("#amount").val(amount);
+    if(jQuery("#rate").val()!=""&&jQuery("#quantity").val()!=""){
+      var rate = parseFloat(jQuery("#rate").val());
+      var quantity = parseFloat(jQuery("#quantity").val());
+      var amount = rate * quantity;
+      jQuery("#amount").val(amount);
+    }
   }
 
   function vat_cal(){
@@ -610,9 +612,11 @@
         data : { "_token": "{{ csrf_token() }}"},
         datatype: "json",
         success: function(datas){
-          data = JSON.parse(datas);
-          id = parseInt(data.id)+1;
-          //alert(id);
+          id = 1000000;
+          if(datas!="null"){
+            data = JSON.parse(datas);
+            id = parseInt(data.id)+1;
+          }
           jQuery("#customer_id_label").text(id);
         }
     });
@@ -828,7 +832,7 @@
             data: data,
             datatype: "json",
             success: function(data){
-            	jQuery("#sell_save_button").show();
+            	jQuery("#EmailButton").show();
               jQuery("#salesloading").hide();
               alert("Successfully Email Send"); 
                   

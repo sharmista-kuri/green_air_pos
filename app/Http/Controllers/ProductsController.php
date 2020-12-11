@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\User;
 use App\Brand;
 use App\Product;
 use App\Category;
@@ -19,7 +20,7 @@ class ProductsController extends Controller
     public function index()
     {
         //
-        $employees = Employee::get();
+        $employees = User::get();
         $suppliers = Supplier::get();
         $products = Product::get();
         $categories = Category::get();

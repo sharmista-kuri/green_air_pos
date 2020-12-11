@@ -59,6 +59,8 @@ Route::post('purchases_grid', 'PurchasesController@grid')->name('purchases.grid'
 Route::post('products_grid', 'ProductsController@grid')->name('products.grid');
 Route::post('customers_grid', 'CustomersController@grid')->name('customers.grid');
 Route::any('sales_print', 'SalesController@sales_print')->name('sales_print');
+Route::any('purchase_print', 'PurchasesController@purchase_print')->name('purchase_print');
+Route::any('grid_sales_print', 'SalesController@grid_sales_print')->name('grid_sales_print');
 Route::any('sales_email', 'SalesController@sales_email')->name('sales.email');
 Route::post('products_update_price', 'ProductsController@products_update_price')->name('products_update_price');
 Route::post('customer_update', 'CustomersController@customer_update')->name('customer_update');

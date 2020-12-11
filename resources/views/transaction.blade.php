@@ -34,11 +34,13 @@
               <div class="form-group row">
                 <label class="col-sm-3 col-form-label">Transaction Type</label>
                 <div class="col-sm-9">
-                  <select id="transaction_type_id" name="transaction_type_id" class="form-control">
+                  <!-- <select id="transaction_type_id" name="transaction_type_id" class="form-control">
                     @foreach($transaction_types as $transaction_type)
                     <option value="{{$transaction_type->id}}">{{$transaction_type->name}}</option>
                     @endforeach
-                  </select>
+                  </select> -->
+                  <div id="transaction_type_id" name="transaction_type_id">
+                  </div>
                 </div>
               </div> 
             </div>
@@ -56,11 +58,14 @@
               <div class="form-group row">
                 <label class="col-sm-3 col-form-label">Account Type</label>
                 <div class="col-sm-9">
-                  <select onchange="account_change()" id="account_type" name="account_type" class="form-control">
+                  <!-- <select onchange="account_change()" id="account_type" name="account_type" class="form-control">
                     @foreach($account_types as $account_type)
                     <option value="{{$account_type->id}}">{{$account_type->name}}</option>
                     @endforeach
-                  </select>
+                  </select> -->
+
+                  <div onchange="account_change()" id="account_type" name="account_type">
+                  </div>
                 </div>
               </div>
             </div>
@@ -70,8 +75,7 @@
               <div class="form-group row">
                 <label class="col-sm-3 col-form-label">Account ID</label>
                 <div id="account_div" class="col-sm-9">
-                  <select id="account_id" name="account_id" class="form-control">
-                  </select>
+                  <div onchange="account_info()" id="account_id" name="account_id"></div>
                 </div>
               </div>
             </div>
@@ -122,13 +126,26 @@
 </div>
 </form>
 <script>
-  account_change();
+  //account_change();
   transaction_id();
+
+  jQuery(document).ready(function($) {
+    var theme = 'classic';
+    var transaction_types = [<? $i=1; foreach($transaction_types as $value){ if($i!=1){echo ',';} echo '{value:"'.$value->id.'", label:"'.$value->name.'"}'; $i++;}?>];
+	  jQuery("#transaction_type_id").jqxComboBox({theme: theme, promptText: "Select Transaction", source: transaction_types});
+  
+    var account_types = [<? $i=1; foreach($account_types as $value){ if($i!=1){echo ',';} echo '{value:"'.$value->id.'", label:"'.$value->name.'"}'; $i++;}?>];
+	  jQuery("#account_type").jqxComboBox({theme: theme, promptText: "Select Account Type", source: account_types, width: '200'});
+  
+    jQuery("#account_id").jqxComboBox({theme: theme, promptText: "Select Account ID", width: '200'});
+    
+  
+  });
 
   
 
   function account_change(){
-    var account_type = $("#account_type").val();
+    var account_type = jQuery("#account_type").jqxComboBox('getSelectedItem').value;
     jQuery.ajax({
         type: "POST",
         cache: false,
@@ -136,16 +153,17 @@
         data : { "_token": "{{ csrf_token() }}","account_type":account_type},
         datatype: "json",
         success: function(data){
-          $("#account_div").html(data);
-          account_info();
+          var json = jQuery.parseJSON(data);
+          var acc = json.acc;
+          jQuery("#account_id").jqxComboBox({source: acc});
         }
     });
 
   }
 
   function account_info(){
-    var account_type = $("#account_type").val();
-    var account_id = $("#account_id").val();
+    var account_type = jQuery("#account_type").jqxComboBox('getSelectedItem').value;
+    var account_id = jQuery("#account_id").jqxComboBox('getSelectedItem').value;
 
     //alert(account_type);
     jQuery.ajax({

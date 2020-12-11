@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\User;
 use App\Brand;
 use App\Product;
 use App\Category;
@@ -21,7 +22,7 @@ class CustomersController extends Controller
     {
         //
 
-        $employees = Employee::get();
+        $employees = User::get();
         $customers = Customer::get();
         $suppliers = Supplier::get();
         $products = Product::get();

@@ -1,6 +1,6 @@
 @extends('layouts.master')
 @section('content')
-<form id="purchase_form"  method="post" action="{{ route('purchases.store') }}" enctype="multipart/form-data">
+<form id="purchase_form"  method="post" action="{{ route('purchase_print') }}" enctype="multipart/form-data">
 @csrf
 <div class="content-wrapper">
   <div class="row">
@@ -83,7 +83,8 @@
                 <div class="form-group row">
                   <label class="col-sm-3 col-form-label">Name</label>
                   <div class="col-sm-9">
-                    <input disabled id="supplier_name" name="supplier_name" type="text"class="form-control" >
+                    <input disabled id="supplier_name" type="text"class="form-control" >
+                    <input id="supplier_name_hidden" name="supplier_name"  type="hidden" class="form-control" >
                   </div>
                 </div>
               </div>
@@ -100,7 +101,8 @@
                 <div class="form-group row">
                   <label class="col-sm-3 col-form-label">Address</label>
                   <div class="col-sm-9">
-                    <textarea  disabled id="supplier_address" name="supplier_address" class="form-control" rows="4"></textarea>
+                    <textarea disabled id="supplier_address" class="form-control" rows="4"></textarea>
+                    <input id="supplier_address_hidden" name="supplier_address"  type="hidden" class="form-control" >
                   </div>
                 </div>
               </div>
@@ -716,7 +718,9 @@
         success: function(datas){
           data = JSON.parse(datas);
           jQuery("#supplier_name").val(data.name);
+          jQuery("#supplier_name_hidden").val(data.name);
           jQuery("#supplier_address").text(data.address);
+          jQuery("#supplier_address_hidden").val(data.address);
           jQuery("#contact_no").val(data.primary_contact);
           jQuery("#supplier_email").val(data.email);
               
@@ -798,10 +802,12 @@
   }
 
   function quantity_cal(){
-    var rate = parseFloat(jQuery("#rate").val());
-    var quantity = parseFloat(jQuery("#quantity").val());
-    var amount = rate * quantity;
-    jQuery("#amount").val(amount);
+    if(jQuery("#rate").val()!=""&&jQuery("#quantity").val()!=""){
+      var rate = parseFloat(jQuery("#rate").val());
+      var quantity = parseFloat(jQuery("#quantity").val());
+      var amount = rate * quantity;
+      jQuery("#amount").val(amount);
+    }
   }
 
   function vat_cal(){

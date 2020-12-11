@@ -107,6 +107,29 @@ class TransactionsController extends Controller
         else{
             $accounts = Official::orderBy('id','desc')->get();
         }
+        foreach ($accounts as $account){
+            $acc[]=array(
+				'value'=>$account->id,
+				'label'=>$account->name
+				);          
+        }
+
+        $data = array(
+            'acc' => $acc,
+        );
+        echo json_encode($data);
+    }
+
+    /* public function account_select_box(Request $request){
+        if($request['account_type']==1){
+            $accounts = Customer::orderBy('id','desc')->get();
+        }
+        else if($request['account_type']==2){
+            $accounts = Supplier::orderBy('id','desc')->get();
+        }
+        else{
+            $accounts = Official::orderBy('id','desc')->get();
+        }
         
         
         $str = "";
@@ -117,7 +140,7 @@ class TransactionsController extends Controller
         $str.= '  </select>';
         
         return $str;
-    }
+    } */
     public function account_info_select_box(Request $request){
         if($request['account_type']==1){
             //$accounts = Customer::with('sale')->sum('sale.due')->find($request->account_id); 

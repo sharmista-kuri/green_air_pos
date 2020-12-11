@@ -100,6 +100,7 @@
             datatype: "json",
             datafields: [
               { name: 'id', type: 'int'},
+              { name: 'sales_id', map: 'sales>name'},
               { name: 'invoice_no', type: 'string'},
               { name: 'name', type: 'string'},
               { name: 'cus_name', map: 'customers>name'},
@@ -147,6 +148,14 @@
               
         
                 columns: [
+                  { text: 'Print', menu: false, datafield: 'Print', align:'center', editable: false,  sortable: false, width: 30,
+                    cellsrenderer: function (row) {
+                      editrow = row;
+                      var dataRecord = jQuery("#jqxgrid").jqxGrid('getrowdata', editrow);
+                      return '<div style="text-align:center;  cursor:pointer" onclick="Print('+dataRecord.sales_id+')" ><img align="center" src="<?=config('app.url');?>/resources/master/images/edit.png"></div>';
+
+                  }
+                },
                 { text: 'ID', datafield: 'id', hidden:true,  editable: false,  width: '145' },
                 { text: 'Invoice No', datafield: 'invoice_no', editable: false, width: '150' },
                 { text: 'Employee Name', datafield: 'emp_name', editable: false, width: '150' },
@@ -183,9 +192,23 @@
     localizationobj.currencysymbol = " ";                
     return localizationobj;
 }
+
+function Print(id){
+  /* url= "<?=route("grid_sales_print")?>";
+  var win = window.open(url, '_blank');
+  win.focus(); */
+  $("#id").val(id);
+  var form = $('#sales_form')[0];
+  var data = new FormData(form);
+  
+  form.submit();
+  
+}
 </script>
-
-
+<form target="_blank" id="sales_form"  method="post" action="{{ route('grid_sales_print') }}" enctype="multipart/form-data">
+@csrf 
+  <input id="id" name="id" type="hidden"/>
+</form>
 <div id="container">	
 	<div id="body"  >
 		<div style="display:block; min-height:350px; height:auto">
