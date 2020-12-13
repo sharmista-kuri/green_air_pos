@@ -41,9 +41,7 @@
     <div class="container nav-container">
         <div class="collapse navbar-collapse" id="riyaqas_main_menu">
             <div class="logo-wrapper desktop-logo">
-                <a href="http://codingeek.io/html/riyaqas/index.html" class="logo">
-                    <img src="<?php echo config('app.url'); ?>/resources/master/images/ga.png" height="100" weight="10" alt="logo">
-                </a>
+                
             </div>
         </div>
     </div>
@@ -57,6 +55,9 @@
             <div class="col-xl-5 col-lg-6 col-md-6 offset-xl-1">
                 <div class="header-inner-details">
                     <div class="header-inner">
+                        <a href="{{route('welcome')}}" class="logo">
+                            <img src="<?php echo config('app.url'); ?>/resources/master/images/ga.png" height="200" weight="150" alt="logo">
+                        </a>
                         <h1 class="title wow  fadeInUp animated" data-wow-duration="1s" data-wow-delay="0s" style="color:cadetblue; visible; animation-duration: 1s; animation-delay: 0s; animation-name: fadeInUp;">GREEN AIR</h1>
                         <p class="wow  fadeInUp animated" data-wow-duration="1s" data-wow-delay="0.3s" style="visibility: visible; animation-duration: 1s; animation-delay: 0.3s; animation-name: fadeInUp;">One shop Electronics & Air Conditioning Solutions.</p>
                         <div class="btn-wrapper desktop-left padding-top-20 wow  fadeInUp animated" data-wow-duration="1s" data-wow-delay="0.6s" style="visibility: visible; animation-duration: 1s; animation-delay: 0.6s; animation-name: fadeInUp;">
