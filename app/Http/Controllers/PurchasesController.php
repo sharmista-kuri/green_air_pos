@@ -90,6 +90,7 @@ class PurchasesController extends Controller
 
                 $current_stock = $current_stocks + $quantity;
                 $data_product['current_stock'] = $current_stock;
+                $data_product['purchase_price'] = $request['rate_'.$i];
                 Product::whereId($product_id)->update($data_product);
             }
             

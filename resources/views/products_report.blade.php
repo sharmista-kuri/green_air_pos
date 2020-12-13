@@ -175,7 +175,7 @@
                 { text: 'Category Name', datafield: 'category_name', editable: false, width: '150' },
                 { text: 'Brand Name', datafield: 'brand_name', editable: false, width: '150' },
                 { text: 'Purchase Price', datafield: 'purchase_price', cellsalign: 'right', cellsformat: 'c2', editable: false, width: '150' },
-                { text: 'Sale Name', datafield: 'sale_price',cellsalign: 'right', cellsformat: 'c2', editable: false, width: '150' },
+                { text: 'Sale Price', datafield: 'sale_price',cellsalign: 'right', cellsformat: 'c2', editable: false, width: '150' },
                 { text: 'Current Stock', datafield: 'current_stock',  width: 170, cellsalign: 'left',  
                     aggregates: [{ '<b>Total</b>':
                           function (aggregatedValue, currentValue) {
@@ -310,10 +310,10 @@
             <td align="right">Product ID:</td>
             <td align="left"><span id="product_ID"></span></td>
         </tr>
-        <tr>
+        <!-- <tr>
             <td align="right">Purchase Price:</td>
             <td align="left"><input id="purchase_price" name="purchase_price"/></td>
-        </tr>
+        </tr> -->
         <tr>
             <td align="right">Sale Price:</td>
             <td align="left"><input id="sale_price" name="sale_price"/></td>
