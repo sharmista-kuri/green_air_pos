@@ -2,6 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Brand;
+use App\Product;
+use App\Category;
+use App\Customer;
+use App\Employee;
 use App\Supplier;
 use Illuminate\Http\Request;
 
@@ -15,6 +20,13 @@ class SuppliersController extends Controller
     public function index()
     {
         //
+        $employees = Employee::get();
+        $customers = Customer::get();
+        $suppliers = Supplier::get();
+        $products = Product::get();
+        $categories = Category::get();
+        $brands = Brand::get();
+        return view('suppliers_report',compact('employees','customers','suppliers','products','categories','brands'));
     }
 
     /**
@@ -49,6 +61,51 @@ class SuppliersController extends Controller
     public function show($id)
     {
         //
+    }
+
+     public function grid(Request $request){
+
+        
+        $pagenum = $request->pagenum;
+        $pagesize = $request->per_pagess;
+        $start = $pagenum * $pagesize;
+
+
+        $filterscount = $request->filterscount;
+        $sortdatafield = $request->sortdatafield;
+        $sortorder = $request->sortorder;
+
+        
+        $where="suppliers.id<>0";         
+        
+        
+        if($request->supplier_name != '') 
+        {$where.=" AND name = '".trim($request->supplier_name)."'";}
+
+        if($request->email != '') 
+        {$where.=" AND email = '".trim($request->email)."'";}
+
+        if($request->contact != '') 
+        {$where.=" AND (primary_contact = '".trim($request->contact)."' OR secondary_contact = '".trim($request->contact)."')";}
+
+        if($request->customer_type != '') 
+        {$where.=" AND FIND_IN_SET(".$request->customer_type.",supplier_type) ";}
+
+        
+        $q = Supplier::whereRaw($where)
+        ->get();
+    
+        
+        $result["total"] = $q->count();
+        
+        if ($q->count() > 0){        
+            $result["Rows"] = $q;
+        } else {
+            $result["Rows"] = array();
+        }       
+
+        echo "{\"total\":".json_encode($result['total']).",\"data\":".json_encode($result['Rows'])."}";
+
     }
 
     /**
