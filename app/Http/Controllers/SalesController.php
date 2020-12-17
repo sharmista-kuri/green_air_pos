@@ -923,9 +923,15 @@ class SalesController extends Controller
 
     function grid_sales_print(Request $req){
         //echo'<pre>';print_r($request->all());exit;
-        $request = Sale::find($req->id);
+        //$request = Sale::with()->find($req->id);
 
-        //echo'<pre>';print_r($req->id);exit;
+        $request = Sale::find($req->id)
+        ->selectRaw('*,customers.name as customer_name')
+        ->leftJoin('employees','employees.id','=','sales.employee_id')
+        ->leftJoin('customers','customers.id','=','sales.customer_id')
+        ->first();
+
+        //echo'<pre>';print_r($request);exit;
         ob_get_clean();
         @include('vendor/autoload.php');
 
@@ -1051,15 +1057,18 @@ class SalesController extends Controller
 
         $str.='</tr>';
 
-        $counter = $request->tr_counter;
-
-        for($i=1; $i<$counter; $i++){
+        //$counter = explode(",",$request->product_id);
+        $sales_cart = SalesCartDetail::where("sales_id","=",$req->id)->get();
+        $i=0;
+        foreach($sales_cart as $sales){
+            $i++;
+        //for($i=0; $i<sizeof($counter); $i++){
             
-            if($request['delete_'.$i]==0){               
-                $id = $request['product_'.$i];
-                $quantity = $request['quantity_'.$i];
-                $rate = $request['rate_'.$i];
-                $amount = $request['amount_'.$i];
+            //if($request['delete_'.$i]==0){               
+                $id = $sales->product_id;
+                $quantity = $sales->quantity;
+                $rate = $sales->rate;
+                $amount = $sales->amount;
 
                 $product_details = Product::find($id);
 
@@ -1081,7 +1090,7 @@ class SalesController extends Controller
                 $str.='</td>';
 
                 $str.='</tr>';
-            }
+           // }
             
         }
 
