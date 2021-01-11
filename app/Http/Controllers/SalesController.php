@@ -92,6 +92,14 @@ class SalesController extends Controller
         $transaction = Transaction::create($data_transaction);
 
 
+        $customer_id = $request['customer_id'];
+        $due = $request['due'];
+        $customer = Customer::find($customer_id);
+        $cust_due = $customer->due + $due;
+        $data_cus['due'] = $cust_due;
+        Customer::whereId($id)->update($data_cus);
+
+
     }
 
     /**
@@ -189,7 +197,7 @@ class SalesController extends Controller
         
         $products = SalesCartDetail::whereRaw($where1);
 		
-        $q = Sale::with(['employees'])->with(['customers'])->whereRaw($where)
+        $q = Sale::with(['users'])->with(['customers'])->whereRaw($where)
         ->joinSub($products, 'sales_cart_details', function ($join) {
             $join->on('sales.id', '=', 'sales_cart_details.sales_id');
         })
@@ -927,7 +935,7 @@ class SalesController extends Controller
 
         $request = Sale::find($req->id)
         ->selectRaw('*,customers.name as customer_name')
-        ->leftJoin('employees','employees.id','=','sales.employee_id')
+        ->leftJoin('users','users.id','=','sales.employee_id')
         ->leftJoin('customers','customers.id','=','sales.customer_id')
         ->first();
 
