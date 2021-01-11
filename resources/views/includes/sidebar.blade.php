@@ -43,13 +43,13 @@
             </a>
             <div class="collapse" id="ui-basic">
               <ul class="nav flex-column sub-menu">
-                 @if($rights->role==1 || $rights->role==2)
+                
                 <li class="nav-item"> <a class="nav-link" href="{{route('sales.index')}}">All Sales Report</a></li>
                 <li class="nav-item"> <a class="nav-link" href="{{route('purchases.index')}}">All Purchase Report</a></li>
                 <li class="nav-item"> <a class="nav-link" href="{{route('suppliers.index')}}">All Suppliers Report</a></li>
                 <li class="nav-item"> <a class="nav-link" href="{{route('products.index')}}">Price and Stock Report</a></li>
                 <li class="nav-item"> <a class="nav-link" href="{{route('customers.index')}}">Customer Report</a></li>
-                @endif
+                
               </ul>
             </div>
           </li>
@@ -62,16 +62,15 @@
             </a>
             <div class="collapse" id="ui-basic1">
               <ul class="nav flex-column sub-menu">
-                @if($rights->role==1 || $rights->role==2)
+                
                 <li class="nav-item"> <a class="nav-link" href="{{route('categories.create')}}">Add Category</a></li>
                 <li class="nav-item"> <a class="nav-link" href="{{route('brands.create')}}">Add Brand</a></li>
                 <li class="nav-item"> <a class="nav-link" href="{{route('products.create')}}">Add Product</a></li>
                 <li class="nav-item"> <a class="nav-link" href="{{route('customers.create')}}">Add Customer</a></li>
                 <li class="nav-item"> <a class="nav-link" href="{{route('suppliers.create')}}">Add Supplier</a></li>
-                @endif
-              @if($rights->role==1)
+              
                 <li class="nav-item"> <a class="nav-link" href="{{route('users.index')}}">User Rights</a></li>
-                @endif
+                
               </ul>
               
             </div>
