@@ -155,6 +155,12 @@
             </div>
             <div class="row">
               <div class="col-md-6">
+                <div class="form-group row">
+                  <label class="col-sm-3 col-form-label">Due</label>
+                  <div class="col-sm-9">
+                    <input disabled id="customer_due" name="customer_due" type="text"class="form-control" >
+                  </div>
+                </div>
               </div>
               <div class="col-md-6">
                 <div class="form-group row">
@@ -230,7 +236,7 @@
                     </div>
                     %
                     <div class="col-md-7">
-                        <input id="vat" name="vat" value="0.00" type="text" class="form-control" />
+                        <input disabled id="vat" name="vat" value="0.00" type="text" class="form-control" />
                     </div>
                 </div>
             </div>
@@ -246,7 +252,7 @@
                     </div>
                     %
                     <div class="col-md-7">
-                        <input id="discount" name="discount" value="0.00" type="text" class="form-control" />
+                        <input onblur="discount_tk_cal()" id="discount" name="discount" value="0.00" type="hidden" class="form-control" />
                     </div>
                 </div>
             </div>
@@ -254,10 +260,12 @@
                 <label class="col-sm-12 col-form-label">Total</label>
                 <label class="col-sm-12 col-form-label" id="total_label">0.00</label>
                 <input id="total" name="total" value="0.00" type="hidden" class="form-control" />
+                <input id="total_vat" name="total_vat" value="0.00" type="hidden" class="form-control" />
+                <input id="total_discount" name="total_discount" value="0.00" type="hidden" class="form-control" />
             </div>
             <div class="form-group">
                 <label class="col-sm-12 col-form-label">Paid</label>
-                <input id="paid" name="paid" value="0.00" type="text" class="form-control" />
+                <input onblur="paid_cal()" id="paid" name="paid" value="0.00" type="text" class="form-control" />
             </div>   
             <div class="form-group">
                 <label class="col-sm-12 col-form-label">Due</label>
@@ -465,6 +473,15 @@
     invoice_create();
   
   });
+
+  function paid_cal(){
+    var total = jQuery("#total").val();
+    var paid = jQuery("#paid").val();
+    var due = parseFloat(total-paid).toFixed(2);
+    jQuery("#due").val(due);
+
+
+  }
   function invoice_create(){
     jQuery.ajax({
         type: "POST",
@@ -503,6 +520,7 @@
           jQuery("#contact_no").val(data.primary_contact);
           jQuery("#contact_no_hidden").val(data.primary_contact);
           jQuery("#customer_email").val(data.email);
+          jQuery("#customer_due").val(data.due);
               
         }
     }); 
@@ -592,16 +610,38 @@
   }
 
   function vat_cal(){
+    var total = jQuery("#total").val();
     var vat_percent = parseFloat(jQuery("#vat_percent").val());
-    var vat = (vat_percent % 100).toFixed(2);
+    var vat = (total*(vat_percent / 100)).toFixed(2);
     jQuery("#vat").val(vat);
+    var total = (parseFloat(total)+parseFloat(vat)).toFixed(2);
+    jQuery("#cart_total").val(total);
+    //jQuery("#total_span").text(total);
+    //jQuery("#total_label").text(total);
+    //alert(total1);
     
   }
 
   function discount_cal(){
+    var total = jQuery("#total").val();
     var discount_percent = parseFloat(jQuery("#discount_percent").val());
     var discount = (discount_percent % 100).toFixed(2);
     jQuery("#discount").val(discount);
+    var total = parseFloat(total-discount).toFixed(2);
+    jQuery("#total").val(total);
+    jQuery("#total_span").text(total);
+    jQuery("#total_label").text(total);
+  }
+
+  function discount_tk_cal(){
+    var total = jQuery("#total").val();
+    var discount_tk = parseFloat(jQuery("#discount").val());
+    var discount = (discount_percent / 100).toFixed(2);
+    jQuery("#discount").val(discount);
+    var total = parseFloat(total-discount).toFixed(2);
+    jQuery("#total").val(total);
+    jQuery("#total_span").text(total);
+    jQuery("#total_label").text(total);
   }
 
   function add_customer(){
