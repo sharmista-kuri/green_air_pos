@@ -933,10 +933,11 @@ class SalesController extends Controller
         //echo'<pre>';print_r($request->all());exit;
         //$request = Sale::with()->find($req->id);
 
-        $request = Sale::find($req->id)
-        ->selectRaw('*,customers.name as customer_name')
+        $request = Sale::
+          selectRaw('*,customers.name as customer_name')
         ->leftJoin('users','users.id','=','sales.employee_id')
         ->leftJoin('customers','customers.id','=','sales.customer_id')
+        ->where('sales.id',"=",$req->id)
         ->first();
 
         //echo'<pre>';print_r($request);exit;
@@ -1082,10 +1083,10 @@ class SalesController extends Controller
 
                 $str.='<tr>';
         
-                $str.='<td>'.$i;
+                $str.='<td width="10%">'.$i;
                 $str.='</td>';
 
-                $str.='<td>'.$product_details->description;
+                $str.='<td width="50%">'.$product_details->name;
                 $str.='</td>';
 
                 $str.='<td>'.$quantity;

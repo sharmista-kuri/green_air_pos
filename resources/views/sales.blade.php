@@ -447,7 +447,14 @@
 
 
 <script>
-
+  $(document).ready(function() {
+    $(window).keydown(function(event){
+      if(event.keyCode == 13) {
+        event.preventDefault();
+        return false;
+      }
+    });
+  });
   jQuery(document).ready(function($) {
     var theme = 'classic';
     
@@ -528,6 +535,7 @@
         datatype: "json",
         success: function(datas){
           data = JSON.parse(datas);
+          jQuery("#customer_id").val(customer_id);
           jQuery("#customer_name").val(data.name);
           jQuery("#customer_name_hidden").val(data.name);
           jQuery("#customer_address").text(data.address);
@@ -551,6 +559,7 @@
         datatype: "json",
         success: function(datas){
           data = JSON.parse(datas);
+          jQuery("#product_id").val(product_id);
           jQuery("#product_name").val(data.name);
           //jQuery("#rate").val(data.purchase_price);
           jQuery("#stock").text(data.current_stock);

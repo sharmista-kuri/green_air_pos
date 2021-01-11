@@ -127,6 +127,7 @@
               { name: 'secondary_contact', type: 'string'},
               { name: 'email', type: 'string'},
               { name: 'customer_type', type: 'string'},
+              { name: 'due', type: 'string'},
              
              					  
             ],
@@ -175,6 +176,7 @@
                 },
                 { text: 'ID', datafield: 'id'/* , hidden:true */,  editable: false,  width: '105' },
                 { text: 'Customer Name', datafield: 'name', editable: false, width: '250' },
+                { text: 'Customer Due', datafield: 'due', editable: false, width: '150' },
                 { text: 'Customer Address', datafield: 'address', editable: false, width: '150' },
                 { text: 'Customer Area', datafield: 'area', editable: false, width: '150' },
                 { text: 'Customer Country', datafield: 'country', editable: false, width: '150' },
