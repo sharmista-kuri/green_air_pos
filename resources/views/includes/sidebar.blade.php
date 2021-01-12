@@ -46,9 +46,10 @@
                 
                 <li class="nav-item"> <a class="nav-link" href="{{route('sales.index')}}">All Sales Report</a></li>
                 <li class="nav-item"> <a class="nav-link" href="{{route('purchases.index')}}">All Purchase Report</a></li>
-                <li class="nav-item"> <a class="nav-link" href="{{route('suppliers.index')}}">All Suppliers Report</a></li>
-                <li class="nav-item"> <a class="nav-link" href="{{route('products.index')}}">Price and Stock Report</a></li>
+                <li class="nav-item"> <a class="nav-link" href="{{route('suppliers.index')}}">Suppliers Report</a></li>
                 <li class="nav-item"> <a class="nav-link" href="{{route('customers.index')}}">Customer Report</a></li>
+                <li class="nav-item"> <a class="nav-link" href="{{route('products.index')}}">Price and Stock Report</a></li>
+                
                 
               </ul>
             </div>

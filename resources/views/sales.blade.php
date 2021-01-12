@@ -65,7 +65,7 @@
               <div class="col-md-6">
                   <div class="form-group row">
                   <label class="col-sm-3 col-form-label">Customer ID <span style="color:red">*</span></label>
-                  <div onchange="customer_info()" id="customer_id" name="customer_id"></div>
+                  <div id="customer_id" name="customer_id"></div>
                   <div class="forms-sample">
                     <i onclick="add_customer()" class="mdi mdi-plus-circle icon-lg mr-3 text-primary"></i>
                   </div>
@@ -460,7 +460,7 @@
     
   
     var customer_id = [<? $i=1; foreach($customers as $value){ if($i!=1){echo ',';} echo '{value:"'.$value->id.'", label:"'.$value->name.'"}'; $i++;}?>];
-	  jQuery("#customer_id").jqxComboBox({theme: theme, promptText: "Select Customer", source: customer_id, width: '170'});
+	  jQuery("#customer_id").jqxComboBox({searchMode:'startswithignorecase',autoComplete:true, theme: theme, promptText: "Select Customer", source: customer_id, width: '170'});
   
     var product_id = [<? $i=1; foreach($products as $value){ if($i!=1){echo ',';} echo '{value:"'.$value->id.'", label:"'.$value->name.'"}'; $i++;}?>];
 	  jQuery("#product_id").jqxComboBox({theme: theme, promptText: "Select Product", source: product_id});
@@ -525,29 +525,34 @@
         }
     }); 
   }
-  function customer_info(){
-    var customer_id = jQuery("#customer_id").jqxComboBox('getSelectedItem').value;
-    jQuery.ajax({
-        type: "POST",
-        cache: false,
-        url: "{{route('customer_info')}}",
-        data : { "_token": "{{ csrf_token() }}","customer_id":customer_id},
-        datatype: "json",
-        success: function(datas){
-          data = JSON.parse(datas);
-          jQuery("#customer_id").val(customer_id);
-          jQuery("#customer_name").val(data.name);
-          jQuery("#customer_name_hidden").val(data.name);
-          jQuery("#customer_address").text(data.address);
-          jQuery("#customer_address_hidden").val(data.address);
-          jQuery("#contact_no").val(data.primary_contact);
-          jQuery("#contact_no_hidden").val(data.primary_contact);
-          jQuery("#customer_email").val(data.email);
-          jQuery("#customer_due").val(data.due);
-              
-        }
-    }); 
-	}
+  //function customer_info(){
+  jQuery('#customer_id').bind('select', function (event){
+    var item = jQuery("#customer_id").jqxComboBox('getSelectedItem');
+    if(item != null){
+      var customer_id = item.value;
+      jQuery.ajax({
+          type: "POST",
+          cache: false,
+          url: "{{route('customer_info')}}",
+          data : { "_token": "{{ csrf_token() }}","customer_id":customer_id},
+          datatype: "json",
+          success: function(datas){
+            data = JSON.parse(datas);
+            jQuery("#customer_id").val(customer_id);
+            jQuery("#customer_name").val(data.name);
+            jQuery("#customer_name_hidden").val(data.name);
+            jQuery("#customer_address").text(data.address);
+            jQuery("#customer_address_hidden").val(data.address);
+            jQuery("#contact_no").val(data.primary_contact);
+            jQuery("#contact_no_hidden").val(data.primary_contact);
+            jQuery("#customer_email").val(data.email);
+            jQuery("#customer_due").val(data.due);
+                
+          }
+      });
+    }
+  });   
+	//}
 
   function product_info(){
     var product_id = jQuery("#product_id").jqxComboBox('getSelectedItem').value;

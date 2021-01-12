@@ -127,6 +127,7 @@
               { name: 'secondary_contact', type: 'string'},
               { name: 'email', type: 'string'},
               { name: 'supplier_type', type: 'string'},
+              { name: 'due', type: 'string'},
              
              					  
             ],
@@ -165,16 +166,17 @@
               
         
                 columns: [
-                 /* { text: 'E', menu: false, datafield: 'Edit', align:'center', editable: false,  sortable: false, width: 30,
+                  { text: 'E', menu: false, datafield: 'Edit', align:'center', editable: false,  sortable: false, width: 30,
                     cellsrenderer: function (row) {
                       editrow = row;
                       var dataRecord = jQuery("#jqxgrid").jqxGrid('getrowdata', editrow);
                       return '<div style="text-align:center;  cursor:pointer" onclick="edit('+dataRecord.id+','+editrow+')" ><img align="center" src="<?=config('app.url');?>/resources/master/images/edit.png"></div>';
 
                   }
-                },*/
+                },
                 { text: 'ID', datafield: 'id'/* , hidden:true */,  editable: false,  width: '105' },
                 { text: 'Supplier Name', datafield: 'name', editable: false, width: '250' },
+                { text: 'Supplier Due', datafield: 'due', editable: false, width: '150' },
                 { text: 'Supplier Address', datafield: 'address', editable: false, width: '150' },
                 { text: 'Supplier Area', datafield: 'area', editable: false, width: '150' },
                 { text: 'Supplier Country', datafield: 'country', editable: false, width: '150' },
@@ -200,7 +202,39 @@
     
     }
 
-     
+    function edit(val,indx)
+    {
+      $("#id").val(val);
+
+      var supplier_id = val;
+      jQuery.ajax({
+        type: "POST",
+        cache: false,
+        url: "{{route('supplier_info')}}",
+        data : { "_token": "{{ csrf_token() }}","supplier_id":supplier_id},
+        datatype: "json",
+        success: function(datas){
+          data = JSON.parse(datas);
+          jQuery("#supplier_id_label").text(data.id);
+          jQuery("#supplier_name_form").val(data.name);
+          jQuery("#supplier_name_hidden").val(data.name);
+          jQuery("#supplier_address").text(data.address);
+          jQuery("#supplier_address_hidden").val(data.address);
+          jQuery("#contact_no").val(data.primary_contact);
+          jQuery("#supplier_email").val(data.email);
+          jQuery("#country").val(data.country);
+          type = data.customer_type;
+          arr_type = type.split(",");
+          jQuery("#supplier_type_array").multipleSelect("setSelects", arr_type);
+              
+        }
+    }); 
+
+      //$("#product_ID").text(val);
+      //$("#jqxgrid").jqxGrid('clearselection');
+      $("#popupWindow").jqxWindow('open');
+      return false;
+    }
 </script>
 <script>
     jQuery('#customer_form').jqxValidator({
@@ -224,32 +258,32 @@
 	});
 
   function call_ajax_submit(){
-      jQuery('#customer_type').val(jQuery('#customer_type_array').val());
-      var form = $('#customer_form')[0];
-		  var data = new FormData(form);
-      //alert(data);
-      //data =1;
-      jQuery.ajax({
-			headers: {
-		        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-		    },
-            type: "POST",
-            cache: false,
-            contentType: false,
-   			    processData: false,
-   			    enctype: 'multipart/form-data',
-            url: "{{ route('customer_update') }}",
-            data: data,
-            datatype: "json",
-            success: function(data){
-            	$("#popupWindow").jqxWindow('close');
-           
-					    submitonclick(0,2);
-                  
-          }
-        });
-     
-    }
+    jQuery('#customer_type').val(jQuery('#customer_type_array').val());
+    var form = $('#customer_form')[0];
+    var data = new FormData(form);
+    //alert(data);
+    //data =1;
+    jQuery.ajax({
+    headers: {
+          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+      },
+          type: "POST",
+          cache: false,
+          contentType: false,
+          processData: false,
+          enctype: 'multipart/form-data',
+          url: "{{ route('customer_update') }}",
+          data: data,
+          datatype: "json",
+          success: function(data){
+            $("#popupWindow").jqxWindow('close');
+          
+            submitonclick(0,2);
+                
+        }
+      });
+    
+  }
     
 </script>
 
@@ -268,14 +302,14 @@
               <td><strong>Supplier Name&nbsp;&nbsp;</strong></td>
               <td><input type="text" class="text-input-small" name="supplier_name" id="supplier_name"/></td>
               <td><strong>Email&nbsp;&nbsp;</strong></td>
-              <td><input type="text" class="text-input-small" name="email" id="customer_email"/></td>
+              <td><input type="text" class="text-input-small" name="email" id="supplier_email"/></td>
               <td><strong>Contact No&nbsp;&nbsp;</strong></td>
               <td><input type="text" class="text-input-small" name="contact" id="contact"/></td>
               <td><strong>Supplier Type&nbsp;&nbsp;</strong></td>
               <td>
-                  <input type="radio" name="customer_type" id="customer_type1" value="1">
+                  <input type="radio" name="supplier_type" id="supplier_type1" value="1">
                       Retial
-                  <input type="radio" name="customer_type" id="customer_type2" value="2">
+                  <input type="radio" name="supplier_type" id="supplier_type2" value="2">
                       Wholesale
               </td>
               <td width="5%" style="text-align:center;" rowspan="2"><input type='button' class="buttonStyle" id='search' name='search' value='Search' onclick="submitonclick(0,2)" style="width: 90% !important" />
@@ -301,116 +335,117 @@
   <div style="overflow: hidden;">
     <form id="customer_form">
       <div class="card">
-            <div class="card-body">
-                <div class="row">
-                  <div class="col-md-12">
-                    <div class="form-group row">
-                      <label class="col-sm-2 col-form-label">Customer ID</label>
-                      <div class="col-sm-9">
-                      <label class="col-sm-6 col-form-label" id="customer_id_label"></label>
-                      </div>
-                    </div>
-                  </div>
+        <div class="card-body">
+          <h4 class="card-title">Supplier</h4>
+          <div class="row">
+            <div class="col-md-12">
+              <div class="form-group row">
+                <label class="col-sm-2 col-form-label">Supplier ID</label>
+                <div class="col-sm-9">
+                <label class="col-sm-6 col-form-label" id="supplier_id_label"></label>
                 </div>
-                <div class="row">
-                  <div class="col-md-6">
-                    <div class="form-group row">
-                      <label class="col-sm-3 col-form-label">Name <span style="color:red">*</span></label>
-                      <div class="col-sm-9">
-                        <input required id="name" name="name" type="text" class="form-control" />
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-md-6">
-                    <div class="form-group row">
-                      <label class="col-sm-3 col-form-label">Phone</label>
-                      <div class="col-sm-9">
-                        <input required id="primary_contact" name="primary_contact" type="text" class="form-control" />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-               
-                <div class="row">
-                  <div class="col-md-6">
-                    <div class="form-group row">
-                      <label class="col-sm-3 col-form-label">Customer Type</label>
-                      <div class="col-sm-9">
-                          <select id="customer_type_array" style="width: 100%;" class="form-control1" multiple data-live-search="true">
-                            <option value="1">Retail</option>
-                            <option value="2">Wholesale</option>
-                          </select>
-                          <script>
-                            jQuery('#customer_type_array').multipleSelect({ 
-                              placeholder: "Select Customer Type", 
-                              selectAll: true, 
-                              multiple: false, 
-                              multipleWidth: 120
-                            });
-                          </script>
-                          <input type="hidden" id="customer_type" name="customer_type" value="0">
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-md-6">
-                    <div class="form-group row">
-                      <label class="col-sm-3 col-form-label">Phone 2</label>
-                      <div class="col-sm-9">
-                        <input id="secondary_contact" name="secondary_contact" type="text" class="form-control" value=" "/>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                
-                <div class="row">
-                  <div class="col-md-6">
-                    <div class="form-group row">
-                      <label class="col-sm-3 col-form-label">Address</label>
-                      <div class="col-sm-9">
-                      <textarea required id="address" name="address" class="form-control" rows="4"></textarea>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-md-6">
-                    <div class="form-group row">
-                      <label class="col-sm-3 col-form-label">Email</label>
-                      <div class="col-sm-9">
-                        <input id="email" name="email" type="text" class="form-control" />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-md-6">
-                    <div class="form-group row">
-                      <label class="col-sm-3 col-form-label">Area</label>
-                      <div class="col-sm-9">
-                        <input id="area" name="area" type="text" class="form-control" />
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-md-6">
-                    <div class="form-group row">
-                      <label class="col-sm-3 col-form-label">Country</label>
-                      <div class="col-sm-9">
-                        <select required id="counntry" name="country" class="form-control">
-                          <option>Bangladesh</option>
-                          <option>America</option>
-                          <option>China</option>
-                          <option>Russia</option>
-                          <option>Britain</option>
-                        </select>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+              </div>
             </div>
           </div>
-          <div class="forms-sample" align="center">
-            <button onclick="call_ajax_submit();" id="CustomerSaveButton" type="button" class="btn btn-primary">Save</button>
-            <span id="loading" style="display:none">Please wait... <img src="<?=config('app.url')?>/resources/master/images/loader.gif" align="bottom"></span>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group row">
+                <label class="col-sm-3 col-form-label">Name <span style="color:red">*</span></label>
+                <div class="col-sm-9">
+                  <input required id="supplier_name_form" name="name" type="text" class="form-control" />
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group row">
+                <label class="col-sm-3 col-form-label">Phone</label>
+                <div class="col-sm-9">
+                  <input required id="primary_contact" name="primary_contact" type="text" class="form-control" />
+                </div>
+              </div>
+            </div>
           </div>
-        </form>   
+        
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group row">
+                <label class="col-sm-3 col-form-label">Supplier Type <span style="color:red">*</span></label>
+                <div class="col-sm-9">
+                    <select id="supplier_type_array" style="width: 100%;" class="form-control1" multiple data-live-search="true">
+                      <option value="1">Retail</option>
+                      <option value="2">Wholesale</option>
+                    </select>
+                    <script>
+                      jQuery('#supplier_type_array').multipleSelect({ 
+                        placeholder: "Select Supplier Type", 
+                        selectAll: true, 
+                        multiple: false, 
+                        multipleWidth: 120
+                      });
+                    </script>
+                    <input type="hidden" id="supplier_type" name="supplier_type" value="0">
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group row">
+                <label class="col-sm-3 col-form-label">Phone 2</label>
+                <div class="col-sm-9">
+                  <input id="secondary_contact" name="secondary_contact" type="text" class="form-control" value=" "/>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group row">
+                <label class="col-sm-3 col-form-label">Address</label>
+                <div class="col-sm-9">
+                <textarea required id="address" name="address" class="form-control" rows="4"></textarea>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group row">
+                <label class="col-sm-3 col-form-label">Email</label>
+                <div class="col-sm-9">
+                  <input id="email" name="email" type="text" class="form-control" />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group row">
+                <label class="col-sm-3 col-form-label">Area</label>
+                <div class="col-sm-9">
+                  <input id="area" name="area" type="text" class="form-control" />
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group row">
+                <label class="col-sm-3 col-form-label">Country</label>
+                <div class="col-sm-9">
+                  <select required id="counntry" name="country" class="form-control">
+                    <option>Bangladesh</option>
+                    <option>America</option>
+                    <option>China</option>
+                    <option>Russia</option>
+                    <option>Britain</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="forms-sample" align="center">
+        <button onclick="call_ajax_submit();" id="CustomerSaveButton" type="button" class="btn btn-primary">Save</button>
+        <span id="loading" style="display:none">Please wait... <img src="<?=config('app.url')?>/resources/master/images/loader.gif" align="bottom"></span>
+      </div>
+    </form>   
   </div>
 </div>
 

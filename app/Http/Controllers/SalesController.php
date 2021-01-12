@@ -15,6 +15,8 @@ use App\SalesCartDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use PHPMailer\PHPMailer\PHPMailer;
+use Illuminate\Support\Facades\Auth;
+
 
 class SalesController extends Controller
 {
@@ -74,7 +76,8 @@ class SalesController extends Controller
                 
                 $id = $request['product_'.$i];
                 $quantity = $request['quantity_'.$i];
-                $products = Product::select('current_stock')->whereId($id)->first();
+                $products = Product::find($id);
+                $product_name = $products->name;
                 $current_stock = $products->current_stock - $quantity;
                 $data_product['current_stock'] = $current_stock;
                 Product::whereId($id)->update($data_product);
@@ -95,10 +98,25 @@ class SalesController extends Controller
         $customer_id = $request['customer_id'];
         $due = $request['due'];
         $customer = Customer::find($customer_id);
+        $cust_name = $customer->name;
         $cust_due = $customer->due + $due;
         $data_cus['due'] = $cust_due;
-        Customer::whereId($id)->update($data_cus);
+        Customer::whereId($customer_id)->update($data_cus);
 
+        $desc = 'Product '.$product_name.' is sold to customer '.$cust_name;
+        $user_act[]=array(
+            'Activities_Id'=>1,
+            'Activities_by'=>Auth::user()->id,
+            'Activities_dt'=>date('Y-m-d H:i:s'),
+            'IP'=>$request->ip(),
+            'Operate_Id'=>$sale_id,
+            'table_name'=>"sales",
+            'Description'=>$desc,
+            );
+
+        $user_activity = DB::table('usr_activities_histry')->insert($user_act);            
+        
+       
 
     }
 
@@ -145,6 +163,46 @@ class SalesController extends Controller
     public function destroy($id)
     {
         //
+        //echo'<pre>';print_r($sale);exit;
+        $sales = Sale::find($id);
+        $sale_id = $id;
+        
+        $customer_id = $sales->customer_id;
+        $due = $sales->due;
+        $customer = Customer::find($customer_id);
+        $cust_due = $customer->due - $due;
+        $data_cus['due'] = $cust_due;
+        Customer::whereId($customer_id)->update($data_cus);
+        
+        $sales_cart = SalesCartDetail::where("sales_id","=",$id)->get();
+        foreach($sales_cart as $sales){
+            $quantity = $sales->quantity;
+            $products = Product::find($sales->product_id);
+            $current_stock = $products->current_stock + $quantity;
+            $data_product['current_stock'] = $current_stock;
+            Product::whereId($sales->product_id)->update($data_product);
+            $SalesCartDetail = SalesCartDetail::find($sales->id);
+            $SalesCartDetail->destroy($sales->id);
+        }
+
+        $sales->destroy($id);
+
+        
+        //user_activity
+        
+        $desc = 'Sales Deleted';
+        $user_act[]=array(
+            'Activities_Id'=>3,
+            'Activities_by'=>Auth::user()->id,
+            'Activities_dt'=>date('Y-m-d H:i:s'),
+            'IP'=>request()->ip(),
+            'Operate_Id'=>$sale_id,
+            'table_name'=>"sales",
+            'Description'=>$desc,
+            );
+
+        $user_activity = DB::table('usr_activities_histry')->insert($user_act);    
+        
     }
 
     
@@ -398,7 +456,7 @@ class SalesController extends Controller
 
         $str.='<tr>'; 
 
-        $str.='<td colspan="3" rowspan="3" align="left"> Amount in words:  '.$total_amount_words;
+        $str.='<td colspan="3" rowspan="4" align="left"> Amount in words:  '.$total_amount_words;
         $str.='</td>';
 
         $str.='<td align="right">Total = ';
@@ -407,6 +465,14 @@ class SalesController extends Controller
         $str.='<td align="right"> '.$this->comma($request->subtotal);
         $str.='</td>';
 
+        $str.='</tr>';
+
+        $str.='<tr>';
+        $str.='<td align="right">Vat = ';
+        $str.='</td>';
+
+        $str.='<td align="right"> '.$this->comma($request->vat);
+        $str.='</td>';
         $str.='</tr>';
         
         $str.='<tr>';
@@ -1110,7 +1176,7 @@ class SalesController extends Controller
 
         $str.='<tr>'; 
 
-        $str.='<td colspan="3" rowspan="3" align="left"> Amount in words:  '.$total_amount_words;
+        $str.='<td colspan="3" rowspan="4" align="left"> Amount in words:  '.$total_amount_words;
         $str.='</td>';
 
         $str.='<td align="right">Total = ';
@@ -1119,6 +1185,14 @@ class SalesController extends Controller
         $str.='<td align="right"> '.$this->comma($request->subtotal);
         $str.='</td>';
 
+        $str.='</tr>';
+
+        $str.='<tr>';
+        $str.='<td align="right">Vat = ';
+        $str.='</td>';
+
+        $str.='<td align="right"> '.$this->comma($request->vat);
+        $str.='</td>';
         $str.='</tr>';
         
         $str.='<tr>';
