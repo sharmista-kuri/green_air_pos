@@ -302,7 +302,7 @@ class SalesController extends Controller
         $str.='<td width="15%">Invoice No: '.$request->invoice_no.'</td>';
         $str.='<td style="text-align: center;
         vertical-align: middle;"  color="green">One Stop Electronics & Air Conditioning Solutions</td>';
-        $str.='<td width="20%"> Date: '.$request->sale_date.'</td>';
+        $str.='<td width="20%"> Date: '.(date("d/m/Y", strtotime($request->sale_date))).'</td>';
         $str.='</tr>';
 
         $str.='<tr>';
@@ -379,7 +379,7 @@ class SalesController extends Controller
         $str.='</tr>';
 
         $str.='<tr>';
-        $str.='<td>Address: '.$request->customer_address;
+        $str.='<td>Address: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; '.$request->customer_address;
         $str.='</td>';
         $str.='</tr>';
 
@@ -718,7 +718,7 @@ class SalesController extends Controller
         $str.='<td width="15%">Invoice No: '.$request->invoice_no.'</td>';
         $str.='<td style="text-align: center;
         vertical-align: middle;"  color="green">One Stop Electronics & Air Conditioning Solutions</td>';
-        $str.='<td width="20%"> Date: '.$request->sale_date.'</td>';
+        $str.='<td width="20%"> Date: '.(date("d/m/Y", strtotime($request->sale_date))).'</td>';
         $str.='</tr>';
 
         $str.='<tr>';
@@ -787,20 +787,20 @@ class SalesController extends Controller
         $str.='</tr>';
 
         $str.='<tr>';
-        $str.='<td>&nbsp; &nbsp; &nbsp;  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;.....................................................................';
+        $str.='<td>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;.....................................................................';
         $str.='</td>';
 
-        $str.='<td> &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;....................................................';
-        $str.='</td>';
-        $str.='</tr>';
-
-        $str.='<tr>';
-        $str.='<td>Address: '.$request->customer_address;
+        $str.='<td> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;....................................................';
         $str.='</td>';
         $str.='</tr>';
 
         $str.='<tr>';
-        $str.='<td>&nbsp; &nbsp; &nbsp;  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;.....................................................................';
+        $str.='<td>Address:&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; '.$request->customer_address;
+        $str.='</td>';
+        $str.='</tr>';
+
+        $str.='<tr>';
+        $str.='<td>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;.....................................................................';
         $str.='</td>';
         $str.='<td>..............................................................';
         $str.='</td>';
@@ -943,7 +943,7 @@ class SalesController extends Controller
         //echo '<pre>';print_r($path.$filename);exit;
         $email = $request->customer_email;
         $str = "Thank You";
-        $subject = "Invoice";
+        $subject = $request->invoice_no;
 
         @include('vendor/autoload.php');
 
@@ -1028,7 +1028,7 @@ class SalesController extends Controller
         $str.='<td width="15%">Invoice No: '.$request->invoice_no.'</td>';
         $str.='<td style="text-align: center;
         vertical-align: middle;"  color="green">One Stop Electronics & Air Conditioning Solutions</td>';
-        $str.='<td width="20%"> Date: '.$request->sale_date.'</td>';
+        $str.='<td width="20%"> Date: '.(date("d/m/Y", strtotime($request->sale_date))).'</td>';
         $str.='</tr>';
 
         $str.='<tr>';
@@ -1083,7 +1083,7 @@ class SalesController extends Controller
         
 
 
-        $str.='<td> Mob: '.$request->contact_no;
+        $str.='<td> Mob: '.$request->primary_contact;
         $str.='</td>';
         $str.='</tr>';
 
@@ -1096,7 +1096,7 @@ class SalesController extends Controller
         $str.='</tr>';
 
         $str.='<tr>';
-        $str.='<td>Address: '.$request->customer_address;
+        $str.='<td>Address: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; '.$request->address;
         $str.='</td>';
         $str.='</tr>';
 

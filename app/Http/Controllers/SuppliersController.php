@@ -50,6 +50,19 @@ class SuppliersController extends Controller
     {
         //
         $supplier_id = Supplier::create($request->all())->id;
+
+        $desc = 'Supplier Added';
+        $user_act[]=array(
+            'Activities_Id'=>1,
+            'Activities_by'=>Auth::user()->id,
+            'Activities_dt'=>date('Y-m-d H:i:s'),
+            'IP'=>$request->ip(),
+            'Operate_Id'=>$supplier_id,
+            'table_name'=>"suppliers",
+            'Description'=>$desc,
+            );
+
+        $user_activity = DB::table('usr_activities_histry')->insert($user_act); 
     }
 
     /**
@@ -80,7 +93,7 @@ class SuppliersController extends Controller
         
         
         if($request->supplier_name != '') 
-        {$where.=" AND name = '".trim($request->supplier_name)."'";}
+        {$where.=" AND name like '%".trim($request->supplier_name)."%'";}
 
         if($request->email != '') 
         {$where.=" AND email = '".trim($request->email)."'";}
@@ -117,6 +130,7 @@ class SuppliersController extends Controller
     public function edit($id)
     {
         //
+        
     }
 
     /**
@@ -129,6 +143,24 @@ class SuppliersController extends Controller
     public function update(Request $request, $id)
     {
         //
+        //echo'<pre>';print_r($request->all());exit;
+        $input = $request->except(['_method','selectAll','selectItem']);
+
+        $supplier_id = Supplier::where('id','=',$id)->update($input);
+
+        $desc = 'Supplier Updated';
+        $user_act[]=array(
+            'Activities_Id'=>2,
+            'Activities_by'=>Auth::user()->id,
+            'Activities_dt'=>date('Y-m-d H:i:s'),
+            'IP'=>$request->ip(),
+            'Operate_Id'=>$id,
+            'table_name'=>"suppliers",
+            'Description'=>$desc,
+            );
+
+        $user_activity = DB::table('usr_activities_histry')->insert($user_act); 
+
     }
 
     /**

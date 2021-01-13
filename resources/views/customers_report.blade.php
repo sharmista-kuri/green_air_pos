@@ -261,8 +261,9 @@
     jQuery('#customer_type').val(jQuery('#customer_type_array').val());
     var form = $('#customer_form')[0];
     var data = new FormData(form);
-    //alert(data);
-    //data =1;
+    var id = jQuery("#customer_id_label").text();
+    var url = '{{ route("customers.update", ":id") }}';
+    url = url.replace(':id', id);
     jQuery.ajax({
     headers: {
           'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -272,7 +273,7 @@
           contentType: false,
           processData: false,
           enctype: 'multipart/form-data',
-          url: "{{ route('customer_update') }}",
+          url: url,
           data: data,
           datatype: "json",
           success: function(data){
@@ -334,6 +335,7 @@
   <div>Edit</div>
   <div style="overflow: hidden;">
     <form id="customer_form">
+    {{ method_field('PATCH') }}
       <div class="card">
         <div class="card-body">
             <div class="row">

@@ -35,24 +35,19 @@
   
     var category_id = [<? $i=1; foreach($categories as $value){ if($i!=1){echo ',';} echo '{value:"'.$value->id.'", label:"'.$value->name.'"}'; $i++;}?>];
 	  jQuery("#category_id").jqxComboBox({theme: theme, promptText: "Select Category", source: category_id, width: '170'});
+	  jQuery("#category_ids").jqxComboBox({theme: theme, promptText: "Select Category", source: category_id, width: '170'});
   
     var brand_id = [<? $i=1; foreach($brands as $value){ if($i!=1){echo ',';} echo '{value:"'.$value->id.'", label:"'.$value->name.'"}'; $i++;}?>];
 	  jQuery("#brand_id").jqxComboBox({theme: theme, promptText: "Select Brand", source: brand_id});
+	  jQuery("#brand_ids").jqxComboBox({theme: theme, promptText: "Select Brand", source: brand_id});
 
     var theme = 'energyblue';
 
     $("#popupWindow").jqxWindow({
-      theme: theme , height: 150, width: 350, resizable: true,  isModal: true, autoOpen: false, cancelButton: $("#Cancel"), modalOpacity: 0.01           
+      theme: theme , width: 1000, maxHeight: 1000, resizable: true,  isModal: true, autoOpen: false, cancelButton: $("#Cancel"), modalOpacity: 0.01           
     });
 
-    $("#purchase_price").width(150);
-    $("#purchase_price").height(23);
-
-    $("#sale_price").width(150);
-    $("#sale_price").height(23);
-
-    $("#purchase_price").jqxInput({ theme: theme });
-    $("#sale_price").jqxInput({ theme: theme });
+    
 
     $("#Cancel").jqxButton({ theme: theme });
     $("#Save").jqxButton({ theme: theme });
@@ -201,64 +196,98 @@
     
     }
 
-    function edit(val,indx)
+    /* function edit(val,indx)
     {
       $("#id").val(val);
       $("#product_ID").text(val);
       $("#jqxgrid").jqxGrid('clearselection');
       $("#popupWindow").jqxWindow('open');
       return false;
+    } */
+
+    function edit(val,indx)
+    {
+      $("#id").val(val);
+
+      
+      var url = '{{ route("products.show", ":id") }}';
+      url = url.replace(':id', val);
+      jQuery.ajax({
+        type: "GET",
+        cache: false,
+        url: url,
+        data : { "_token": "{{ csrf_token() }}"},
+        datatype: "json",
+        success: function(datas){
+          data = JSON.parse(datas);
+          jQuery("#product_ids").val(data.id);
+          jQuery("#products_name").val(data.name);
+          jQuery("#category_ids").val(data.category_id);
+          jQuery("#brand_ids").val(data.brand_id);
+          jQuery("#description").val(data.address);
+          jQuery("#purchase_price").val(data.purchase_price);
+          jQuery("#sale_price").val(data.sale_price);
+          jQuery("#current_stock").val(data.current_stock);
+         
+          
+              
+        }
+      }); 
+
+      $("#popupWindow").jqxWindow('open');
+      
     }
 
-    jQuery("#Save").click(function (){
-      //alert("hi");
-      call_ajax_submit();
+    jQuery('#product_form').jqxValidator({
+      hintType: "label",
+			theme:"light",
+      rules: [
+          { input: '#products_name', message: 'Required!', action: 'keyup,blur', rule:'required' },
+      ]
     });
 
-  function call_ajax_submit(){
+    jQuery("#ProductSaveButton").click(function () {
+      alert("hi");			
+      var validationResult = function (isValid) {
+        if (isValid) {
+          product_call_ajax_submit();
+        }
+      }
+      jQuery('#product_form').jqxValidator('validate', validationResult);
+    });
 
+    function product_call_ajax_submit()
+    {
+      jQuery("#ProductSaveButton").hide();
+      jQuery("#productloading").show();
+      
       var form = $('#product_form')[0];
-		  var data = new FormData(form);
-      //alert(data);
-      //data =1;
+      var data = new FormData(form);
+
+      var id = jQuery("#product_ids").val();
+      var url = '{{ route("products.update", ":id") }}';
+      url = url.replace(':id', id);
+      
       jQuery.ajax({
-			headers: {
-		        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-		    },
-            type: "POST",
-            cache: false,
-            contentType: false,
-   			    processData: false,
-   			    enctype: 'multipart/form-data',
-            url: "{{ route('products_update_price') }}",
-            data: data,
-            datatype: "json",
-            success: function(data){
-            	$("#popupWindow").jqxWindow('close');
-           
-					    submitonclick(0,2);
-                  
-          }
-        });
-      /* jQuery.ajax({
-        headers: {
-		        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-		    },
+          headers: {
+              'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+          },
           type: "POST",
           cache: false,
           contentType: false,
           processData: false,
           enctype: 'multipart/form-data',
-          url: "{{ route('products_update_price')}}",
-          data : data,
+          url: url,
+          data: data,
           datatype: "json",
           success: function(data){
-            $("#popupWindow").jqxWindow('close');
-           
-					  submitonclick(0,2);
-            //jQuery("#jqxgrid").jqxGrid('updatebounddata');
-          }
-      });  */
+            $("#productloading").hide();
+            $("#ProductSaveButton").show();
+            alert("Successfully saved");
+            $("#popupWindow").jqxWindow('close'); 
+            submitonclick(0,2);              
+        }
+      });	
     }
     
 </script>
@@ -302,29 +331,93 @@
 <div id="popupWindow">
   <div>Edit</div>
   <div style="overflow: hidden;">
-  
-      <table>
-      <form id="product_form">
-        <input type="hidden" id="id" name="id"/>
-        <tr>
-            <td align="right">Product ID:</td>
-            <td align="left"><span id="product_ID"></span></td>
-        </tr>
-        <!-- <tr>
-            <td align="right">Purchase Price:</td>
-            <td align="left"><input id="purchase_price" name="purchase_price"/></td>
-        </tr> -->
-        <tr>
-            <td align="right">Sale Price:</td>
-            <td align="left"><input id="sale_price" name="sale_price"/></td>
-        </tr>
-        <tr>
-            <td align="right"></td>
-            <td style="padding-top: 10px;" align="right"><input onclick="call_ajax_submit()" style="margin-right: 5px;" type="button" id="Save" value="Save" /><input id="Cancel" type="button" value="Cancel" /></td>
-        </tr>
-        </form> 
-      </table>
-      
+    <form id="product_form">
+      {{ method_field('PATCH') }}
+      <div class="card">
+        <div class="card-body">
+          <h4 class="card-title">Product</h4>
+          <div class="row">
+            <div class="col-md-12">
+              <div class="form-group row">
+                <label class="col-sm-3 col-form-label">Category <span style="color:red">*</span></label>
+                <div id="category_ids" name="category_id">
+                </div>
+                <div class="col-sm-1 forms-sample">
+                  
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <div class="form-group row">
+                <label class="col-sm-3 col-form-label">Brand <span style="color:red">*</span></label>
+                <div id="brand_ids" name="brand_id">
+                </div>
+                <div class="col-sm-1 forms-sample">
+                  
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <div class="form-group row">
+                <label class="col-sm-3 col-form-label">Name <span style="color:red">*</span></label>
+                <div class="col-sm-9">
+                  <input required id="product_ids"  type="hidden" class="form-control" />
+                  <input required id="products_name" name="name" type="text" class="form-control" />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <div class="form-group row">
+                <label class="col-sm-3 col-form-label">Description</label>
+                <div class="col-sm-9">
+                <textarea required id="description" name="description" class="form-control" rows="4"></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <div class="form-group row">
+                <label class="col-sm-3 col-form-label">Purchase Price</label>
+                <div class="col-sm-9">
+                  <input required id="purchase_price" name="purchase_price" type="text" class="form-control" />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <div class="form-group row">
+                <label class="col-sm-3 col-form-label">Sale Price</label>
+                <div class="col-sm-9">
+                  <input required id="sale_price" name="sale_price" type="text" class="form-control" />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <div class="form-group row">
+                <label class="col-sm-3 col-form-label">Current Stock</label>
+                <div class="col-sm-9">
+                  <input required id="current_stock" name="current_stock" type="text" class="form-control" />
+                </div>
+              </div>
+            </div>
+          </div> 
+        </div>
+      </div>
+      <div class="forms-sample" align="center">
+        <button onclick="product_call_ajax_submit();" id="ProductSaveButton" type="button" class="btn btn-primary">Save</button>
+        <span id="productloading" style="display:none">Please wait... <img src="<?=config('app.url')?>/resources/master/images/loader.gif" align="bottom"></span>
+      </div>
+    </form> 
   </div>
 </div>
 

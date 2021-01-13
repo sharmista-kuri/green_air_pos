@@ -54,6 +54,19 @@ class CustomersController extends Controller
         //
         //echo'<pre>';print_r($request->all());exit;
         $customer_id = Customer::create($request->all())->id;
+
+        $desc = 'Customer Added';
+        $user_act[]=array(
+            'Activities_Id'=>1,
+            'Activities_by'=>Auth::user()->id,
+            'Activities_dt'=>date('Y-m-d H:i:s'),
+            'IP'=>$request->ip(),
+            'Operate_Id'=>$customer_id,
+            'table_name'=>"customers",
+            'Description'=>$desc,
+            );
+
+        $user_activity = DB::table('usr_activities_histry')->insert($user_act); 
     }
 
     /**
@@ -89,6 +102,22 @@ class CustomersController extends Controller
     public function update(Request $request, $id)
     {
         //
+        $input = $request->except(['_method','selectAll','selectItem']);
+
+        Customer::where('id','=',$id)->update($input);
+
+        $desc = 'Customer Updated';
+        $user_act[]=array(
+            'Activities_Id'=>2,
+            'Activities_by'=>Auth::user()->id,
+            'Activities_dt'=>date('Y-m-d H:i:s'),
+            'IP'=>$request->ip(),
+            'Operate_Id'=>$id,
+            'table_name'=>"customers",
+            'Description'=>$desc,
+            );
+
+        $user_activity = DB::table('usr_activities_histry')->insert($user_act); 
     }
 
     /**
@@ -144,7 +173,7 @@ class CustomersController extends Controller
         
         
         if($request->customer_name != '') 
-        {$where.=" AND name = '".trim($request->customer_name)."'";}
+        {$where.=" AND name like '%".trim($request->customer_name)."%'";}
 
         if($request->email != '') 
         {$where.=" AND email = '".trim($request->email)."'";}
@@ -176,7 +205,7 @@ class CustomersController extends Controller
     }
 
     function customer_update(Request $request){
-        echo'<pre>';print_r($request->all());exit;
+        //echo'<pre>';print_r($request->all());exit;
         Customer::where('id',$request->id)->update($request->all());
     }
 }

@@ -50,7 +50,20 @@ class ProductsController extends Controller
     public function store(Request $request)
     {
         //
-        $product = Product::create($request->all())->id;
+        $product_id = Product::create($request->all())->id;
+
+        $desc = 'Product Added';
+        $user_act[]=array(
+            'Activities_Id'=>1,
+            'Activities_by'=>Auth::user()->id,
+            'Activities_dt'=>date('Y-m-d H:i:s'),
+            'IP'=>$request->ip(),
+            'Operate_Id'=>$product_id,
+            'table_name'=>"products",
+            'Description'=>$desc,
+            );
+
+        $user_activity = DB::table('usr_activities_histry')->insert($user_act); 
     }
 
     /**
@@ -62,6 +75,8 @@ class ProductsController extends Controller
     public function show($id)
     {
         //
+        $product = Product::find($id);
+        echo json_encode($product);
     }
 
     /**
@@ -85,7 +100,21 @@ class ProductsController extends Controller
     public function update(Request $request, $id)
     {
         //
-        Product::where('id',$request->id)->update($request->all());
+        $input = $request->except(['_method']);
+        Product::where('id',$request->id)->update($input);
+
+        $desc = 'Product Updated';
+        $user_act[]=array(
+            'Activities_Id'=>2,
+            'Activities_by'=>Auth::user()->id,
+            'Activities_dt'=>date('Y-m-d H:i:s'),
+            'IP'=>$request->ip(),
+            'Operate_Id'=>$id,
+            'table_name'=>"products",
+            'Description'=>$desc,
+            );
+
+        $user_activity = DB::table('usr_activities_histry')->insert($user_act); 
     }
 
     /**

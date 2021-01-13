@@ -117,36 +117,36 @@
     </div>
   </div>
   <div class="forms-sample">
-    <button id="CustomerSaveButton" type="button" class="btn btn-primary">Save</button>
+    <button id="SupplierSaveButton" type="button" class="btn btn-primary">Save</button>
     <span id="loading" style="display:none">Please wait... <img src="<?=config('app.url')?>/resources/master/images/loader.gif" align="bottom"></span>
   </div>
 </form>
 
 
 <script>
-  jQuery('#category_form').jqxValidator({
+  jQuery('#supplier_form').jqxValidator({
       hintType: "label",
 			theme:"light",
       rules: [
-          { input: '#category_name', message: 'Required!', action: 'keyup,blur', rule:'required' },
+          { input: '#supplier_name_form', message: 'Required!', action: 'keyup,blur', rule:'required' },
       ]
   });
 
-  jQuery("#CategorySaveButton").click(function () {			
+  jQuery("#SupplierSaveButton").click(function () {			
 		var validationResult = function (isValid) {
 			if (isValid) {
-				category_call_ajax_submit();
+				supplier_call_ajax_submit();
 			}
 		}
-		jQuery('#category_form').jqxValidator('validate', validationResult);
+		jQuery('#supplier_form').jqxValidator('validate', validationResult);
 	});
 
-  function category_call_ajax_submit()
+  function supplier_call_ajax_submit()
 	{
-		jQuery("#CategorySaveButton").hide();
-		jQuery("#categoryloading").show();
+		jQuery("#SupplierSaveButton").hide();
+		jQuery("#loading").show();
     
-		var form = $('#category_form')[0];
+		var form = $('#supplier_form')[0];
 		var data = new FormData(form);
     
     jQuery.ajax({
@@ -158,12 +158,12 @@
         contentType: false,
         processData: false,
         enctype: 'multipart/form-data',
-        url: "{{ route('categories.store') }}",
+        url: "{{ route('suppliers.store') }}",
         data: data,
         datatype: "json",
         success: function(data){
-          $("#categoryloading").hide();
-          $("#CategorySaveButton").show();            
+          $("#loading").hide();
+          $("#SupplierSaveButton").show();            
       }
     });	
   }

@@ -44,7 +44,7 @@
                   <div class="col-sm-4">
                     <div class="form-check">
                       <label class="form-check-label">
-                        <input required type="radio" class="form-check-input" name="purchase_type" id="purchase_type1" value="1">
+                        <input type="radio" class="form-check-input" name="purchase_type" id="purchase_type1" value="1">
                             Retail
                       </label>
                     </div>
@@ -52,7 +52,7 @@
                   <div class="col-sm-5">
                     <div class="form-check">
                         <label class="form-check-label">
-                          <input type="radio" class="form-check-input" name="purchase_type" id="purchase_type2" value="2">
+                          <input checked required type="radio" class="form-check-input" name="purchase_type" id="purchase_type2" value="2">
                             Wholesale
                         </label>
                     </div>

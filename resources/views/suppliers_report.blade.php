@@ -223,46 +223,48 @@
           jQuery("#contact_no").val(data.primary_contact);
           jQuery("#supplier_email").val(data.email);
           jQuery("#country").val(data.country);
-          type = data.customer_type;
+          type = data.supplier_type;
           arr_type = type.split(",");
           jQuery("#supplier_type_array").multipleSelect("setSelects", arr_type);
               
         }
-    }); 
+      }); 
 
-      //$("#product_ID").text(val);
-      //$("#jqxgrid").jqxGrid('clearselection');
       $("#popupWindow").jqxWindow('open');
-      return false;
+      
     }
 </script>
 <script>
-    jQuery('#customer_form').jqxValidator({
+    jQuery('#supplier_form').jqxValidator({
       hintType: "label",
 			theme:"light",
       rules: [
-          { input: '#name', message: 'Required!', action: 'keyup,blur', rule:'required' },
+          { input: '#supplier_name_form', message: 'Required!', action: 'keyup,blur', rule:'required' },
           
           
       ]
   });
 
-  jQuery("#CustomerSaveButton").click(function () {
-    alert("hi");			
+  jQuery("#SupplierSaveButton").click(function () {
+    //alert("hi");			
 		var validationResult = function (isValid) {
 			if (isValid) {
 				call_ajax_submit();
 			}
 		}
-		jQuery('#customer_form').jqxValidator('validate', validationResult);
+		jQuery('#supplier_form').jqxValidator('validate', validationResult);
 	});
 
   function call_ajax_submit(){
-    jQuery('#customer_type').val(jQuery('#customer_type_array').val());
-    var form = $('#customer_form')[0];
+    jQuery('#supplier_type').val(jQuery('#supplier_type_array').val());
+    var form = $('#supplier_form')[0];
     var data = new FormData(form);
+    var id = jQuery("#supplier_id_label").text();
+    var url = '{{ route("suppliers.update", ":id") }}';
+    url = url.replace(':id', id);
+
     //alert(data);
-    //data =1;
+
     jQuery.ajax({
     headers: {
           'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -272,7 +274,7 @@
           contentType: false,
           processData: false,
           enctype: 'multipart/form-data',
-          url: "{{ route('customer_update') }}",
+          url: url,
           data: data,
           datatype: "json",
           success: function(data){
@@ -333,7 +335,8 @@
 <div id="popupWindow">
   <div>Edit</div>
   <div style="overflow: hidden;">
-    <form id="customer_form">
+    <form id="supplier_form">
+    {{ method_field('PATCH') }}
       <div class="card">
         <div class="card-body">
           <h4 class="card-title">Supplier</h4>
@@ -442,7 +445,7 @@
         </div>
       </div>
       <div class="forms-sample" align="center">
-        <button onclick="call_ajax_submit();" id="CustomerSaveButton" type="button" class="btn btn-primary">Save</button>
+        <button onclick="call_ajax_submit();" id="SupplierSaveButton" type="button" class="btn btn-primary">Save</button>
         <span id="loading" style="display:none">Please wait... <img src="<?=config('app.url')?>/resources/master/images/loader.gif" align="bottom"></span>
       </div>
     </form>   
