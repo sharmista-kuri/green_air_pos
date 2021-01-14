@@ -236,10 +236,10 @@
             <div class="form-group">
                 <label class="col-sm-12 col-form-label">Discount</label>
                 <div class="row">
-                    <div class="col-md-4">
+                    <!-- <div class="col-md-4">
                         <input onblur="discount_cal()" id="discount_percent" name="discount_percent" value="0" type="text" class="form-control" />
                     </div>
-                    %
+                    % -->
                     <div class="col-md-7">
                         <input onblur="discount_tk_cal()" id="discount" name="discount" value="0.00" type="text" class="form-control" />
                     </div>
@@ -613,6 +613,14 @@
 </form>
 
 <script>
+  $(document).ready(function() {
+    $(window).keydown(function(event){
+      if(event.keyCode == 13) {
+        event.preventDefault();
+        return false;
+      }
+    });
+  });
   jQuery(document).ready(function($) {
     var theme = 'classic';
     //var employee_id = [<? $i=1; foreach($employees as $value){ if($i!=1){echo ',';} echo '{value:"'.$value->id.'", label:"'.$value->name.'"}'; $i++;}?>];
