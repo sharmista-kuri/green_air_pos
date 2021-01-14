@@ -158,18 +158,26 @@
               
         
                 columns: [
-                  { text: 'R', menu: false, datafield: 'Edit', align:'center', editable: false,  sortable: false, width: 50,
-                    cellsrenderer: function (row) {
-                      editrow = row;
-                      var dataRecord = jQuery("#jqxgrid").jqxGrid('getrowdata', editrow);
-                      return '<div style="text-align:center;  cursor:pointer" onclick="edit('+dataRecord.id+','+editrow+')" ><img align="center" src="<?=config('app.url');?>/resources/master/images/rights.png"></div>';
+                /* { text: 'D', menu: false, datafield: 'Delete', align:'center', editable: false,  sortable: false, width: 50,
+                  cellsrenderer: function (row) {
+                    editrow = row;
+                    var dataRecord = jQuery("#jqxgrid").jqxGrid('getrowdata', editrow);
+                    return '<div style="text-align:center;  cursor:pointer" onclick="delete('+dataRecord.id+','+editrow+')" ><img align="center" src="<?=config('app.url');?>/resources/master/images/del.png"></div>';
+
+                  }
+                }, */  
+                { text: 'E', menu: false, datafield: 'Edit', align:'center', editable: false,  sortable: false, width: 50,
+                  cellsrenderer: function (row) {
+                    editrow = row;
+                    var dataRecord = jQuery("#jqxgrid").jqxGrid('getrowdata', editrow);
+                    return '<div style="text-align:center;  cursor:pointer" onclick="edit('+dataRecord.id+','+editrow+')" ><img align="center" src="<?=config('app.url');?>/resources/master/images/edit.png"></div>';
 
                   }
                 },
-                { text: 'ID', datafield: 'id'/* , hidden:true */,  editable: false,  width: '250' },
+                { text: 'ID', datafield: 'id', hidden:true,  editable: false,  width: '250' },
                 { text: 'User Name', datafield: 'name', editable: false, width: '300' },
                 { text: 'User Email', datafield: 'email', editable: false, width: '300' },
-                 { text: 'User Role', datafield: 'role', editable: false, width: '300' },
+               /*  { text: 'User Role', datafield: 'role', editable: false, width: '300' }, */
                 /* { text: 'Customer Type', datafield: 'customer_type', editable: false, width: '150' }, */
                 
               ]
@@ -228,8 +236,7 @@
       ]
   });
 
-  jQuery("#CustomerSaveButton").click(function () {
-    alert("hi");			
+  jQuery("#CustomerSaveButton").click(function () {	
 		var validationResult = function (isValid) {
 			if (isValid) {
 				call_ajax_submit();
@@ -277,7 +284,7 @@
 	<div id="body"  >
 		<div style="display:block; min-height:350px; height:auto">
       <form method="POST" name="form" id="form"  style="margin:0px;">
-        <div style="color:blue"><b><i>User Rights</i></b></div>
+        <!-- <div style="color:blue"><b><i>User Rights</i></b></div> -->
 		    <div style="padding:0.5%;width:99%; border:1px solid #c0c0c0;font-family: Calibri;font-size: 14px">
 
 		  	  <table id="deal_body" style="display:block;width:100%">
@@ -305,7 +312,7 @@
 
 
 <div id="popupWindow">
-  <div>User Rights </div>
+  <div>User</div>
   <div style="overflow: hidden;">
     <form id="user_form" method="post" enctype="multipart/form-data">
       <div class="card">
@@ -330,7 +337,7 @@
                     </div>
                   </div>
                 </div>
-                <div class="row">
+                <!-- <div class="row">
                   <div class="col-md-12">
                     <div class="form-group row">
                       <label class="col-sm-2 col-form-label">User Role</label>
@@ -345,8 +352,8 @@
                       </div>
                     </div>
                   </div>
-                </div>
-                <div class="row">
+                </div> -->
+                <!-- <div class="row">
                   <div class="col-md-6">
                     <div class="form-group row">
                       <label class="col-sm-3 col-form-label">User Image</label>
@@ -355,8 +362,7 @@
                       </div>
                     </div>
                   </div>
-                  
-                </div>
+                </div> -->
             </div>
           </div>
           <div class="forms-sample" align="center">

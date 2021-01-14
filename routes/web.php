@@ -69,6 +69,7 @@ Route::post('user_rights', 'UserController@user_rights')->name('user_rights');
 Route::any('sales_print', 'SalesController@sales_print')->name('sales_print');
 Route::any('purchase_print', 'PurchasesController@purchase_print')->name('purchase_print');
 Route::any('grid_sales_print', 'SalesController@grid_sales_print')->name('grid_sales_print');
+Route::any('grid_purchase_print', 'PurchasesController@grid_purchase_print')->name('grid_purchase_print');
 Route::any('sales_email', 'SalesController@sales_email')->name('sales.email');
 Route::post('products_update_price', 'ProductsController@products_update_price')->name('products_update_price');
 Route::post('customer_update', 'CustomersController@customer_update')->name('customer_update');

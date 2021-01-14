@@ -14,6 +14,8 @@ use App\Supplier;
 use App\Transaction;
 use App\PurchaseCartDetail;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class PurchasesController extends Controller
 {
@@ -70,28 +72,15 @@ class PurchasesController extends Controller
                 $data['amount']=$request['amount_'.$i];
                 $salesCart = PurchaseCartDetail::create($data);
                 //echo'<pre>';print_r($request->all());exit;
-                $product_id = $request['product_'.$i];
+                $id = $request['product_'.$i];
                 $quantity = $request['quantity_'.$i];
-                $exists = Product::whereId($product_id)->exists();
-                
-                if($exists){
-                    $products = Product::select('current_stock')->whereId($product_id)->first();
-                    if($products->current_stock==null){
-                        $current_stocks = 0;
-                    }
-                    else{
-                        $current_stocks = $products->current_stock;
-                    }
-                    
-                }
-                else{
-                    $current_stocks = 0;
-                }
-
-                $current_stock = $current_stocks + $quantity;
+                $products = Product::find($id);
+                $product_name = $products->name;
+                $current_stock = $products->current_stock - $quantity;
                 $data_product['current_stock'] = $current_stock;
-                $data_product['purchase_price'] = $request['rate_'.$i];
-                Product::whereId($product_id)->update($data_product);
+                Product::whereId($id)->update($data_product);
+
+                
             }
             
         }
@@ -104,6 +93,27 @@ class PurchasesController extends Controller
         $data_transaction['amount']=$request['paid'];
 
         $transaction = Transaction::create($data_transaction);
+
+        $supplier_id = $request['supplier_id'];
+        $due = $request['due'];
+        $supplier = Supplier::find($supplier_id);
+        $supplier_name = $supplier->name;
+        $supplier_due = $supplier->due + $due;
+        $data_supplier['due'] = $supplier_due;
+        Supplier::whereId($supplier_id)->update($data_supplier);
+
+        $desc = 'Product '.$product_name.' is purchased from supplier '.$supplier_name;
+        $user_act[]=array(
+            'Activities_Id'=>1,
+            'Activities_by'=>Auth::user()->id,
+            'Activities_dt'=>date('Y-m-d H:i:s'),
+            'IP'=>$request->ip(),
+            'Operate_Id'=>$supplier_id,
+            'table_name'=>"suppliers",
+            'Description'=>$desc,
+            );
+
+        $user_activity = DB::table('usr_activities_histry')->insert($user_act); 
 
         return redirect()->action('PurchasesController@create');
     }
@@ -151,6 +161,44 @@ class PurchasesController extends Controller
     public function destroy($id)
     {
         //
+        $purchases = Purchase::find($id);
+        $purchases_id = $id;
+        
+        $supplier_id = $purchases->supplier_id;
+        $due = $purchases->due;
+        $supplier = Supplier::find($supplier_id);
+        $supplier_due = $supplier->due - $due;
+        $data_supplier['due'] = $supplier_due;
+        Supplier::whereId($supplier_id)->update($data_supplier);
+        
+        $purchases_cart = PurchaseCartDetail::where("purchase_id","=",$id)->get();
+        foreach($purchases_cart as $purchases){
+            $quantity = $purchases->quantity;
+            $products = Product::find($purchases->product_id);
+            $current_stock = $products->current_stock - $quantity;
+            $data_product['current_stock'] = $current_stock;
+            Product::whereId($purchases->product_id)->update($data_product);
+            $SalesCartDetail = PurchaseCartDetail::find($purchases->id);
+            $SalesCartDetail->destroy($purchases->id);
+        }
+
+        $purchases->destroy($id);
+
+        
+        //user_activity
+        
+        $desc = 'Purchase Deleted';
+        $user_act[]=array(
+            'Activities_Id'=>3,
+            'Activities_by'=>Auth::user()->id,
+            'Activities_dt'=>date('Y-m-d H:i:s'),
+            'IP'=>request()->ip(),
+            'Operate_Id'=>$purchases_id,
+            'table_name'=>"purchases",
+            'Description'=>$desc,
+            );
+
+        $user_activity = DB::table('usr_activities_histry')->insert($user_act);   
     }
 
     public function grid(Request $request){
@@ -193,7 +241,7 @@ class PurchasesController extends Controller
         
         $products = PurchaseCartDetail::whereRaw($where1);
 		
-        $q = Purchase::with(['employees'])->with(['suppliers'])->whereRaw($where)
+        $q = Purchase::with(['users'])->with(['suppliers'])->whereRaw($where)
         ->joinSub($products, 'purchase_cart_details', function ($join) {
             $join->on('purchases.id', '=', 'purchase_cart_details.purchase_id');
         })
@@ -246,7 +294,7 @@ class PurchasesController extends Controller
         $str.='<td width="15%">Invoice No: '.$request->invoice_no.'</td>';
         $str.='<td style="text-align: center;
         vertical-align: middle;"  color="green">One Stop Electronics & Air Conditioning Solutions</td>';
-        $str.='<td width="20%"> Date: '.$request->purchase_date.'</td>';
+        $str.='<td width="20%"> Date: '.(date("d/m/Y", strtotime($request->purchase_date))).'</td>';
         $str.='</tr>';
 
         $str.='<tr>';
@@ -323,7 +371,7 @@ class PurchasesController extends Controller
         $str.='</tr>';
 
         $str.='<tr>';
-        $str.='<td>Address: '.$request->supplier_address;
+        $str.='<td>Address: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;'.$request->supplier_address;
         $str.='</td>';
         $str.='</tr>';
 
@@ -400,7 +448,7 @@ class PurchasesController extends Controller
 
         $str.='<tr>'; 
 
-        $str.='<td colspan="3" rowspan="3" align="left"> Amount in words:  '.$total_amount_words;
+        $str.='<td colspan="3" rowspan="4" align="left"> Amount in words:  '.$total_amount_words;
         $str.='</td>';
 
         $str.='<td align="right">Total = ';
@@ -409,6 +457,14 @@ class PurchasesController extends Controller
         $str.='<td align="right"> '.$this->comma($request->subtotal);
         $str.='</td>';
 
+        $str.='</tr>';
+
+        $str.='<tr>';
+        $str.='<td align="right">Vat = ';
+        $str.='</td>';
+
+        $str.='<td align="right"> '.$this->comma($request->vat);
+        $str.='</td>';
         $str.='</tr>';
         
         $str.='<tr>';
@@ -624,6 +680,265 @@ class PurchasesController extends Controller
 
 		}
 		return $out22r;
+    }
+
+    function grid_purchase_print(Request $req){
+        //echo'<pre>';print_r($request->all());exit;
+        //$request = Sale::with()->find($req->id);
+
+        $request = Purchase::
+          selectRaw('*,suppliers.name as supplier_name')
+        ->leftJoin('users','users.id','=','purchases.employee_id')
+        ->leftJoin('suppliers','suppliers.id','=','purchases.supplier_id')
+        ->where('purchases.id',"=",$req->id)
+        ->first();
+
+        //echo'<pre>';print_r($req->id);exit;
+        ob_get_clean();
+        @include('vendor/autoload.php');
+
+        $mpdf = new Mpdf();
+
+        
+        $img = config('app.url')."/resources/master/images/ga.png";
+        $str="";
+        $str.="<html>";
+        $str.="<body>";
+        //$str.='<img src='.$img.' alt="Green Air" width="50" height="60">';
+        
+        $str.='<div align="center" color="green" style="font-size:30px">
+                <img src='.$img.' alt="Green Air" width="110" height="110">
+                </div>';
+        
+        $str.='<table>';
+        $str.='<tr>';
+        $str.='<td width="15%">Invoice No: '.$request->invoice_no.'</td>';
+        $str.='<td style="text-align: center;
+        vertical-align: middle;"  color="green">One Stop Electronics & Air Conditioning Solutions</td>';
+        $str.='<td width="20%"> Date: '.(date("d/m/Y", strtotime($request->purchase_date))).'</td>';
+        $str.='</tr>';
+
+        $str.='<tr>';
+        $str.='<td width="20%"></td>';
+        $str.='<td text-align="center"></td>';
+        $str.='<td width="20%"></td>';
+        $str.='</tr>';
+
+        $str.='<tr>';
+        $str.='<td></td>';
+        $str.='<td style="text-align: center;
+        vertical-align: middle;" >1285 Begum Rokeya Sarani, East Monipur, Mirput 10, Dhaka-1216</td>';
+        $str.='<td></td>';
+        $str.='</tr>';
+
+        $str.='<tr>';
+        $str.='<td></td>';
+        $str.='<td style="text-align: center;
+        vertical-align: middle;">Contact No:01914120894, 01676031397 Email:greenair.official@gmail.com</td>';
+        $str.='<td></td>';
+        $str.='</tr>';
+
+        $str.='</table>';
+
+        $str.='<br>';
+        
+        $str.='<div style="">';
+
+        $str.='<div align="center" color="green" style="font-size:30px;border:1px solid green;border-radius: 25px;">
+                INVOICE
+                </div>';
+        $str.='</div>';
+
+
+        $str.='<br>';
+        $str.='<br>';
+
+        $str.='<table>';
+        $str.='<tr>';
+        $str.='<td width="20%"></td>';
+        $str.='<td text-align="center"></td>';
+        $str.='<td width="20%"></td>';
+        $str.='</tr>';
+        $str.='</table>';
+
+        $str.='<table>';
+
+        $str.='<tr>';
+        $str.='<td>Customer Name: '.$request->supplier_name;
+        $str.='</td>';
+
+        
+
+
+        $str.='<td> Mob: '.$request->primary_contact;
+        $str.='</td>';
+        $str.='</tr>';
+
+        $str.='<tr>';
+        $str.='<td>&nbsp; &nbsp; &nbsp;  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;.....................................................................';
+        $str.='</td>';
+
+        $str.='<td> &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;....................................................';
+        $str.='</td>';
+        $str.='</tr>';
+
+        $str.='<tr>';
+        $str.='<td>Address: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; '.$request->address;
+        $str.='</td>';
+        $str.='</tr>';
+
+        $str.='<tr>';
+        $str.='<td>&nbsp; &nbsp; &nbsp;  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;.....................................................................';
+        $str.='</td>';
+        $str.='<td>..............................................................';
+        $str.='</td>';
+        $str.='</tr>';
+        $str.='</table>';
+
+
+        $str.='<br>';
+        $str.='<br>';
+
+        $str.='<table border=1 style="border-collapse: collapse; text-align:center" width="100%">';
+        $str.='<tr>';
+        
+        $str.='<td>Sl No.';
+        $str.='</td>';
+
+        $str.='<td>Product Description';
+        $str.='</td>';
+
+        $str.='<td>Quantity';
+        $str.='</td>';
+
+        $str.='<td>Unit Price';
+        $str.='</td>';
+
+        $str.='<td>Amount';
+        $str.='</td>';
+
+        $str.='</tr>';
+
+        //$counter = explode(",",$request->product_id);
+        
+        $sales_cart = PurchaseCartDetail::where("purchase_id","=",$req->id)->get();
+        $i=0;
+        foreach($sales_cart as $sales){
+            $i++;
+        //for($i=0; $i<sizeof($counter); $i++){
+            
+            //if($request['delete_'.$i]==0){               
+                $id = $sales->product_id;
+                $quantity = $sales->quantity;
+                $rate = $sales->rate;
+                $amount = $sales->amount;
+
+                $product_details = Product::find($id);
+
+                $str.='<tr>';
+        
+                $str.='<td width="10%">'.$i;
+                $str.='</td>';
+
+                $str.='<td width="50%">'.$product_details->name;
+                $str.='</td>';
+
+                $str.='<td>'.$quantity;
+                $str.='</td>';
+
+                $str.='<td  align="right" >'.$this->comma($rate);
+                $str.='</td>';
+
+                $str.='<td align="right" >'.$this->comma($amount);
+                $str.='</td>';
+
+                $str.='</tr>';
+           // }
+            
+        }
+
+        /* $str.='</tr>';
+        $str.='</table>'; */
+        $total_amount_words= $this->convet_TK($request->total);
+     
+
+        $str.='<tr>'; 
+
+        $str.='<td colspan="3" rowspan="4" align="left"> Amount in words:  '.$total_amount_words;
+        $str.='</td>';
+
+        $str.='<td align="right">Total = ';
+        $str.='</td>';
+
+        $str.='<td align="right"> '.$this->comma($request->subtotal);
+        $str.='</td>';
+
+        $str.='</tr>';
+
+        $str.='<tr>';
+        $str.='<td align="right">Vat = ';
+        $str.='</td>';
+
+        $str.='<td align="right"> '.$this->comma($request->vat);
+        $str.='</td>';
+        $str.='</tr>';
+        
+        $str.='<tr>';
+        $str.='<td align="right">Less Discount = ';
+        $str.='</td>';
+
+        $str.='<td align="right"> '.$this->comma($request->discount);
+        $str.='</td>';
+        $str.='</tr>';
+
+        $str.='<tr>';
+        $str.='<td align="right">Net Amount = ';
+        $str.='</td>';
+
+        $str.='<td align="right"> '.$this->comma($request->total);
+        $str.='</td>';
+        $str.='</tr>';
+
+        $str.='</table>';
+
+
+        $str.='<br>';
+        $str.='<br>';
+        $str.='<br>';
+        $str.='<br>';
+        $str.='<br>';
+        $str.='<br>';
+
+
+
+        $str.='<table>';
+        $str.='<tr>';
+        $str.='<td width="20%">..............................................</td>';
+        $str.='<td style="text-align: center; vertical-align: middle;">Goods once sold not refundable</td>';
+        $str.='<td width="20%">...............................................</td>';
+        $str.='</tr>';
+
+        $str.='<tr>';
+        $str.='<td width="20%" style="text-align: center; vertical-align: middle;">Customer Signature</td>';
+        $str.='<td style="text-align: center; vertical-align: middle;">THANK YOU FOR YOUR BUSINESS</td>';
+        $str.='<td width="20%" style="text-align: center; vertical-align: middle;">Green Air</td>';
+        $str.='</tr>';
+        $str.='</table>';
+        
+        
+        $str.="</body>";
+        $str.="</html>";
+
+
+
+
+        $mpdf->SetAuthor("Sharmista Kuri");
+        $mpdf->SetTitle("Purchase".$request->invoice_no.".pdf");
+        $mpdf->AddPage('P', 'A4');
+     
+        $mpdf->writeHTML($str, \Mpdf\HTMLParserMode::HTML_BODY, true, false);
+       
+        $mpdf->Output(date('Y-m-d').'_'.$request->invoice_no.'_purchase.pdf', 'I');
     }
 
     

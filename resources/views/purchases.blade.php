@@ -24,8 +24,8 @@
               <div class="col-md-6">
                 <div class="form-group row">
                   <label class="col-sm-3 col-form-label">User <span style="color:red">*</span></label>
-                  <div id="employee_id" name="employee_id">
-                  </div>
+                  <label class="col-form-label">{{ Auth::user()->name }}</label>
+                  <input id="employee_id" name="employee_id" type="hidden" value="{{ Auth::user()->id }}"/>
                 </div>
               </div>
             </div>
@@ -231,7 +231,7 @@
             </div>
             <div class="form-group">
                 <label class="col-sm-12 col-form-label">Transport/Labour</label>
-                <input id="transport_labour" name="transport_labour" value="0" type="text" class="form-control" />
+                <input onblur="transport_labour_cal()" id="transport_labour" name="transport_labour" value="0" type="text" class="form-control" />
             </div>
             <div class="form-group">
                 <label class="col-sm-12 col-form-label">Discount</label>
@@ -241,7 +241,7 @@
                     </div>
                     %
                     <div class="col-md-7">
-                        <input id="discount" name="discount" value="0.00" type="text" class="form-control" />
+                        <input onblur="discount_tk_cal()" id="discount" name="discount" value="0.00" type="text" class="form-control" />
                     </div>
                 </div>
             </div>
@@ -249,10 +249,12 @@
                 <label class="col-sm-12 col-form-label">Total</label>
                 <label class="col-sm-12 col-form-label" id="total_label">0.00</label>
                 <input id="total" name="total" value="0.00" type="hidden" class="form-control" />
+                <input id="total_vat" name="total_vat" value="0.00" type="hidden" class="form-control" />
+                <input id="total_discount" name="total_discount" value="0.00" type="hidden" class="form-control" />
             </div>
             <div class="form-group">
                 <label class="col-sm-12 col-form-label">Paid</label>
-                <input id="paid" name="paid" value="0.00" type="text" class="form-control" />
+                <input onblur="paid_cal()" id="paid" name="paid" value="0.00" type="text" class="form-control" />
             </div>   
             <div class="form-group">
                 <label class="col-sm-12 col-form-label">Due</label>
@@ -613,8 +615,8 @@
 <script>
   jQuery(document).ready(function($) {
     var theme = 'classic';
-    var employee_id = [<? $i=1; foreach($employees as $value){ if($i!=1){echo ',';} echo '{value:"'.$value->id.'", label:"'.$value->name.'"}'; $i++;}?>];
-	  jQuery("#employee_id").jqxComboBox({theme: theme, promptText: "Select Employee", source: employee_id});
+    //var employee_id = [<? $i=1; foreach($employees as $value){ if($i!=1){echo ',';} echo '{value:"'.$value->id.'", label:"'.$value->name.'"}'; $i++;}?>];
+	  //jQuery("#employee_id").jqxComboBox({theme: theme, promptText: "Select Employee", source: employee_id});
   
     var supplier_id = [<? $i=1; foreach($suppliers as $value){ if($i!=1){echo ',';} echo '{value:"'.$value->id.'", label:"'.$value->name.'"}'; $i++;}?>];
 	  jQuery("#supplier_id").jqxComboBox({theme: theme, promptText: "Select Supplier", source: supplier_id, width: '170'});
@@ -637,7 +639,29 @@
     invoice_create();
   
   });
+  function transport_labour_cal(){
+    var total = jQuery("#total").val();
+    var transport_labour = jQuery("#transport_labour").val();
+    var total = (parseFloat(total)+parseFloat(transport_labour)).toFixed(2);
+    jQuery("#total").val(total);
+    jQuery("#total_span").text(total);
+    jQuery("#total_label").text(total);
+    paid();
+  }
+  function paid(){
+    var total = jQuery("#total").val();
+    jQuery("#paid").val(total);
+    paid_cal();
+  }
 
+  function paid_cal(){
+    var total = jQuery("#total").val();
+    var paid = jQuery("#paid").val();
+    var due = parseFloat(total-paid).toFixed(2);
+    jQuery("#due").val(due);
+
+
+  }
   function invoice_create(){
     jQuery.ajax({
         type: "POST",
@@ -746,49 +770,70 @@
 	}
 
   function add_to_cart(){
-    var tr_counter = jQuery("#tr_counter").val();
-    var product_id = jQuery("#product_id").jqxComboBox('getSelectedItem').value;
-    var product_name = jQuery("#product_name").val();
-    var quantity = jQuery("#quantity").val();
-    var rate = jQuery("#rate").val();
-    var amount = parseFloat(jQuery("#amount").val()).toFixed(2);
+    var quantity = parseInt(jQuery("#quantity").val());
+    var stock = parseInt(jQuery("#stock").text());
+    //alert(stock+","+quantity);
+    if(stock<quantity){
+      alert("Out of Stock!!!");
+    }
+    else{
+      var tr_counter = jQuery("#tr_counter").val();
+      var product_id = jQuery("#product_id").jqxComboBox('getSelectedItem').value;
+      //alert(product_id);
+      var product_name = jQuery("#product_name").val();
+      
+      var rate = jQuery("#rate").val();
+      var amount = parseFloat(jQuery("#amount").val()).toFixed(2);
+      
+      var str = "";
+      str+='<tr id="tr_'+tr_counter+'" class="table-success">';
+      str+='          <td></td>';
+
+      str+='          <td>'+product_name+'<input type="hidden" id="product_'+tr_counter+'" name="product_'+tr_counter+'" value="'+product_id+'"/></td>';
+
+      str+='          <td>'+quantity+'<input type="hidden" id="quantity_'+tr_counter+'" name="quantity_'+tr_counter+'" value="'+quantity+'"/></td>';
+
+      str+='          <td>pcs</td>';
+
+      str+='          <td>'+rate+'<input type="hidden" id="rate_'+tr_counter+'" name="rate_'+tr_counter+'" value="'+rate+'"/></td>';
+
+      str+='          <td>'+amount+'<input type="hidden" id="amount_'+tr_counter+'" name="amount_'+tr_counter+'" value="'+amount+'"/></td>';
+
+      str+='          <td><input type="hidden" id="delete_'+tr_counter+'" name="delete_'+tr_counter+'" value="0"/><i onclick="delete_cart('+tr_counter+')" class="mdi mdi-delete-circle icon-md text-primary"></i></td>';
+
+      str+='      </tr>';
+
+      
+
+      var subtotal = (parseFloat(jQuery("#subtotal").val())+ parseFloat(jQuery("#amount").val())).toFixed(2);
+
+      var total = (parseFloat(jQuery("#total").val())+ parseFloat(jQuery("#amount").val())+parseFloat(jQuery("#vat").val())+parseFloat(jQuery("#transport_labour").val())-parseFloat(jQuery("#discount").val())).toFixed(2);
+
+      var paid = (parseFloat(jQuery("#paid").val())+ parseFloat(jQuery("#amount").val())).toFixed(2);
+
+      if(total!="NaN"){
+        jQuery("#subtotal").val(subtotal);
+        jQuery("#subtotal_span").text(subtotal);
+        jQuery("#total").val(total);
+        jQuery("#total_span").text(total);
+        jQuery("#total_label").text(total);
+        jQuery("#paid").val(paid);
+
+        jQuery("#product_tbody").append(str);
+        jQuery("#tr_counter").val(parseInt(tr_counter)+1);
+
+        var stock = stock - quantity;
+        jQuery("#stock").text(stock);
+
+      }
+      
+
+      jQuery("#quantity").val("");
+      jQuery("#amount").val("");
+      jQuery("#rate").val("");
+    }
+
     
-    var str = "";
-    str+='<tr id="tr_'+tr_counter+'" class="table-success">';
-    str+='          <td></td>';
-
-    str+='          <td>'+product_name+'<input type="hidden" id="product_'+tr_counter+'" name="product_'+tr_counter+'" value="'+product_id+'"/></td>';
-
-    str+='          <td>'+quantity+'<input type="hidden" id="quantity_'+tr_counter+'" name="quantity_'+tr_counter+'" value="'+quantity+'"/></td>';
-
-    str+='          <td>pcs</td>';
-
-    str+='          <td>'+rate+'<input type="hidden" id="rate_'+tr_counter+'" name="rate_'+tr_counter+'" value="'+rate+'"/></td>';
-
-    str+='          <td>'+amount+'<input type="hidden" id="amount_'+tr_counter+'" name="amount_'+tr_counter+'" value="'+amount+'"/></td>';
-
-    str+='          <td><input type="hidden" id="delete_'+tr_counter+'" name="delete_'+tr_counter+'" value="0"/><i onclick="delete_cart('+tr_counter+')" class="mdi mdi-delete-circle icon-md text-primary"></i></td>';
-
-    str+='      </tr>';
-
-    jQuery("#product_tbody").append(str);
-    jQuery("#tr_counter").val(parseInt(tr_counter)+1);
-
-    var subtotal = (parseFloat(jQuery("#subtotal").val())+ parseFloat(jQuery("#amount").val())).toFixed(2);
-
-    var total = (parseFloat(jQuery("#total").val())+ parseFloat(jQuery("#amount").val())+parseFloat(jQuery("#vat").val())+parseFloat(jQuery("#transport_labour").val())-parseFloat(jQuery("#discount").val())).toFixed(2);
-
-    var paid = (parseFloat(jQuery("#paid").val())+ parseFloat(jQuery("#amount").val())).toFixed(2);
-
-    jQuery("#subtotal").val(subtotal);
-    jQuery("#subtotal_span").text(subtotal);
-    jQuery("#total").val(total);
-    jQuery("#total_span").text(total);
-    jQuery("#total_label").text(total);
-    jQuery("#paid").val(paid);
-
-    jQuery("#quantity").val("");
-    jQuery("#amount").val("");
 
 
 
@@ -798,6 +843,26 @@
   function delete_cart(i){
     jQuery("#delete_"+i).val(1);
     jQuery("#tr_"+i).hide();
+
+    var stock = parseInt(jQuery("#stock").text());
+    var quantity = parseInt(jQuery("#quantity_"+i).val());
+    var stock = stock + quantity;
+    jQuery("#stock").text(stock);
+
+    var subtotal = parseFloat(jQuery("#subtotal").val());
+    var total = parseFloat(jQuery("#total").val());
+    var amount = parseFloat(jQuery("#amount_"+i).val());
+    subtotal = subtotal-amount;
+    total = total-amount;
+    jQuery("#subtotal").val(subtotal);
+    jQuery("#subtotal_span").text(subtotal);
+
+    jQuery("#total").val(total);
+    jQuery("#total_span").text(total);
+    jQuery("#total_label").text(total);
+
+    paid();
+
 
   }
 
@@ -811,16 +876,67 @@
   }
 
   function vat_cal(){
+    var subtotal = parseFloat(jQuery("#subtotal").val());
+    var total = parseFloat(jQuery("#total").val());
     var vat_percent = parseFloat(jQuery("#vat_percent").val());
-    var vat = (vat_percent % 100).toFixed(2);
+    var vat = (subtotal*(vat_percent / 100)).toFixed(2);
     jQuery("#vat").val(vat);
+
+    var discount_tk = parseFloat(jQuery("#discount").val());
+    if(discount_tk=="0.00"){
+      var total = (parseFloat(subtotal)+parseFloat(vat)).toFixed(2);
+      jQuery("#total").val(total);
+      jQuery("#total_span").text(total);
+      jQuery("#total_label").text(total);
+    }
+    else{
+      var total = (parseFloat(subtotal)+parseFloat(vat)).toFixed(2);
+      var total = parseFloat(total-discount_tk).toFixed(2);
+      jQuery("#total").val(total);
+      jQuery("#total_span").text(total);
+      jQuery("#total_label").text(total);
+    }
+
+    paid();
+   
     
   }
 
   function discount_cal(){
+    var subtotal = jQuery("#subtotal").val();
+    var total = jQuery("#total").val();
     var discount_percent = parseFloat(jQuery("#discount_percent").val());
-    var discount = (discount_percent % 100).toFixed(2);
+    var discount = (subtotal*(discount_percent / 100)).toFixed(2);
     jQuery("#discount").val(discount);
+    var total = parseFloat(subtotal-discount).toFixed(2);
+    jQuery("#total").val(total);
+    jQuery("#total_span").text(total);
+    jQuery("#total_label").text(total);
+
+    paid();
+  }
+
+  function discount_tk_cal(){
+    var subtotal = jQuery("#subtotal").val();
+    var total = jQuery("#total").val();
+    var discount_tk = parseFloat(jQuery("#discount").val());
+    var vat_percent = parseFloat(jQuery("#vat_percent").val());
+    var vat = (subtotal*(vat_percent / 100)).toFixed(2);
+    var total = parseFloat(subtotal-discount_tk).toFixed(2);
+    if(vat_percent=="0"){
+      jQuery("#total").val(total);
+      jQuery("#total_span").text(total);
+      jQuery("#total_label").text(total);
+    }
+    else{
+      total = (parseFloat(total)+parseFloat(vat)).toFixed(2);
+      jQuery("#total").val(total);
+      jQuery("#total_span").text(total);
+      jQuery("#total_label").text(total);
+    }
+
+    paid();
+    
   }
 
   function add_supplier(){

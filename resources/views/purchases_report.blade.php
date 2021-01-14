@@ -100,10 +100,11 @@
             datatype: "json",
             datafields: [
               { name: 'id', type: 'int'},
+              { name: 'purchase_id', map: 'purchases>id'},
               { name: 'invoice_no', type: 'string'},
               { name: 'name', type: 'string'},
               { name: 'cus_name', map: 'suppliers>name'},
-              { name: 'emp_name', map: 'employees>name'},
+              { name: 'emp_name', map: 'users>name'},
               { name: 'total', type: 'string'},
               { name: 'paid', type: 'string'},
               { name: 'due', type: 'string'},
@@ -147,25 +148,41 @@
               
         
                 columns: [
-                { text: 'ID', datafield: 'id', hidden:true,  editable: false,  width: '145' },
-                { text: 'Invoice No', datafield: 'invoice_no', editable: false, width: '150' },
-                { text: 'Employee Name', datafield: 'emp_name', editable: false, width: '150' },
-                { text: 'Supplier Name', datafield: 'cus_name', editable: false, width: '150' },
-                { text: 'Product Name', datafield: 'name', editable: false, width: '150' },
-                { text: 'Quantity', datafield: 'quantity', editable: false, width: '150' },
-                { text: 'Rate', datafield: 'rate', editable: false, width: '150' },
-                /* { text: 'Amount', datafield: 'amount', editable: false, width: '150' }, */
-                { text: 'Amount', datafield: 'amount', cellsalign: 'left', cellsformat: 'c2', aggregates: ['sum'] },
-                /* { text: 'Price', datafield: 'amount', cellsalign: 'right', cellsformat: 'c2', aggregates: [{ '<b>Total</b>':
-                          function (aggregatedValue, currentValue, column, record) {
-                              var total = currentValue * parseInt(record['quantity']);
-                              return aggregatedValue + total;
-                          }
-                    }]                  
-                } */
-                /* { text: 'Total', datafield: 'total', editable: false, width: '150' },
-                { text: 'Paid', datafield: 'paid', editable: false, width: '150' },
-                { text: 'Due', datafield: 'due', editable: false, width: '150' }, */
+                  { text: 'Delete', menu: false, datafield: 'Delete', align:'center', editable: false,  sortable: false, width: 30,
+                    cellsrenderer: function (row) {
+                      editrow = row;
+                      var dataRecord = jQuery("#jqxgrid").jqxGrid('getrowdata', editrow);
+                      return '<div style="text-align:center;  cursor:pointer" onclick="delete_sales('+dataRecord.purchase_id+')" ><img align="center" src="<?=config('app.url');?>/resources/master/images/del.png"></div>';
+
+                    }
+                  },
+                  { text: 'Print', menu: false, datafield: 'Print', align:'center', editable: false,  sortable: false, width: 30,
+                    cellsrenderer: function (row) {
+                      editrow = row;
+                      var dataRecord = jQuery("#jqxgrid").jqxGrid('getrowdata', editrow);
+                      return '<div style="text-align:center;  cursor:pointer" onclick="Print('+dataRecord.purchase_id+')" ><img align="center" src="<?=config('app.url');?>/resources/master/images/edit.png"></div>';
+
+                    }
+                  }, 
+                  { text: 'ID', datafield: 'id', hidden:true,  editable: false,  width: '145' },
+                  { text: 'Invoice No', datafield: 'invoice_no', editable: false, width: '150' },
+                  { text: 'Employee Name', datafield: 'emp_name', editable: false, width: '150' },
+                  { text: 'Supplier Name', datafield: 'cus_name', editable: false, width: '150' },
+                  { text: 'Product Name', datafield: 'name', editable: false, width: '150' },
+                  { text: 'Quantity', datafield: 'quantity', editable: false, width: '150' },
+                  { text: 'Rate', datafield: 'rate', editable: false, width: '150' },
+                  /* { text: 'Amount', datafield: 'amount', editable: false, width: '150' }, */
+                  { text: 'Amount', datafield: 'amount', cellsalign: 'left', cellsformat: 'c2', aggregates: ['sum'] },
+                  /* { text: 'Price', datafield: 'amount', cellsalign: 'right', cellsformat: 'c2', aggregates: [{ '<b>Total</b>':
+                            function (aggregatedValue, currentValue, column, record) {
+                                var total = currentValue * parseInt(record['quantity']);
+                                return aggregatedValue + total;
+                            }
+                      }]                  
+                  } */
+                  /* { text: 'Total', datafield: 'total', editable: false, width: '150' },
+                  { text: 'Paid', datafield: 'paid', editable: false, width: '150' },
+                  { text: 'Due', datafield: 'due', editable: false, width: '150' }, */
                 		 
                 
                 
@@ -183,7 +200,38 @@
     localizationobj.currencysymbol = " ";                
     return localizationobj;
 }
+
+function delete_sales(id){
+  $id = $("#id").val(id);
+  var url = '{{ route("purchases.destroy", ":id") }}';
+  url = url.replace(':id', id);
+  jQuery.ajax({
+      type: "DELETE",
+      cache: false,
+      url: url,
+      data : { "_token": "{{ csrf_token() }}","id":id},
+      datatype: "json",
+      success: function(datas){
+        alert("Successfully Deleted.");
+        submitonclick(0,2);
+            
+      }
+  });
+}
+
+function Print(id){
+  $("#id").val(id);
+  var form = $('#sales_form')[0];
+  var data = new FormData(form);
+  
+  form.submit();
+  
+}
 </script>
+<form target="_blank" id="sales_form"  method="post" action="{{ route('grid_purchase_print') }}" enctype="multipart/form-data">
+@csrf 
+  <input id="id" name="id" type="hidden"/>
+</form>
 
 
 <div id="container">	

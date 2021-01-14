@@ -29,4 +29,9 @@ class Purchase extends Model
     {
         return $this->belongsTo(Employee::class,'employee_id');
     }
+
+    public function users()
+    {
+        return $this->belongsTo(User::class,'employee_id');
+    }
 }
