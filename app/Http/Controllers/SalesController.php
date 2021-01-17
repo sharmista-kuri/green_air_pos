@@ -89,6 +89,7 @@ class SalesController extends Controller
         $data_transaction['transaction_type_id']=1;
         $data_transaction['account_type_id']=1;
         $data_transaction['account_id']=$request['customer_id'];
+        $data_transaction['sales_purchase_id']=$sale_id;
         $data_transaction['description']=$request['remarks'];
         $data_transaction['amount']=$request['paid'];
 
@@ -184,6 +185,7 @@ class SalesController extends Controller
             $SalesCartDetail = SalesCartDetail::find($sales->id);
             $SalesCartDetail->destroy($sales->id);
         }
+        $transaction = Transaction::where('sales_purchase_id', '=', $id)->delete();
 
         $sales->destroy($id);
 

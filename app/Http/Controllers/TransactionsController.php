@@ -7,6 +7,7 @@ use App\Official;
 use App\Supplier;
 use App\AccountType;
 use App\Transaction;
+use App\OfficialType;
 use App\TransactionType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -99,14 +100,22 @@ class TransactionsController extends Controller
 
     public function account_select_box(Request $request){
         if($request['account_type']==1){
-            $accounts = Customer::orderBy('id','desc')->get();
+            $accounts = Customer::get();
         }
         else if($request['account_type']==2){
-            $accounts = Supplier::orderBy('id','desc')->get();
+            $accounts = Supplier::get();
+        }
+        else if($request['account_type']==3){
+            $accounts = OfficialType::get();
         }
         else{
-            $accounts = Official::orderBy('id','desc')->get();
+            $accounts = array();
         }
+        /* $acc[]=array(
+            'value'=>"",
+            'label'=>""
+            ); */
+        $acc = array();
         foreach ($accounts as $account){
             $acc[]=array(
 				'value'=>$account->id,
@@ -143,25 +152,28 @@ class TransactionsController extends Controller
     } */
     public function account_info_select_box(Request $request){
         if($request['account_type']==1){
-            //$accounts = Customer::with('sale')->sum('sale.due')->find($request->account_id); 
-            $accounts = DB::select( DB::raw("SELECT c.name, ROUND( (SELECT SUM(s.`total`) FROM `sales` s) - (SELECT SUM(t.`amount`) FROM `transactions` t WHERE t.`account_id`= $request->account_id AND t.`transaction_type_id`=1) ,2)AS due
+            /* $accounts = DB::select( DB::raw("
+            SELECT c.name, 
+            ROUND( (SELECT SUM(s.`total`) FROM `sales` s) - (SELECT SUM(t.`amount`) FROM `transactions` t 
+            WHERE t.`account_id`= $request->account_id AND t.`transaction_type_id`=1) ,2)AS due
             FROM `customers` c
-            ")); 
+            ")); */
+            /* $accounts = DB::select( DB::raw("
+            SELECT * FROM `customers` where id = $request->account_id
+            ")); */
+            $accounts = Customer::find($request->account_id);  
         }
         else if($request['account_type']==2){
-           /*  $accounts = DB::select( DB::raw("SELECT s.name, ROUND(( SUM(p.`total`)- SUM(t.`amount`) ) ,2) due due FROM `purchases` p
-            JOIN `transactions` t ON (t.`account_id`=p.`supplier_id` AND t.`transaction_type_id`=2)
-            JOIN `suppliers` s ON (s.id=p.`supplier_id`)
-            WHERE p.`supplier_id`=$request->account_id
-            GROUP BY p.`supplier_id`
-            "));  */
-
-            $accounts = DB::select( DB::raw("SELECT c.name,ROUND ( (SELECT SUM(p.`total`) FROM `purchases` p) - (SELECT SUM(t.`amount`) FROM `transactions` t WHERE t.`account_id`= $request->account_id AND t.`transaction_type_id`=2) ,2)AS due
+            /* $accounts = DB::select( DB::raw("SELECT c.name,ROUND ( (SELECT SUM(p.`total`) FROM `purchases` p) - (SELECT SUM(t.`amount`) FROM `transactions` t WHERE t.`account_id`= $request->account_id AND t.`transaction_type_id`=2) ,2)AS due
             FROM `customers` c
-            ")); 
+            "));  */
+            /* $accounts = DB::select( DB::raw("
+            SELECT * FROM `suppliers` where id = $request->account_id
+            "));  */
+            $accounts = Supplier::find($request->account_id);  
         }
         else{
-            $accounts = Official::find($request->account_id);
+            $accounts = OfficialType::find($request->account_id);
         }
         
         echo json_encode($accounts);

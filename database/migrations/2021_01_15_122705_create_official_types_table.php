@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateOfficalsTable extends Migration
+class CreateOfficialTypesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,11 @@ class CreateOfficalsTable extends Migration
      */
     public function up()
     {
-        Schema::create('officals', function (Blueprint $table) {
-            $table->id()->autoIncrement();
+        Schema::create('official_types', function (Blueprint $table) {
+            $table->id();
             $table->string('name');
-            $table->text('description')->nullable();
             $table->timestamps();
         });
-
-        DB::statement("ALTER TABLE officals AUTO_INCREMENT = 1000000;");
     }
 
     /**
@@ -30,6 +27,6 @@ class CreateOfficalsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('officals');
+        Schema::dropIfExists('official_types');
     }
 }

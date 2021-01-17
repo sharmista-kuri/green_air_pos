@@ -24,7 +24,7 @@
               <div class="form-group row">
                   <label class="col-sm-3 col-form-label">Date</label>
                   <div class="col-sm-9">
-                      <input required id="date" name="date" type="date" class="form-control" placeholder="dd/mm/yyyy"/>
+                      <input value="<?php echo date('Y-m-d')?>" required id="date" name="date" type="date" class="form-control" placeholder="dd/mm/yyyy"/>
                   </div>
               </div>
             </div>
@@ -33,15 +33,24 @@
             <div class="col-md-6">
               <div class="form-group row">
                 <label class="col-sm-3 col-form-label">Transaction Type</label>
-                <div class="col-sm-9">
-                  <!-- <select id="transaction_type_id" name="transaction_type_id" class="form-control">
-                    @foreach($transaction_types as $transaction_type)
-                    <option value="{{$transaction_type->id}}">{{$transaction_type->name}}</option>
-                    @endforeach
-                  </select> -->
-                  <div id="transaction_type_id" name="transaction_type_id">
+                
+                  <div class="col-sm-4">
+                    <div class="form-check">
+                      <label class="form-check-label">
+                        <input checked required type="radio" class="form-check-input" name="transaction_type_id" id="transaction_type_id1" value="1">
+                        Cash Receive
+                      </label>
+                    </div>
                   </div>
-                </div>
+                  <div class="col-sm-4">
+                    <div class="form-check">
+                        <label class="form-check-label">
+                          <input type="radio" class="form-check-input" name="transaction_type_id" id="transaction_type_id2" value="2">
+                          Cash Out
+                        </label>
+                    </div>
+                  </div>
+                
               </div> 
             </div>
             <div class="col-md-6">
@@ -66,6 +75,24 @@
 
                   <div onchange="account_change()" id="account_type" name="account_type">
                   </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group row">
+                <label class="col-sm-3 col-form-label">Account ID</label>
+                <div id="account_div" class="col-sm-9">
+                  <div onchange="account_info()" id="account_id" name="account_id"></div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group row">
+                <label class="col-sm-3 col-form-label">Description</label>
+                <div class="col-sm-9">
+                  <textarea required id="description" name="description" class="form-control" rows="4"></textarea>
                 </div>
               </div>
             </div>
@@ -131,8 +158,8 @@
 
   jQuery(document).ready(function($) {
     var theme = 'classic';
-    var transaction_types = [<? $i=1; foreach($transaction_types as $value){ if($i!=1){echo ',';} echo '{value:"'.$value->id.'", label:"'.$value->name.'"}'; $i++;}?>];
-	  jQuery("#transaction_type_id").jqxComboBox({theme: theme, promptText: "Select Transaction", source: transaction_types});
+    //var transaction_types = [<? $i=1; foreach($transaction_types as $value){ if($i!=1){echo ',';} echo '{value:"'.$value->id.'", label:"'.$value->name.'"}'; $i++;}?>];
+	  //jQuery("#transaction_type_id").jqxComboBox({theme: theme, promptText: "Select Transaction", source: transaction_types});
   
     var account_types = [<? $i=1; foreach($account_types as $value){ if($i!=1){echo ',';} echo '{value:"'.$value->id.'", label:"'.$value->name.'"}'; $i++;}?>];
 	  jQuery("#account_type").jqxComboBox({theme: theme, promptText: "Select Account Type", source: account_types, width: '200'});
@@ -166,7 +193,8 @@
     var account_id = jQuery("#account_id").jqxComboBox('getSelectedItem').value;
 
     //alert(account_type);
-    jQuery.ajax({
+    if(account_type>2){
+      jQuery.ajax({
         type: "POST",
         cache: false,
         url: "{{route('account_info_select_box')}}",
@@ -175,11 +203,16 @@
         success: function(datas){
           data = JSON.parse(datas);
           //alert(data[0].name);
-          jQuery("#account_name").text(data[0].name);
+          jQuery("#account_name").text(data.name);
           $("#due_label").show();
-          $("#due_amount").text(data[0].due);
+          $("#due_amount").text(data.due);
         }
-    });
+      });
+    }
+    else{
+      
+    }
+    
   }
 
   function transaction_id(){
