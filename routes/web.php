@@ -62,6 +62,7 @@ Route::post('purchases_grid', 'PurchasesController@grid')->name('purchases.grid'
 Route::post('products_grid', 'ProductsController@grid')->name('products.grid');
 Route::post('customers_grid', 'CustomersController@grid')->name('customers.grid');
 Route::post('suppliers_grid', 'SuppliersController@grid')->name('suppliers.grid');
+Route::post('transactions_grid', 'TransactionsController@grid')->name('transactions.grid');
 Route::post('users_grid', 'UserController@grid')->name('users.grid');
 Route::post('users_activity_grid', 'UserController@activity_grid')->name('users.activity.grid');
 Route::post('sidebar', 'UserController@sidebar_view')->name('sidebar');

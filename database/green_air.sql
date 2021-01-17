@@ -1,6 +1,6 @@
 /*
 SQLyog Ultimate v12.09 (64 bit)
-MySQL - 10.4.13-MariaDB : Database - green_air
+MySQL - 10.4.14-MariaDB : Database - green_air
 *********************************************************************
 */
 
@@ -9,8 +9,13 @@ MySQL - 10.4.13-MariaDB : Database - green_air
 /*!40101 SET SQL_MODE=''*/;
 
 /*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+CREATE DATABASE /*!32312 IF NOT EXISTS*/`green_air` /*!40100 DEFAULT CHARACTER SET utf8mb4 */;
+
+USE `green_air`;
+
 /*Table structure for table `account_types` */
 
 DROP TABLE IF EXISTS `account_types`;
@@ -173,13 +178,16 @@ CREATE TABLE `officials` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `amount` double(16,2) DEFAULT NULL,
+  `official_type_id` int(11) DEFAULT NULL,
   `description` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1000000 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1000001 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 /*Data for the table `officials` */
+
+insert  into `officials`(`id`,`name`,`amount`,`official_type_id`,`description`,`created_at`,`updated_at`) values (1000000,'kuri',1000.00,1,NULL,NULL,NULL);
 
 /*Table structure for table `password_resets` */
 
@@ -501,5 +509,6 @@ CREATE TABLE `usr_activities_histry` (
 insert  into `usr_activities_histry`(`id`,`Activities_Id`,`Activities_by`,`Activities_dt`,`IP`,`Operate_Id`,`table_name`,`Description`) values (1,1,8,'2021-01-12 06:39:27','::1','7','sales','Product Philips-Pink-HP8108 is sold to customer Shanto '),(2,3,8,'2021-01-12 06:53:26','::1','3','sales','Sales Deleted'),(3,3,8,'2021-01-12 07:01:42','::1','2','sales','Sales Deleted'),(4,1,8,'2021-01-12 07:32:37','::1','8','sales','Product Philips-Pink-HP8108 is sold to customer Shanto '),(5,3,8,'2021-01-12 07:33:45','::1','8','sales','Sales Deleted'),(6,1,8,'2021-01-13 05:40:58','::1','9','sales','Product Winstar-RH04 is sold to customer Shanto ');
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
 /*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;

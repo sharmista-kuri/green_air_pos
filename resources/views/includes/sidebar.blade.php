@@ -49,6 +49,7 @@
                 <li class="nav-item"> <a class="nav-link" href="{{route('suppliers.index')}}">Suppliers Report</a></li>
                 <li class="nav-item"> <a class="nav-link" href="{{route('customers.index')}}">Customer Report</a></li>
                 <li class="nav-item"> <a class="nav-link" href="{{route('products.index')}}">Price and Stock Report</a></li>
+                <li class="nav-item"> <a class="nav-link" href="{{route('transactions.index')}}">Transaction Report</a></li>
                 <li class="nav-item"> <a class="nav-link" href="{{route('users.activity')}}">User Activity Report</a></li>
                 
                 
