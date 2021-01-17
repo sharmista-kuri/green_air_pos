@@ -21,11 +21,11 @@ CREATE TABLE `account_types` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 /*Data for the table `account_types` */
 
-insert  into `account_types`(`id`,`name`,`created_at`,`updated_at`) values (1,'Customer',NULL,NULL),(2,'Supplier',NULL,NULL);
+insert  into `account_types`(`id`,`name`,`created_at`,`updated_at`) values (1,'Customer',NULL,NULL),(2,'Supplier',NULL,NULL),(3,'Official',NULL,NULL);
 
 /*Table structure for table `accounts` */
 
@@ -151,20 +151,19 @@ CREATE TABLE `migrations` (
 
 insert  into `migrations`(`id`,`migration`,`batch`) values (1,'2014_10_12_000000_create_users_table',1),(2,'2014_10_12_100000_create_password_resets_table',1),(3,'2019_08_19_000000_create_failed_jobs_table',1),(4,'2020_09_03_181858_create_sales_table',1),(5,'2020_09_03_185645_create_purchase_cart_details_table',1),(6,'2020_09_03_185714_create_sales_cart_details_table',1),(7,'2020_09_10_161252_create_roles_table',1),(8,'2020_09_10_161538_create_permissions_table',1),(9,'2020_09_10_161624_create_role_user_table',1),(10,'2020_09_12_141405_create_employees_table',1),(11,'2020_09_12_141536_create_customers_table',1),(12,'2020_09_12_141648_create_products_table',1),(13,'2020_09_12_141734_create_suppliers_table',1),(14,'2020_09_12_141829_create_purchases_table',1),(15,'2020_09_12_141920_create_transactions_table',1),(16,'2020_09_12_141958_create_transaction_types_table',1),(17,'2020_09_13_102500_create_accounts_table',1),(18,'2020_09_24_145100_create_categories_table',1),(19,'2020_09_24_150022_create_brands_table',1),(20,'2020_09_30_133758_create_account_types_table',1),(21,'2020_10_04_144024_create_officals_table',1),(22,'2020_10_04_172634_create_officials_table',1);
 
-/*Table structure for table `officals` */
+/*Table structure for table `official_types` */
 
-DROP TABLE IF EXISTS `officals`;
+DROP TABLE IF EXISTS `official_types`;
 
-CREATE TABLE `officals` (
-  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `description` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL,
+CREATE TABLE `official_types` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1000000 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
 
-/*Data for the table `officals` */
+/*Data for the table `official_types` */
+
+insert  into `official_types`(`id`,`name`) values (1,'Capital');
 
 /*Table structure for table `officials` */
 
@@ -173,6 +172,7 @@ DROP TABLE IF EXISTS `officials`;
 CREATE TABLE `officials` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `amount` double(16,2) DEFAULT NULL,
   `description` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
@@ -431,6 +431,7 @@ CREATE TABLE `transactions` (
   `transaction_type_id` int(11) NOT NULL,
   `account_type_id` int(11) NOT NULL,
   `account_id` int(11) NOT NULL,
+  `sales_purchase_id` int(11) DEFAULT 0,
   `description` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `amount` double(16,2) NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
@@ -440,7 +441,7 @@ CREATE TABLE `transactions` (
 
 /*Data for the table `transactions` */
 
-insert  into `transactions`(`id`,`date`,`transaction_type_id`,`account_type_id`,`account_id`,`description`,`amount`,`created_at`,`updated_at`) values (1000000,'2020-12-11',2,2,1000000,NULL,20000.00,'2020-12-11 16:13:07','2020-12-11 16:13:07'),(1000001,'2020-12-11',1,1,1000000,NULL,20000.00,'2020-12-11 16:26:55','2020-12-11 16:26:55'),(1000002,'2020-12-13',2,2,1000000,NULL,40000.00,'2020-12-13 04:30:11','2020-12-13 04:30:11'),(1000003,'2021-01-11',1,1,1000067,NULL,100.00,'2021-01-11 07:07:59','2021-01-11 07:07:59'),(1000004,'2021-01-11',1,1,1000067,NULL,1000.00,'2021-01-11 08:42:05','2021-01-11 08:42:05'),(1000005,'2021-01-12',1,1,1000067,NULL,0.00,'2021-01-12 05:26:21','2021-01-12 05:26:21'),(1000006,'2021-01-12',1,1,1000067,NULL,0.00,'2021-01-12 05:28:53','2021-01-12 05:28:53'),(1000007,'2021-01-12',1,1,1000003,NULL,0.00,'2021-01-12 05:30:24','2021-01-12 05:30:24'),(1000008,'2021-01-12',1,1,1000067,NULL,0.00,'2021-01-12 06:39:26','2021-01-12 06:39:26'),(1000009,'2021-01-12',1,1,1000067,NULL,0.00,'2021-01-12 07:32:37','2021-01-12 07:32:37'),(1000010,'2021-01-13',1,1,1000067,NULL,0.00,'2021-01-13 05:40:58','2021-01-13 05:40:58');
+insert  into `transactions`(`id`,`date`,`transaction_type_id`,`account_type_id`,`account_id`,`sales_purchase_id`,`description`,`amount`,`created_at`,`updated_at`) values (1000000,'2020-12-11',2,2,1000000,0,NULL,20000.00,'2020-12-11 16:13:07','2020-12-11 16:13:07'),(1000001,'2020-12-11',1,1,1000000,0,NULL,20000.00,'2020-12-11 16:26:55','2020-12-11 16:26:55'),(1000002,'2020-12-13',2,2,1000000,0,NULL,40000.00,'2020-12-13 04:30:11','2020-12-13 04:30:11'),(1000003,'2021-01-11',1,1,1000067,0,NULL,100.00,'2021-01-11 07:07:59','2021-01-11 07:07:59'),(1000004,'2021-01-11',1,1,1000067,0,NULL,1000.00,'2021-01-11 08:42:05','2021-01-11 08:42:05'),(1000005,'2021-01-12',1,1,1000067,0,NULL,0.00,'2021-01-12 05:26:21','2021-01-12 05:26:21'),(1000006,'2021-01-12',1,1,1000067,0,NULL,0.00,'2021-01-12 05:28:53','2021-01-12 05:28:53'),(1000007,'2021-01-12',1,1,1000003,0,NULL,0.00,'2021-01-12 05:30:24','2021-01-12 05:30:24'),(1000008,'2021-01-12',1,1,1000067,0,NULL,0.00,'2021-01-12 06:39:26','2021-01-12 06:39:26'),(1000009,'2021-01-12',1,1,1000067,0,NULL,0.00,'2021-01-12 07:32:37','2021-01-12 07:32:37'),(1000010,'2021-01-13',1,1,1000067,0,NULL,0.00,'2021-01-13 05:40:58','2021-01-13 05:40:58');
 
 /*Table structure for table `users` */
 
