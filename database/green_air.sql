@@ -1,6 +1,6 @@
 /*
 SQLyog Ultimate v12.09 (64 bit)
-MySQL - 10.4.14-MariaDB : Database - green_air
+MySQL - 10.4.13-MariaDB : Database - green_air
 *********************************************************************
 */
 
@@ -9,13 +9,8 @@ MySQL - 10.4.14-MariaDB : Database - green_air
 /*!40101 SET SQL_MODE=''*/;
 
 /*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
-CREATE DATABASE /*!32312 IF NOT EXISTS*/`green_air` /*!40100 DEFAULT CHARACTER SET utf8mb4 */;
-
-USE `green_air`;
-
 /*Table structure for table `account_types` */
 
 DROP TABLE IF EXISTS `account_types`;
@@ -440,16 +435,17 @@ CREATE TABLE `transactions` (
   `account_type_id` int(11) NOT NULL,
   `account_id` int(11) NOT NULL,
   `sales_purchase_id` int(11) DEFAULT 0,
+  `official_type_id` int(11) DEFAULT 0,
   `description` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `amount` double(16,2) NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1000011 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1000013 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 /*Data for the table `transactions` */
 
-insert  into `transactions`(`id`,`date`,`transaction_type_id`,`account_type_id`,`account_id`,`sales_purchase_id`,`description`,`amount`,`created_at`,`updated_at`) values (1000000,'2020-12-11',2,2,1000000,0,NULL,20000.00,'2020-12-11 16:13:07','2020-12-11 16:13:07'),(1000001,'2020-12-11',1,1,1000000,0,NULL,20000.00,'2020-12-11 16:26:55','2020-12-11 16:26:55'),(1000002,'2020-12-13',2,2,1000000,0,NULL,40000.00,'2020-12-13 04:30:11','2020-12-13 04:30:11'),(1000003,'2021-01-11',1,1,1000067,0,NULL,100.00,'2021-01-11 07:07:59','2021-01-11 07:07:59'),(1000004,'2021-01-11',1,1,1000067,0,NULL,1000.00,'2021-01-11 08:42:05','2021-01-11 08:42:05'),(1000005,'2021-01-12',1,1,1000067,0,NULL,0.00,'2021-01-12 05:26:21','2021-01-12 05:26:21'),(1000006,'2021-01-12',1,1,1000067,0,NULL,0.00,'2021-01-12 05:28:53','2021-01-12 05:28:53'),(1000007,'2021-01-12',1,1,1000003,0,NULL,0.00,'2021-01-12 05:30:24','2021-01-12 05:30:24'),(1000008,'2021-01-12',1,1,1000067,0,NULL,0.00,'2021-01-12 06:39:26','2021-01-12 06:39:26'),(1000009,'2021-01-12',1,1,1000067,0,NULL,0.00,'2021-01-12 07:32:37','2021-01-12 07:32:37'),(1000010,'2021-01-13',1,1,1000067,0,NULL,0.00,'2021-01-13 05:40:58','2021-01-13 05:40:58');
+insert  into `transactions`(`id`,`date`,`transaction_type_id`,`account_type_id`,`account_id`,`sales_purchase_id`,`official_type_id`,`description`,`amount`,`created_at`,`updated_at`) values (1000000,'2020-12-11',2,2,1000000,0,0,NULL,20000.00,'2020-12-11 16:13:07','2020-12-11 16:13:07'),(1000001,'2020-12-11',1,1,1000000,0,0,NULL,20000.00,'2020-12-11 16:26:55','2020-12-11 16:26:55'),(1000002,'2020-12-13',2,2,1000000,0,0,NULL,40000.00,'2020-12-13 04:30:11','2020-12-13 04:30:11'),(1000003,'2021-01-11',1,1,1000067,0,0,NULL,100.00,'2021-01-11 07:07:59','2021-01-11 07:07:59'),(1000004,'2021-01-11',1,1,1000067,0,0,NULL,1000.00,'2021-01-11 08:42:05','2021-01-11 08:42:05'),(1000005,'2021-01-12',1,1,1000067,0,0,NULL,0.00,'2021-01-12 05:26:21','2021-01-12 05:26:21'),(1000006,'2021-01-12',1,1,1000067,0,0,NULL,0.00,'2021-01-12 05:28:53','2021-01-12 05:28:53'),(1000007,'2021-01-12',1,1,1000003,0,0,NULL,0.00,'2021-01-12 05:30:24','2021-01-12 05:30:24'),(1000008,'2021-01-12',1,1,1000067,0,0,NULL,0.00,'2021-01-12 06:39:26','2021-01-12 06:39:26'),(1000009,'2021-01-12',1,1,1000067,0,0,NULL,0.00,'2021-01-12 07:32:37','2021-01-12 07:32:37'),(1000010,'2021-01-13',1,1,1000067,0,0,NULL,0.00,'2021-01-13 05:40:58','2021-01-13 05:40:58'),(1000011,'2021-01-17',1,3,1000000,0,0,'why',1000.00,'2021-01-17 15:50:13','2021-01-17 15:50:13'),(1000012,'2021-01-17',1,3,1000000,0,1,'why',1000.00,'2021-01-17 15:55:10','2021-01-17 15:55:10');
 
 /*Table structure for table `users` */
 
@@ -502,13 +498,12 @@ CREATE TABLE `usr_activities_histry` (
   `table_name` varchar(150) NOT NULL,
   `Description` text DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=latin1;
 
 /*Data for the table `usr_activities_histry` */
 
-insert  into `usr_activities_histry`(`id`,`Activities_Id`,`Activities_by`,`Activities_dt`,`IP`,`Operate_Id`,`table_name`,`Description`) values (1,1,8,'2021-01-12 06:39:27','::1','7','sales','Product Philips-Pink-HP8108 is sold to customer Shanto '),(2,3,8,'2021-01-12 06:53:26','::1','3','sales','Sales Deleted'),(3,3,8,'2021-01-12 07:01:42','::1','2','sales','Sales Deleted'),(4,1,8,'2021-01-12 07:32:37','::1','8','sales','Product Philips-Pink-HP8108 is sold to customer Shanto '),(5,3,8,'2021-01-12 07:33:45','::1','8','sales','Sales Deleted'),(6,1,8,'2021-01-13 05:40:58','::1','9','sales','Product Winstar-RH04 is sold to customer Shanto ');
+insert  into `usr_activities_histry`(`id`,`Activities_Id`,`Activities_by`,`Activities_dt`,`IP`,`Operate_Id`,`table_name`,`Description`) values (1,1,8,'2021-01-12 06:39:27','::1','7','sales','Product Philips-Pink-HP8108 is sold to customer Shanto '),(2,3,8,'2021-01-12 06:53:26','::1','3','sales','Sales Deleted'),(3,3,8,'2021-01-12 07:01:42','::1','2','sales','Sales Deleted'),(4,1,8,'2021-01-12 07:32:37','::1','8','sales','Product Philips-Pink-HP8108 is sold to customer Shanto '),(5,3,8,'2021-01-12 07:33:45','::1','8','sales','Sales Deleted'),(6,1,8,'2021-01-13 05:40:58','::1','9','sales','Product Winstar-RH04 is sold to customer Shanto '),(7,1,8,'2021-01-17 15:55:10','::1','1000012','transactions','Transaction added ');
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
 /*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;

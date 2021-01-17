@@ -73,7 +73,7 @@
                     @endforeach
                   </select> -->
 
-                  <div onchange="account_change()" id="account_type" name="account_type">
+                  <div onchange="account_change()" id="account_type" name="account_type_id">
                   </div>
                 </div>
               </div>
@@ -84,7 +84,7 @@
               <div class="form-group row">
                 <label class="col-sm-3 col-form-label">Official Type</label>
                 <div id="account_div" class="col-sm-9">
-                  <div onchange="official_type_change()" id="official_type" name="official_type"></div>
+                  <div onchange="official_type_change()" id="official_type_id" name="official_type_id"></div>
                 </div>
               </div>
             </div>
@@ -151,7 +151,7 @@
   jQuery(document).ready(function($) {
     var theme = 'classic';
     var official_type = [<? $i=1; foreach($official_types as $value){ if($i!=1){echo ',';} echo '{value:"'.$value->id.'", label:"'.$value->name.'"}'; $i++;}?>];
-	  jQuery("#official_type").jqxComboBox({theme: theme, promptText: "Select Official Type", source: official_type});
+	  jQuery("#official_type_id").jqxComboBox({theme: theme, promptText: "Select Official Type", source: official_type});
   
     var account_types = [<? $i=1; foreach($account_types as $value){ if($i!=1){echo ',';} echo '{value:"'.$value->id.'", label:"'.$value->name.'"}'; $i++;}?>];
 	  jQuery("#account_type").jqxComboBox({theme: theme, promptText: "Select Account Type", source: account_types, width: '200'});
@@ -165,7 +165,7 @@
 
   function official_type_change(){
     var account_type = jQuery("#account_type").jqxComboBox('getSelectedItem').value;
-    var official_type = jQuery("#official_type").jqxComboBox('getSelectedItem').value;
+    var official_type = jQuery("#official_type_id").jqxComboBox('getSelectedItem').value;
     
     jQuery.ajax({
         type: "POST",

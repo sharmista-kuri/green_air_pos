@@ -25,6 +25,11 @@
   jQuery(document).ready(function($) {
     var theme = 'classic';
     
+    var official_types = [<? $i=1; foreach($official_types as $value){ if($i!=1){echo ',';} echo '{value:"'.$value->id.'", label:"'.$value->name.'"}'; $i++;}?>];
+	  jQuery("#official_types_id").jqxComboBox({theme: theme, promptText: "Select Official Type", source: official_types, width: '170'});
+  
+    var account_types = [<? $i=1; foreach($account_types as $value){ if($i!=1){echo ',';} echo '{value:"'.$value->id.'", label:"'.$value->name.'"}'; $i++;}?>];
+	  jQuery("#account_types_id").jqxComboBox({theme: theme, promptText: "Select Account Type", source: account_types, width: '170'});
   
   
   });
@@ -90,10 +95,11 @@
             datafields: [
               { name: 'id', type: 'int'},
               { name: 'users_name', type: 'string'},
-              { name: 'customer_name', type: 'string'},
-              { name: 'supplier_name', type: 'string'},
-              { name: 'officials_name', type: 'string'},
+              { name: 'particulars', type: 'string'},
               { name: 'amount', type: 'string'},
+              { name: 'transaction_types_name', type: 'string'},
+              { name: 'account_types_name', type: 'string'},
+              { name: 'official_types_name', type: 'string'},
               
              
              					  
@@ -136,11 +142,12 @@
                   
                   //{ text: 'ID', datafield: 'id', hidden:true,  editable: false,  width: '145' },
                   { text: 'Transaction ID', datafield: 'id', editable: false, width: '100' },
+                  { text: 'Category', datafield: 'account_types_name', editable: false, width: '200' },
+                  { text: 'Sub Category', datafield: 'official_types_name', editable: false, width: '200' },
+                  { text: 'Particulars', datafield: 'particulars', editable: false, width: '200' },
+                  { text: 'Amount', width: '150', datafield: 'amount', cellsalign: 'left', cellsformat: 'c2', aggregates: ['sum'] },
+                  { text: 'Cash R/O', datafield: 'transaction_types_name', editable: false, width: '100' },
                   { text: 'Employee Name', datafield: 'users_name', editable: false, width: '200' },
-                  { text: 'Customer Name', datafield: 'customer_name', editable: false, width: '200' },
-                  { text: 'Supplier Name', datafield: 'supplier_name', editable: false, width: '200' },
-                  { text: 'Official Name', datafield: 'officials_name', editable: false, width: '200' },
-                  { text: 'Amount', datafield: 'amount', editable: false, width: '200' },
                   
   
                 ]
@@ -181,6 +188,20 @@
               <td><strong>Purchase Invoice No&nbsp;&nbsp;</strong></td>
               <td><input type="text" class="text-input-small" name="purchase_invoice_no"></input></td>
               
+            </tr>
+            <tr>
+              <td><strong>Transaction Type&nbsp;&nbsp;</strong></td>
+              <td>
+                  <input type="radio" name="transaction_type" value="1">
+                    Cash Receive
+                  <input type="radio" name="transaction_type" value="2">
+                    Cash Out
+              </td>
+              <td><strong>Account Type&nbsp;&nbsp;</strong></td>
+              <td><div style="padding-left:1.8%" id="account_types_id" name="account_type_id"></div></td>
+
+              <td><strong>Offical Type&nbsp;&nbsp;</strong></td>
+              <td><div style="padding-left:1.8%" id="official_types_id" name="official_type_id"></div></td>
             </tr>
             <tr>
               <td><strong>Employee Name&nbsp;&nbsp;</strong></td>

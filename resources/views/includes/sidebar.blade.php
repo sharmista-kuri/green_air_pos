@@ -72,7 +72,7 @@
                 <li class="nav-item"> <a class="nav-link" href="{{route('customers.create')}}">Add Customer</a></li>
                 <li class="nav-item"> <a class="nav-link" href="{{route('suppliers.create')}}">Add Supplier</a></li>
               
-                <li class="nav-item"> <a class="nav-link" href="{{route('users.index')}}">User Rights</a></li>
+                <li class="nav-item"> <a class="nav-link" href="{{route('users.index')}}">User</a></li>
                 
               </ul>
               

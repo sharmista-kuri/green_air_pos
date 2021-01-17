@@ -11,6 +11,7 @@ use App\OfficialType;
 use App\TransactionType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 
 class TransactionsController extends Controller
@@ -101,6 +102,8 @@ class TransactionsController extends Controller
             );
 
         $user_activity = DB::table('usr_activities_histry')->insert($user_act); 
+
+        return redirect()->action('TransactionController@create');
 
     }
 
@@ -228,12 +231,25 @@ class TransactionsController extends Controller
         if($request->supplier_name != '') 
         {$where.=" AND suppliers.name like '%".trim($request->supplier_name)."%'";}
 
+        if($request->transaction_type != '') 
+        {$where.=" AND transactions.transaction_type_id = ".$request->transaction_type."";}
+
+        if($request->official_type_id != '') 
+        {$where.=" AND transactions.official_type_id = ".$request->official_type_id."";}
+
+
+        if($request->account_type_id != '') 
+        {$where.=" AND transactions.account_type_id = ".$request->account_type_id."";}
+
         
 
 
         $q = DB::table('transactions')
-        ->selectRaw('IF(officials.name IS NULL,"",officials.name) officials_name,IF(users.name IS NULL,"",users.name) users_name, IF(customers.name IS NULL,"",customers.name) customer_name,IF(suppliers.name IS NULL,"",suppliers.name) supplier_name ,transactions.*')
+        ->selectRaw('official_types.name as official_types_name, account_types.name as account_types_name, transaction_types.name transaction_types_name, IF(officials.name IS NULL,IF(customers.name IS NULL,IF(suppliers.name IS NULL,"",suppliers.name),customers.name),officials.name) particulars,IF(users.name IS NULL,"",users.name) users_name ,transactions.*')
         ->whereRaw($where)
+        ->leftjoin('transaction_types','transaction_types.id','=','transactions.transaction_type_id')
+        ->leftjoin('account_types','account_types.id','=','transactions.account_type_id')
+        
         ->leftjoin('sales','sales.id','=','transactions.sales_purchase_id')
         ->leftjoin('purchases','purchases.id','=','transactions.sales_purchase_id')
         ->leftjoin('customers', function($join)
@@ -253,6 +269,7 @@ class TransactionsController extends Controller
             $join->on('usr_activities_histry.Operate_Id', '=', 'transactions.id')->where('usr_activities_histry.table_name', '=', "transactions");
         })
         ->leftjoin('users','users.id','=','usr_activities_histry.Activities_by')
+        ->leftjoin('official_types','official_types.id','=','officials.official_type_id')
         
         
         ->get();
