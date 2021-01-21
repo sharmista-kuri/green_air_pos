@@ -29,6 +29,8 @@ Route::post('customer_info', 'CustomersController@customer_info')->name('custome
 Route::post('user_info', 'UserController@user_info')->name('user_info');
 Route::post('supplier_info', 'SuppliersController@supplier_info')->name('supplier_info');
 Route::post('product_info', 'SalesController@product_info')->name('product_info');
+Route::post('official_info', 'OfficialController@official_info')->name('official_info');
+Route::post('official_type_info', 'OfficialTypeController@official_type_info')->name('official_type_info');
 Route::post('customer_id', 'CustomersController@customer_id')->name('customer_id');
 Route::post('customer_select_box', 'CustomersController@customer_select_box')->name('customer_select_box');
 Route::post('supplier_select_box', 'SuppliersController@supplier_select_box')->name('supplier_select_box');
@@ -46,6 +48,8 @@ Route::resource('transactions','TransactionsController');
 Route::resource('products','ProductsController');
 Route::resource('categories','CategoriesController');
 Route::resource('brands','BrandsController');
+Route::resource('official_types','OfficialTypeController');
+Route::resource('officials','OfficialController');
 Route::resource('users','UserController');
 
 Route::post('product_id', 'ProductsController@product_id')->name('product_id');
@@ -62,6 +66,8 @@ Route::post('purchases_grid', 'PurchasesController@grid')->name('purchases.grid'
 Route::post('products_grid', 'ProductsController@grid')->name('products.grid');
 Route::post('customers_grid', 'CustomersController@grid')->name('customers.grid');
 Route::post('suppliers_grid', 'SuppliersController@grid')->name('suppliers.grid');
+Route::post('officials_grid', 'OfficialController@grid')->name('officials.grid');
+Route::post('official_types_grid', 'OfficialTypeController@grid')->name('official_types.grid');
 Route::post('transactions_grid', 'TransactionsController@grid')->name('transactions.grid');
 Route::post('users_grid', 'UserController@grid')->name('users.grid');
 Route::post('users_activity_grid', 'UserController@activity_grid')->name('users.activity.grid');

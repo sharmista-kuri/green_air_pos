@@ -1,0 +1,335 @@
+@extends('layouts.master')
+@section('content')
+<meta name="csrf-token" content="{{ csrf_token() }}" />
+<style>
+  .pager{
+    height: 28px;
+    position: relative;
+    width: 99.3%;
+    z-index: 20;
+	background-color:#C5C5C5;
+	border-top:1px solid rgb(52, 64, 73);
+	color:#000000;
+	padding:0; margin:0;
+	border-bottom-left-radius: 3px;
+  -moz-border-bottom-left-radius: 3px;
+  -webkit-border-bottom-left-radius: 3px;
+  border-bottom-right-radius: 3px;
+  -moz-border-bottom-right-radius: 3px;
+  -webkit-border-bottom-right-radius: 3px; 
+  font-family: Arial;
+  font-size: 13px;
+}
+</style>
+<script>
+  jQuery(document).ready(function($) {
+    var theme = 'classic';
+    
+    var official_type_id = [<? $i=1; foreach($official_types as $value){ if($i!=1){echo ',';} echo '{value:"'.$value->id.'", label:"'.$value->name.'"}'; $i++;}?>];
+	  jQuery("#official_type_id").jqxComboBox({theme: theme, promptText: "Select Official Type", source: official_type_id});
+	  jQuery("#official_type_ids").jqxComboBox({theme: theme, promptText: "Select Official Type", source: official_type_id});
+
+    var theme = 'energyblue';
+
+    $("#popupWindow").jqxWindow({
+      theme: theme , width: 1000, resizable: true,  isModal: true, autoOpen: false, cancelButton: $("#Cancel"), modalOpacity: 0.01           
+    });
+
+
+    $("#Cancel").jqxButton({ theme: theme });
+    $("#Save").jqxButton({ theme: theme });
+  
+  });
+  var count=0; var maxrow = 0; var displayrow= 0; inc = 0; decr = 0; //global variable
+  function submitonclick(pagenum,next) 
+    {
+      jQuery("#loading").show();
+      //jQuery("#search").hide();
+      jQuery('#resultdiv').html('');
+      
+      if(next==1){count++;pagenum = count;} 
+      else if(next==0){if(count > 0){count--;}pagenum = count;} 
+      else{count=count;pagenum = pagenum;}
+      
+      
+      var postdata = jQuery('#form').serialize();
+
+      jQuery.ajax({
+        headers: {
+		        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+		    },
+        type: "POST",
+        url: "{{route('officials.grid')}}",
+        data : postdata,
+        success: function(response) {
+        
+        jQuery("#loading").hide();
+        jQuery("#search").show();
+                
+        var json = jQuery.parseJSON(response);
+        maxrow = json.total;
+
+        
+        
+
+        if(next==0){ if(count > 0){displayrow = displayrow + decr;} else if(count == 0){displayrow = json.data.length;}} 
+        else {displayrow = displayrow + json.data.length;}
+        
+        var str_griddiv = '<div id="jqxgrid"></div>';
+        var str_1 = '<div class="pager"><div style="float:left;width:78%;display: inline;top:19%;position: relative;text-align:right">&nbsp;&nbsp;Total Rows: '+json.total+'</div>';
+        var str_2 = '<div style="float:left;width:6%;display: inline;top:19%;position: relative;text-align:center">Page: '+(pagenum+1)+'</div>';
+        
+        var str_3 = '<div style="float:left;width:16%;display: inline;top:13%;position: relative;text-align:center"><div style="background-image:url(<?php echo config('app.url'); ?>/resources/master/images/left.png);display: block;height:19px;width:30px;float:left;background-repeat: no-repeat;cursor:pointer"';
+        if(count > 0){ str_3 = str_3+' onclick=submitonclick('+pagenum+',0)';} str_3 = str_3+' ></div>';
+
+        var str_right = '<div style="background-image:url(<?php echo config('app.url'); ?>/resources/master/images/right.png);display: block;height:19px;width:30px;float:left;background-repeat: no-repeat;margin:0 7%;cursor:pointer"';
+        if(maxrow > displayrow) {str_right = str_right+' onclick=submitonclick('+pagenum+',1)';} 
+        str_right = str_right+' ></div></div>';
+        
+        //var res = str_griddiv.concat(str_1,str_2,str_3,str_right,'</div>');
+        var res = str_griddiv.concat('</div>');
+        inc = json.data.length;
+        decr = -json.data.length;
+
+        //alert(json.data.amount);
+
+        jQuery('#resultdiv').html(res);
+        
+        var theme = 'energyblue';
+        var source =
+          {
+            datatype: "json",
+            datafields: [
+              { name: 'id', type: 'int'},
+              { name: 'name', type: 'string'},
+              { name: 'type', map: 'official_types>name'},					  
+            ],
+            cache: false,
+            localdata: json.data
+          };
+          var dataadapter = new jQuery.jqx.dataAdapter(source, {
+              loadError: function(xhr, status, error)
+              {						
+                alert(error);
+              }
+            });
+                  
+          jQuery("#jqxgrid").jqxGrid({		
+              width:'99%',
+              height:320,
+              source: dataadapter,
+              theme: theme,
+              filterable: true,
+              sortable: true,
+              autoheight: true,
+              pageable: true,
+              virtualmode: false,
+              editable: false,
+              enablehover: true,
+              enablebrowserselection: true,
+              selectionmode: 'none',
+              showstatusbar: true,
+              statusbarheight: 25,
+              showaggregates: true,
+              localization: getLocalization(),
+              rendergridrows: function(obj)
+              {
+                return obj.data;    
+              },
+              
+        
+                columns: [
+                  { text: 'E', menu: false, datafield: 'Edit', align:'center', editable: false,  sortable: false, width: 30,
+                    cellsrenderer: function (row) {
+                      editrow = row;
+                      var dataRecord = jQuery("#jqxgrid").jqxGrid('getrowdata', editrow);
+                      return '<div style="text-align:center;  cursor:pointer" onclick="edit('+dataRecord.id+','+editrow+')" ><img align="center" src="<?=config('app.url');?>/resources/master/images/edit.png"></div>';
+
+                  }
+                },
+                { text: 'ID', datafield: 'id'/* , hidden:true */,  editable: false,  width: '105' },
+                { text: 'Name', datafield: 'name', editable: false},
+                { text: 'Type', datafield: 'type', editable: false },
+                
+                /* { text: 'Customer Type', datafield: 'customer_type', editable: false, width: '150' }, */
+                
+              ]
+            });				
+        },
+        error: function(xhr, textStatus, errorThrown) {
+          alert("error");
+        }
+      });
+    };
+
+    var getLocalization = function () {
+    var localizationobj = {};                
+    localizationobj.currencysymbol = " ";                
+    return localizationobj;
+
+    
+    }
+
+    function edit(val,indx)
+    {
+      $("#id").val(val);
+
+      var official_id = val;
+      jQuery.ajax({
+          type: "POST",
+          cache: false,
+          url: "{{route('official_info')}}",
+          data : { "_token": "{{ csrf_token() }}","official_id":official_id},
+          datatype: "json",
+          success: function(datas){
+            data = JSON.parse(datas);
+            jQuery("#customer_id_label").text(data.id);
+            jQuery("#name").val(data.name);
+            jQuery("#address").val(data.address);
+           
+          }
+      }); 
+
+      //$("#product_ID").text(val);
+      //$("#jqxgrid").jqxGrid('clearselection');
+      $("#popupWindow").jqxWindow('open');
+      return false;
+    }
+</script>
+<script>
+    jQuery('#customer_form').jqxValidator({
+      hintType: "label",
+			theme:"light",
+      rules: [
+          { input: '#name', message: 'Required!', action: 'keyup,blur', rule:'required' },
+          
+          
+      ]
+  });
+
+  jQuery("#CustomerSaveButton").click(function () {
+    alert("hi");			
+		var validationResult = function (isValid) {
+			if (isValid) {
+				call_ajax_submit();
+			}
+		}
+		jQuery('#customer_form').jqxValidator('validate', validationResult);
+	});
+
+  function call_ajax_submit(){
+    
+    var form = $('#customer_form')[0];
+    var data = new FormData(form);
+    var id = jQuery("#customer_id_label").text();
+    var url = '{{ route("officials.update", ":id") }}';
+    url = url.replace(':id', id);
+    jQuery.ajax({
+    headers: {
+          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+      },
+          type: "POST",
+          cache: false,
+          contentType: false,
+          processData: false,
+          enctype: 'multipart/form-data',
+          url: url,
+          data: data,
+          datatype: "json",
+          success: function(data){
+            $("#popupWindow").jqxWindow('close');
+          
+            submitonclick(0,2);
+                
+        }
+      });
+    
+  }
+    
+</script>
+
+<script>
+  
+</script>
+
+<meta name="csrf-token" content="{{ csrf_token() }}" />
+<div id="container">	
+	<div id="body"  >
+		<div style="display:block; min-height:350px; height:auto">
+      <form method="POST" name="form" id="form"  style="margin:0px;">
+		    <div style="padding:0.5%;width:99%; border:1px solid #c0c0c0;font-family: Calibri;font-size: 14px">
+		  	  <table id="deal_body" style="display:block;width:100%">
+            <tr>
+              <td><strong>Name&nbsp;&nbsp;</strong></td>
+              <td><input type="text" class="text-input-small" name="official_name"/></td>
+              <td><strong>Type&nbsp;&nbsp;</strong></td>
+              <td><div name="official_type_id" style="padding-left:1.8%" id="official_type_id"></div></td>
+              <td width="5%" style="text-align:center;" rowspan="2"><input type='button' class="buttonStyle" id='search' name='search' value='Search' onclick="submitonclick(0,2)" style="width: 90% !important" />
+            </tr>
+			    </table>
+		  </div>
+      <br/>
+		  <div style="text-align:center"><span id="loading" style="display:none">Please wait... <img src="<?php echo config('app.url'); ?>/resources/master/images/loader.gif" align="bottom"></span></div>
+		  
+      <div id="resultdiv" style="width:100%;min-height:360px;height:auto;"></div>
+		  <div style="float:left"></div>
+			
+      </form>
+      <br/>
+    </div>
+	</div>	
+</div>
+
+
+
+<div id="popupWindow">
+  <div>Edit</div>
+  <div style="overflow: hidden;">
+    <form id="customer_form">
+    {{ method_field('PATCH') }}
+      <div class="card">
+        <div class="card-body">
+          <h4 class="card-title"></h4>
+          <div class="row">
+            <div class="col-md-12">
+              <div class="form-group row">
+                <label class="col-sm-2 col-form-label">ID</label>
+                <div class="col-sm-9">
+                <label class="col-sm-6 col-form-label" id="customer_id_label"></label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <div class="form-group row">
+                <label class="col-sm-3 col-form-label">Official Type <span style="color:red">*</span></label>
+                <div class="col-sm-9">
+                <div id="official_type_ids" name="official_type_id"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <div class="form-group row">
+                <label class="col-sm-3 col-form-label">Name <span style="color:red">*</span></label>
+                <div class="col-sm-9">
+                  <input required id="name" name="name" type="text" class="form-control" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="forms-sample" align="center">
+        <button onclick="call_ajax_submit();" id="CustomerSaveButton" type="button" class="btn btn-primary">Save</button>
+        <span id="loading" style="display:none">Please wait... <img src="<?=config('app.url')?>/resources/master/images/loader.gif" align="bottom"></span>
+      </div>
+    </form>   
+  </div>
+</div>
+
+    
+
+@endsection

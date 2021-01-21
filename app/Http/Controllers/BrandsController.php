@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Brand;
 use App\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class BrandsController extends Controller
 {
@@ -39,6 +41,19 @@ class BrandsController extends Controller
     {
         //
         $brand_id = Brand::create($request->all())->id;
+
+        $desc = 'Brand Added';
+        $user_act[]=array(
+            'Activities_Id'=>1,
+            'Activities_by'=>Auth::user()->id,
+            'Activities_dt'=>date('Y-m-d H:i:s'),
+            'IP'=>$request->ip(),
+            'Operate_Id'=>$brand_id,
+            'table_name'=>"brands",
+            'Description'=>$desc,
+            );
+
+        $user_activity = DB::table('usr_activities_histry')->insert($user_act); 
     }
 
     /**

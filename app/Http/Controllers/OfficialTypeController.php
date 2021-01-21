@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Product;
-use App\Category;
+use App\OfficialType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
-class CategoriesController extends Controller
+class OfficialTypeController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -18,6 +17,7 @@ class CategoriesController extends Controller
     public function index()
     {
         //
+        return view('official_types_report');
     }
 
     /**
@@ -28,7 +28,7 @@ class CategoriesController extends Controller
     public function create()
     {
         //
-        return view('category');
+        return view('official_type');
     }
 
     /**
@@ -40,16 +40,16 @@ class CategoriesController extends Controller
     public function store(Request $request)
     {
         //
-        $category_id = Category::create($request->all())->id;
+        $official_type_id = OfficialType::create($request->all())->id;
 
-        $desc = 'Category Added';
+        $desc = 'Official Type Added';
         $user_act[]=array(
             'Activities_Id'=>1,
             'Activities_by'=>Auth::user()->id,
             'Activities_dt'=>date('Y-m-d H:i:s'),
             'IP'=>$request->ip(),
-            'Operate_Id'=>$category_id,
-            'table_name'=>"categories",
+            'Operate_Id'=>$official_type_id,
+            'table_name'=>"official_types",
             'Description'=>$desc,
             );
 
@@ -88,6 +88,22 @@ class CategoriesController extends Controller
     public function update(Request $request, $id)
     {
         //
+        $input = $request->except(['_method']);
+
+        OfficialType::where('id','=',$id)->update($input);
+
+        $desc = 'Official Type Updated';
+        $user_act[]=array(
+            'Activities_Id'=>2,
+            'Activities_by'=>Auth::user()->id,
+            'Activities_dt'=>date('Y-m-d H:i:s'),
+            'IP'=>$request->ip(),
+            'Operate_Id'=>$id,
+            'table_name'=>"official_types",
+            'Description'=>$desc,
+            );
+
+        $user_activity = DB::table('usr_activities_histry')->insert($user_act); 
     }
 
     /**
@@ -101,49 +117,51 @@ class CategoriesController extends Controller
         //
     }
 
+    public function grid(Request $request){
 
-    public function category_select_box(){
-        $categories = Category::orderBy('id','desc')->get();
-        foreach ($categories as $category){
-            $cat[]=array(
-				'value'=>$category->id,
-				'label'=>$category->name
-				);          
-        }
+        
+		$pagenum = $request->pagenum;
+		$pagesize = $request->per_pagess;
+        $start = $pagenum * $pagesize;
 
-        $data = array(
-            'cat' => $cat,
-        );
-        echo json_encode($data);
-    }
 
-    public function category_product(Request $request){
-        $category_id = $request->category_id;
-        $products = Product::where('category_id',$category_id)->get();
-        $brands = Product::select(DB::raw('brands.id as id, brands.name as name'))
-        ->where('category_id',$category_id)
-        ->join('brands','brands.id','=','products.brand_id')
+        $filterscount = $request->filterscount;
+        $sortdatafield = $request->sortdatafield;
+        $sortorder = $request->sortorder;
+
+        
+		$where="official_types.id<>0";         
+        
+        
+        if($request->official_name != '') 
+        {$where.=" AND name like '%".trim($request->official_name)."%'";}
+
+       
+
+        
+
+		
+        $q = OfficialType::whereRaw($where)
         ->get();
-        $pro=array();
-        $brnd=array();
-        foreach ($products as $product){
-            $pro[]=array(
-				'value'=>$product->id,
-				'label'=>$product->name
-				);          
-        }
-        foreach ($brands as $brand){
-            $brnd[]=array(
-				'value'=>$brand->id,
-				'label'=>$brand->name
-				);          
-        }
+	
+		
+		$result["total"] = $q->count();
+		
+		if ($q->count() > 0){        
+			$result["Rows"] = $q;
+		} else {
+			$result["Rows"] = array();
+		}  		
+		
+	
+		
+		
+		echo "{\"total\":".json_encode($result['total']).",\"data\":".json_encode($result['Rows'])."}";
 
-        $data = array(
-            'pro' => $pro,
-            'brnd' => $brnd,
-        );
-        echo json_encode($data);
     }
 
+    public function official_type_info(Request $request){
+        $official = OfficialType::find($request->official_id);
+        echo json_encode($official);
+    }
 }

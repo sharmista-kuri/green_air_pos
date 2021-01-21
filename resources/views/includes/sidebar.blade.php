@@ -48,10 +48,12 @@
                 <li class="nav-item"> <a class="nav-link" href="{{route('purchases.index')}}">All Purchase Report</a></li>
                 <li class="nav-item"> <a class="nav-link" href="{{route('suppliers.index')}}">Suppliers Report</a></li>
                 <li class="nav-item"> <a class="nav-link" href="{{route('customers.index')}}">Customer Report</a></li>
+                <li class="nav-item"> <a class="nav-link" href="{{route('official_types.index')}}">Official Type Report</a></li>
+                <li class="nav-item"> <a class="nav-link" href="{{route('officials.index')}}">Official Report</a></li>
                 <li class="nav-item"> <a class="nav-link" href="{{route('products.index')}}">Price and Stock Report</a></li>
                 <li class="nav-item"> <a class="nav-link" href="{{route('transactions.index')}}">Transaction Report</a></li>
                 <li class="nav-item"> <a class="nav-link" href="{{route('users.activity')}}">User Activity Report</a></li>
-                
+                <li class="nav-item"> <a class="nav-link" href="{{route('users.index')}}">User Report</a></li>
                 
               </ul>
             </div>
@@ -71,8 +73,9 @@
                 <li class="nav-item"> <a class="nav-link" href="{{route('products.create')}}">Add Product</a></li>
                 <li class="nav-item"> <a class="nav-link" href="{{route('customers.create')}}">Add Customer</a></li>
                 <li class="nav-item"> <a class="nav-link" href="{{route('suppliers.create')}}">Add Supplier</a></li>
-              
-                <li class="nav-item"> <a class="nav-link" href="{{route('users.index')}}">User</a></li>
+                <li class="nav-item"> <a class="nav-link" href="{{route('official_types.create')}}">Add Official Type</a></li>
+                <li class="nav-item"> <a class="nav-link" href="{{route('officials.create')}}">Add Officials</a></li>
+                
                 
               </ul>
               
