@@ -10,6 +10,8 @@ use App\Customer;
 use App\Employee;
 use App\Supplier;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class CustomersController extends Controller
 {

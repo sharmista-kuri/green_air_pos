@@ -109,8 +109,8 @@ class PurchasesController extends Controller
             'Activities_by'=>Auth::user()->id,
             'Activities_dt'=>date('Y-m-d H:i:s'),
             'IP'=>$request->ip(),
-            'Operate_Id'=>$supplier_id,
-            'table_name'=>"suppliers",
+            'Operate_Id'=>$purchase_id,
+            'table_name'=>"purchases",
             'Description'=>$desc,
             );
 

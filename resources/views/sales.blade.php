@@ -463,7 +463,7 @@
 	  jQuery("#customer_id").jqxComboBox({searchMode:'startswithignorecase',autoComplete:true, theme: theme, promptText: "Select Customer", source: customer_id, width: '170'});
   
     var product_id = [<? $i=1; foreach($products as $value){ if($i!=1){echo ',';} echo '{value:"'.$value->id.'", label:"'.$value->name.'"}'; $i++;}?>];
-	  jQuery("#product_id").jqxComboBox({theme: theme, promptText: "Select Product", source: product_id});
+	  jQuery("#product_id").jqxComboBox({searchMode:'startswithignorecase',autoComplete:true, theme: theme, promptText: "Select Product", source: product_id});
   
     var category_id = [<? $i=1; foreach($categories as $value){ if($i!=1){echo ',';} echo '{value:"'.$value->id.'", label:"'.$value->name.'"}'; $i++;}?>];
 	  jQuery("#category_id").jqxComboBox({theme: theme, promptText: "Select Category", source: category_id});

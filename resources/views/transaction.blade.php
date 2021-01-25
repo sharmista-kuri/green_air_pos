@@ -73,8 +73,9 @@
                     @endforeach
                   </select> -->
 
-                  <div onchange="account_change()" id="account_type" name="account_type_id">
+                  <div onchange="account_change()" id="account_type">
                   </div>
+                  <input id="account_type_id_hidden" name="account_type_id" type="hidden" class="form-control"/>
                 </div>
               </div>
             </div>
@@ -94,7 +95,8 @@
               <div class="form-group row">
                 <label class="col-sm-3 col-form-label">Account ID</label>
                 <div id="account_div" class="col-sm-9">
-                  <div onchange="account_info()" id="account_id" name="account_id"></div>
+                  <div onchange="account_info()" id="account_id"></div>
+                  <input id="account_id_hidden" name="account_id" type="hidden" class="form-control"/>
                 </div>
               </div>
             </div>
@@ -197,6 +199,7 @@
             var json = jQuery.parseJSON(data);
             var acc = json.acc;
             jQuery("#account_id").jqxComboBox({source: acc});
+            $("#account_type_id_hidden").val(account_type);
           }
       });
     }
@@ -222,6 +225,7 @@
         data = JSON.parse(datas);
         //alert(data[0].name);
         jQuery("#account_name").text(data.name);
+        jQuery("#account_id_hidden").val(data.id);
         $("#due_label").show();
         $("#due_amount").text(data.due);
       }

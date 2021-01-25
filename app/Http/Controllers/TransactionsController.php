@@ -51,16 +51,20 @@ class TransactionsController extends Controller
     public function store(Request $request)
     {
         //
+        
         $transaction_id = Transaction::create($request->all())->id;
         $account_id = $request->account_id;
+        $due = $request->amount;
+        //echo'<pre>';print_r($request->all());exit;
+        //echo'<pre>';print_r($request->account_type_id);exit;
 
-        if($request['account_type']==1){
-            if($request['transaction_type_id']==1){
+        if($request['account_type_id']=='1'){
+            if($request['transaction_type_id']=='1'){
                 $customer = Customer::find($account_id);
                 $cust_name = $customer->name;
                 $cust_due = $customer->due - $due;
                 $data_cus['due'] = $cust_due;
-                Customer::whereId($customer_id)->update($data_cus);
+                Customer::whereId($account_id)->update($data_cus);
             }
 
             if($request['transaction_type_id']==2){
@@ -68,25 +72,25 @@ class TransactionsController extends Controller
                 $cust_name = $customer->name;
                 $cust_due = $customer->due + $due;
                 $data_cus['due'] = $cust_due;
-                Customer::whereId($customer_id)->update($data_cus);
+                Customer::whereId($account_id)->update($data_cus);
             }
         }
 
-        if($request['account_type']==2){
+        if($request['account_type_id']==2){
             if($request['transaction_type_id']==1){
-                $supplier = Supplier::find($supplier_id);
+                $supplier = Supplier::find($account_id);
                 $supplier_name = $supplier->name;
                 $supplier_due = $supplier->due + $due;
                 $data_supplier['due'] = $supplier_due;
-                Supplier::whereId($supplier_id)->update($data_supplier);
+                Supplier::whereId($account_id)->update($data_supplier);
             }
 
             if($request['transaction_type_id']==2){
-                $supplier = Supplier::find($supplier_id);
+                $supplier = Supplier::find($account_id);
                 $supplier_name = $supplier->name;
                 $supplier_due = $supplier->due - $due;
                 $data_supplier['due'] = $supplier_due;
-                Supplier::whereId($supplier_id)->update($data_supplier);
+                Supplier::whereId($account_id)->update($data_supplier);
             }
         }
 
@@ -103,7 +107,7 @@ class TransactionsController extends Controller
 
         $user_activity = DB::table('usr_activities_histry')->insert($user_act); 
 
-        return redirect()->action('TransactionController@create');
+        return redirect()->action('TransactionsController@create');
 
     }
 
@@ -222,6 +226,9 @@ class TransactionsController extends Controller
         if($request->purchase_invoice_no != '') 
         {$where.=" AND purchases.invoice_no = '".trim($request->purchase_invoice_no)."' ";}
 
+        if($request->officials_name != '') 
+        {$where.=" AND officials.name like '%".trim($request->officials_name)."%'";}
+
         if($request->employee_name != '') 
         {$where.=" AND users.name like '%".trim($request->employee_name)."%'";}
 
@@ -241,11 +248,39 @@ class TransactionsController extends Controller
         if($request->account_type_id != '') 
         {$where.=" AND transactions.account_type_id = ".$request->account_type_id."";}
 
+        if($request->log_date_from != '') 
+        {$where.=" AND usr_activities_histry.Activities_dt >= '".trim($request->log_date_from)."' ";}
+
+        if($request->log_date_to != '') 
+        {$where.=" AND usr_activities_histry.Activities_dt <= '".trim($request->log_date_to)."' ";}
+
+        if($request->date_from != '') 
+        {$where.=" AND transactions.date >= '".trim($request->date_from)."' ";}
+
+        if($request->date_to != '') 
+        {$where.=" AND transactions.date <= '".trim($request->date_to)."' ";}
+
         
 
 
         $q = DB::table('transactions')
-        ->selectRaw('official_types.name as official_types_name, account_types.name as account_types_name, transaction_types.name transaction_types_name, IF(officials.name IS NULL,IF(customers.name IS NULL,IF(suppliers.name IS NULL,"",suppliers.name),customers.name),officials.name) particulars,IF(users.name IS NULL,"",users.name) users_name ,transactions.*')
+        ->selectRaw('IF(transactions.sales_purchase_id = 0,CONCAT(DATE_FORMAT(usr_activities_histry.Activities_dt, "%d-%m-%Y "),
+        DATE_FORMAT(DATE_ADD(usr_activities_histry.Activities_dt, INTERVAL 6 HOUR), "%h"),
+        DATE_FORMAT(usr_activities_histry.Activities_dt, ":%i %p")),
+
+        IF(transactions.account_type_id=1,
+        CONCAT(DATE_FORMAT(u.Activities_dt, "%d-%m-%Y "),
+        DATE_FORMAT(DATE_ADD(u.Activities_dt, INTERVAL 6 HOUR), "%h"),
+        DATE_FORMAT(u.Activities_dt, ":%i %p")),
+
+        CONCAT(DATE_FORMAT(p.Activities_dt, "%d-%m-%Y "),
+        DATE_FORMAT(DATE_ADD(p.Activities_dt, INTERVAL 6 HOUR), "%h"),
+        DATE_FORMAT(p.Activities_dt, ":%i %p")))
+        ) as Activities_dt,
+
+        DATE_FORMAT(transactions.date, "%d-%m-%Y") as dates,
+        
+        official_types.name as official_types_name, account_types.name as account_types_name, transaction_types.name transaction_types_name, IF(officials.name IS NULL,IF(customers.name IS NULL,IF(suppliers.name IS NULL,"",suppliers.name),customers.name),officials.name) particulars,IF(users.name IS NULL,"",users.name) users_name ,transactions.*')
         ->whereRaw($where)
         ->leftjoin('transaction_types','transaction_types.id','=','transactions.transaction_type_id')
         ->leftjoin('account_types','account_types.id','=','transactions.account_type_id')
@@ -267,6 +302,15 @@ class TransactionsController extends Controller
         ->leftjoin('usr_activities_histry', function($join)
         {
             $join->on('usr_activities_histry.Operate_Id', '=', 'transactions.id')->where('usr_activities_histry.table_name', '=', "transactions");
+        })
+        ->leftjoin('usr_activities_histry as u', function($join)
+        {
+            $join->on(DB::raw('u.Operate_Id'), '=', 'transactions.sales_purchase_id')->where(DB::raw('u.table_name'), '=', "sales");
+        })
+
+        ->leftjoin('usr_activities_histry as p', function($join)
+        {
+            $join->on(DB::raw('p.Operate_Id'), '=', 'transactions.sales_purchase_id')->where(DB::raw('p.table_name'), '=', "purchases");
         })
         ->leftjoin('users','users.id','=','usr_activities_histry.Activities_by')
         ->leftjoin('official_types','official_types.id','=','officials.official_type_id')

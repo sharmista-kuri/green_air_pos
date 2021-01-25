@@ -144,7 +144,9 @@ class UserController extends Controller
 
         
 		
-        $q = DB::table('usr_activities_histry')->selectRaw('*,DATE_FORMAT(usr_activities_histry.Activities_dt,"%d/%m/%Y") as Activities_dt,users.name as users_name,usr_activities.name as usr_activities_name')
+        $q = DB::table('usr_activities_histry')->selectRaw('*,CONCAT(DATE_FORMAT(usr_activities_histry.Activities_dt, "%d-%m-%Y "),
+        DATE_FORMAT(DATE_ADD(usr_activities_histry.Activities_dt, INTERVAL 6 HOUR), "%h"),
+        DATE_FORMAT(usr_activities_histry.Activities_dt, ":%i %p")) as Activities_dt,users.name as users_name,usr_activities.name as usr_activities_name')
         ->whereRaw($where)
         ->leftjoin('users','users.id','=','usr_activities_histry.Activities_by')
         ->leftjoin('usr_activities','usr_activities.id','=','usr_activities_histry.Activities_Id')

@@ -100,6 +100,8 @@
               { name: 'transaction_types_name', type: 'string'},
               { name: 'account_types_name', type: 'string'},
               { name: 'official_types_name', type: 'string'},
+              { name: 'Activities_dt', type: 'string'},
+              { name: 'dates', type: 'string'},
               
              
              					  
@@ -141,14 +143,15 @@
                 columns: [
                   
                   //{ text: 'ID', datafield: 'id', hidden:true,  editable: false,  width: '145' },
-                  { text: 'Transaction ID', datafield: 'id', editable: false, width: '100' },
-                  { text: 'Category', datafield: 'account_types_name', editable: false, width: '200' },
-                  { text: 'Sub Category', datafield: 'official_types_name', editable: false, width: '200' },
-                  { text: 'Particulars', datafield: 'particulars', editable: false, width: '200' },
+                  { text: 'Tran ID', datafield: 'id', editable: false,  width: '80' },
+                  { text: 'Date', datafield: 'dates', editable: false,  width: '80'},
+                  { text: 'Category', datafield: 'account_types_name', editable: false},
+                  { text: 'Sub Cat', datafield: 'official_types_name', editable: false },
+                  { text: 'Particulars', datafield: 'particulars', editable: false },
                   { text: 'Amount', width: '150', datafield: 'amount', cellsalign: 'left', cellsformat: 'c2', aggregates: ['sum'] },
-                  { text: 'Cash R/O', datafield: 'transaction_types_name', editable: false, width: '100' },
-                  { text: 'Employee Name', datafield: 'users_name', editable: false, width: '200' },
-                  
+                  { text: 'Cash R/O', datafield: 'transaction_types_name', editable: false },
+                  { text: 'Emp', datafield: 'users_name', editable: false },
+                  { text: 'Log Date', datafield: 'Activities_dt', editable: false },
   
                 ]
               });				
@@ -202,6 +205,20 @@
 
               <td><strong>Offical Type&nbsp;&nbsp;</strong></td>
               <td><div style="padding-left:1.8%" id="official_types_id" name="official_type_id"></div></td>
+            </tr>
+            <tr>
+              <td><strong>Log Date&nbsp;&nbsp; From</strong></td>
+              <td><input type="date" class="text-input-small" name="log_date_from"/></td>
+              <td><strong>To</strong></td>
+              <td><input type="date" class="text-input-small" name="log_date_to"/></td>
+              <td><strong>Particulars&nbsp;&nbsp;</strong></td>
+              <td><input type="text" class="text-input-small" name="officials_name" /></td>
+            </tr>
+            <tr>
+              <td><strong>Date&nbsp;&nbsp; From</strong></td>
+              <td><input type="date" class="text-input-small" name="date_from"/></td>
+              <td><strong>To</strong></td>
+              <td><input type="date" class="text-input-small" name="date_to"/></td>
             </tr>
             <tr>
               <td><strong>Employee Name&nbsp;&nbsp;</strong></td>

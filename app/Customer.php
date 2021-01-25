@@ -10,7 +10,7 @@ class Customer extends Model
     //
     protected $fillable = [
         'name', 'address', 'area','country', 'primary_contact', 'secondary_contact',
-        'email', 'customer_type'
+        'email', 'customer_type','due'
     ];
 
     public function sales()
