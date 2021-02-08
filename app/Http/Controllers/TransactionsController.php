@@ -58,8 +58,8 @@ class TransactionsController extends Controller
         //echo'<pre>';print_r($request->all());exit;
         //echo'<pre>';print_r($request->account_type_id);exit;
 
-        if($request['account_type_id']=='1'){
-            if($request['transaction_type_id']=='1'){
+        if($request['account_type_id']==1){
+            if($request['transaction_type_id']==1){
                 $customer = Customer::find($account_id);
                 $cust_name = $customer->name;
                 $cust_due = $customer->due - $due;
@@ -154,6 +154,78 @@ class TransactionsController extends Controller
     public function destroy($id)
     {
         //
+        $transaction = Transaction::find($id);
+        $transaction_id = $id;
+        $account_id = $transaction->account_id;
+        $due = $transaction->amount;
+        if($transaction->sales_purchase_id==0){
+            if($transaction->account_type_id==1){
+                if($transaction->transaction_type_id==1){
+                    $customer = Customer::find($account_id);
+                    $cust_name = $customer->name;
+                    $cust_due = $customer->due + $due;
+                    $data_cus['due'] = $cust_due;
+                    Customer::whereId($account_id)->update($data_cus);
+                }
+
+                if($transaction->transaction_type_id==2){
+                    $customer = Customer::find($account_id);
+                    $cust_name = $customer->name;
+                    $cust_due = $customer->due - $due;
+                    $data_cus['due'] = $cust_due;
+                    Customer::whereId($account_id)->update($data_cus);
+                }
+            }
+
+            if($transaction->account_type_id==2){
+                if($transaction->transaction_type_id==1){
+                    $supplier = Supplier::find($account_id);
+                    $supplier_name = $supplier->name;
+                    $supplier_due = $supplier->due - $due;
+                    $data_supplier['due'] = $supplier_due;
+                    Supplier::whereId($account_id)->update($data_supplier);
+                }
+
+                if($transaction->transaction_type_id==2){
+                    $supplier = Supplier::find($account_id);
+                    $supplier_name = $supplier->name;
+                    $supplier_due = $supplier->due + $due;
+                    $data_supplier['due'] = $supplier_due;
+                    Supplier::whereId($account_id)->update($data_supplier);
+                }
+            }
+        }
+
+        else{
+            if($transaction->account_type_id==1){
+                return redirect()->action('SalesController@destroy', ['sale' => $transaction->sales_purchase_id]);
+            }
+            else if($transaction->account_type_id==2){
+                return redirect()->action('PurchasesController@destroy', ['purchase' => $transaction->sales_purchase_id]);
+
+            }
+            else{
+                $transaction = Transaction::where('id', '=', $id)->delete();
+
+                $desc = 'Transaction Deleted';
+                $user_act[]=array(
+                    'Activities_Id'=>3,
+                    'Activities_by'=>Auth::user()->id,
+                    'Activities_dt'=>date('Y-m-d H:i:s'),
+                    'IP'=>request()->ip(),
+                    'Operate_Id'=>$id,
+                    'table_name'=>"transactions",
+                    'Description'=>$desc,
+                    );
+
+                $user_activity = DB::table('usr_activities_histry')->insert($user_act);  
+            }
+
+        }
+
+
+
+
     }
 
     public function account_select_box(Request $request){

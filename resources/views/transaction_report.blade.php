@@ -141,7 +141,14 @@
               
         
                 columns: [
-                  
+                  { text: 'Delete', menu: false, datafield: 'Delete', align:'center', editable: false,  sortable: false, width: 30,
+                    cellsrenderer: function (row) {
+                      editrow = row;
+                      var dataRecord = jQuery("#jqxgrid").jqxGrid('getrowdata', editrow);
+                      return '<div style="text-align:center;  cursor:pointer" onclick="delete_tran('+dataRecord.id+')" ><img align="center" src="<?=config('app.url');?>/resources/master/images/del.png"></div>';
+
+                    }
+                  },
                   //{ text: 'ID', datafield: 'id', hidden:true,  editable: false,  width: '145' },
                   { text: 'Tran ID', datafield: 'id', editable: false,  width: '80' },
                   { text: 'Date', datafield: 'dates', editable: false,  width: '80'},
@@ -168,6 +175,23 @@
     return localizationobj;
 }
 
+function delete_tran(id){
+  $id = $("#id").val(id);
+  var url = '{{ route("transactions.destroy", ":id") }}';
+  url = url.replace(':id', id);
+  jQuery.ajax({
+      type: "DELETE",
+      cache: false,
+      url: url,
+      data : { "_token": "{{ csrf_token() }}","id":id},
+      datatype: "json",
+      success: function(datas){
+        alert("Successfully Deleted.");
+        submitonclick(0,2);
+            
+      }
+  });
+}
 
 
 </script>

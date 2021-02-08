@@ -80,6 +80,7 @@ class SalesController extends Controller
                 $product_name = $products->name;
                 $current_stock = $products->current_stock - $quantity;
                 $data_product['current_stock'] = $current_stock;
+                //$data_product['sale_price'] = $request['rate_'.$i];
                 Product::whereId($id)->update($data_product);
             }
             
