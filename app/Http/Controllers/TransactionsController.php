@@ -154,10 +154,12 @@ class TransactionsController extends Controller
     public function destroy($id)
     {
         //
+        //echo '<pre>';print_r($id);exit;
         $transaction = Transaction::find($id);
         $transaction_id = $id;
         $account_id = $transaction->account_id;
         $due = $transaction->amount;
+        //echo '<pre>';print_r($transaction->sales_purchase_id);exit;
         if($transaction->sales_purchase_id==0){
             if($transaction->account_type_id==1){
                 if($transaction->transaction_type_id==1){
@@ -194,6 +196,21 @@ class TransactionsController extends Controller
                     Supplier::whereId($account_id)->update($data_supplier);
                 }
             }
+
+            $transaction = Transaction::where('id', '=', $id)->delete();
+
+            $desc = 'Transaction Deleted';
+            $user_act[]=array(
+                'Activities_Id'=>3,
+                'Activities_by'=>Auth::user()->id,
+                'Activities_dt'=>date('Y-m-d H:i:s'),
+                'IP'=>request()->ip(),
+                'Operate_Id'=>$id,
+                'table_name'=>"transactions",
+                'Description'=>$desc,
+                );
+
+            $user_activity = DB::table('usr_activities_histry')->insert($user_act);  
         }
 
         else{
@@ -203,22 +220,6 @@ class TransactionsController extends Controller
             else if($transaction->account_type_id==2){
                 return redirect()->action('PurchasesController@destroy', ['purchase' => $transaction->sales_purchase_id]);
 
-            }
-            else{
-                $transaction = Transaction::where('id', '=', $id)->delete();
-
-                $desc = 'Transaction Deleted';
-                $user_act[]=array(
-                    'Activities_Id'=>3,
-                    'Activities_by'=>Auth::user()->id,
-                    'Activities_dt'=>date('Y-m-d H:i:s'),
-                    'IP'=>request()->ip(),
-                    'Operate_Id'=>$id,
-                    'table_name'=>"transactions",
-                    'Description'=>$desc,
-                    );
-
-                $user_activity = DB::table('usr_activities_histry')->insert($user_act);  
             }
 
         }

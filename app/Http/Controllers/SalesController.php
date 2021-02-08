@@ -166,6 +166,7 @@ class SalesController extends Controller
     {
         //
         //echo'<pre>';print_r($sale);exit;
+        //echo'<pre>';print_r($id);exit;
         $sales = Sale::find($id);
         $sale_id = $id;
         
@@ -435,7 +436,7 @@ class SalesController extends Controller
                 $str.='<td>'.$i;
                 $str.='</td>';
 
-                $str.='<td>'.$product_details->description;
+                $str.='<td>'.$product_details->name;
                 $str.='</td>';
 
                 $str.='<td>'.$quantity;
